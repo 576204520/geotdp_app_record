@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.cj.record.views.MaterialBetterSpinner
+        android:id="@+id/sprEarthType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="土样质量等级"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="土样质量等级"
+        app:met_iconLeft="@mipmap/ai_icon_tuquite" />
+
+
+    <com.cj.record.views.MaterialBetterSpinner
+        android:id="@+id/sprMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="取样工具和方法"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="取样工具和方法(可自定义)"
+        app:met_iconLeft="@mipmap/ai_icon_setup" />
+
+    <com.cj.record.views.MaterialBetterSpinner
+        android:id="@+id/sprTestType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="试验内容"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="试验内容(可自定义)"
+        app:met_iconLeft="@mipmap/ai_icon_testcontent" />
+
+</LinearLayout>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/hole_title"
+        layout="@layout/incule_toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/hole_title"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:padding="6dp">
+
+            <com.cj.record.views.MaterialEditTextNoEmoji
+                android:id="@+id/hole_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="勘探点编号"
+                android:textSize="14sp"
+                app:met_baseColor="@android:color/holo_red_light"
+                app:met_clearButton="true"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelText="勘探点编号"
+                app:met_iconLeft="@mipmap/ai_icon_ktxl" />
+
+            <com.cj.record.views.MaterialEditTextNoEmoji
+                android:id="@+id/hole_code_relate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:hint="关联勘探点编号"
+                android:textSize="14sp"
+                app:met_clearButton="true"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelText="关联勘探点编号"
+                app:met_iconLeft="@mipmap/ai_icon_ktxl" />
+
+            <net.qiujuer.genius.ui.widget.Button
+                android:id="@+id/hole_doRelate"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:background="@color/colorPrimary"
+                android:text="点击获取勘探点列表"
+                android:textColor="#ffffff"
+                android:textSize="14sp" />
+
+            <com.cj.record.views.MaterialBetterSpinner
+                android:id="@+id/hole_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:hint="勘探点类型"
+                android:textSize="14sp"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelText="勘探点类型"
+                app:met_iconLeft="@mipmap/ai_icon_kttype" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.cj.record.views.MaterialEditTextElevation
+                    android:id="@+id/hole_elevation"
+                    android:layout_width="0.0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:hint="高程"
+                    android:textSize="14sp"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelText="高程"
+                    app:met_iconLeft="@mipmap/ai_icon_ktheight" />
+
+                <com.cj.record.views.MaterialEditTextElevation
+                    android:id="@+id/hole_depth"
+                    android:layout_width="0.0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:hint="设计孔高"
+                    android:textSize="14sp"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelText="设计孔高"
+                    app:met_iconLeft="@mipmap/ai_icon_ktkongshen" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/hole_description_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/hole_description_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/colorWhite"
+                    android:padding="10dp"
+                    android:text="技术要求"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/hole_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="10dp"
+                    android:text="jdisdjosfjoajdojfoiaoifdoiasfodsaoifdjjsoia"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/hole_scene_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <net.qiujuer.genius.ui.widget.Button
+                android:id="@+id/hole_doLocation"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:layout_gravity="bottom"
+                android:background="@color/colorPrimary"
+                android:text="定位"
+                android:textColor="#ffffff"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/hole_location_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="vertical">
+
+
+                <com.cj.record.views.MaterialEditTextNoEmoji
+                    android:id="@+id/hole_latitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:hint="未定位"
+                    android:textSize="14sp"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelText="基准纬度"
+                    app:met_iconLeft="@mipmap/ai_icon_jzlatitude" />
+
+
+                <com.cj.record.views.MaterialEditTextNoEmoji
+                    android:id="@+id/hole_longitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:hint="未定位"
+                    android:textSize="14sp"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelText="基准经度"
+                    app:met_iconLeft="@mipmap/ai_icon_jzlongitude" />
+
+
+                <com.cj.record.views.MaterialEditTextNoEmoji
+                    android:id="@+id/hole_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:hint="未定位"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="14sp"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelText="基准时间"
+                    app:met_iconLeft="@mipmap/ai_icon_jztime" />
+
+                <com.cj.record.views.MaterialEditTextNoEmoji
+                    android:id="@+id/hole_radius"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:hint="未定位"
+                    android:textSize="14sp"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelText="警示范围(m)"
+                    app:met_iconLeft="@mipmap/ai_icon_jsscope" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/hole_location_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <android.inputmethodservice.KeyboardView
+        android:id="@+id/keyboard_view"
+        style="@style/KeyboardViewBase" />
+</RelativeLayout>

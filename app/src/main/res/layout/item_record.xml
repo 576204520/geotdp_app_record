@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/record_ll"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="14dp"
+            android:layout_toLeftOf="@id/hole_right"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/record_beginDepth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:text="1m"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+                <TextView
+                    android:id="@+id/record_eb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:lines="1"
+                    android:text="~"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+                <TextView
+                    android:id="@+id/record_endDepth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:text="13m"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/record_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:text="回次"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/record_tn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginTop="6dp"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:text="-"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/record_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginTop="6dp"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/record_updateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:lines="1"
+                android:singleLine="true"
+                android:text="修改时间:2018-12-11 12:45:45"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/record_btn_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/grey_300"
+            android:orientation="horizontal">
+
+            <net.qiujuer.genius.ui.widget.Button
+                android:id="@+id/record_detail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:drawableTop="@mipmap/ai_icon_recorddes"
+                android:padding="4dp"
+                android:text="记录详情"
+                android:textColor="@color/white_alpha_224"
+                android:textSize="14sp"
+                app:gTouchEffect="ease" />
+
+            <net.qiujuer.genius.ui.widget.Button
+                android:id="@+id/record_edit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:drawableTop="@mipmap/ai_icon_edit"
+                android:padding="4dp"
+                android:text="记录编辑"
+                android:textColor="@color/white_alpha_224"
+                android:textSize="14sp"
+                app:gTouchEffect="ease" />
+
+            <net.qiujuer.genius.ui.widget.Button
+                android:id="@+id/record_delete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:drawableTop="@mipmap/ai_icon_delete"
+                android:padding="4dp"
+                android:text="删除记录"
+                android:textColor="@color/white_alpha_224"
+                android:textSize="14sp"
+                app:gTouchEffect="ease" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

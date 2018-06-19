@@ -1,0 +1,85 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <!--  启动界面style-->
+    <style name="Theme.MyAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowDisablePreview">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <!--  列表中上弹的弹出框 背景-->
+    <style name="transparentFrameWindowStyle" parent="android:style/Theme.Dialog">
+        <item name="android:windowBackground">@drawable/answer_recorder_bg</item>
+    </style>
+    <!--  列表中上弹的弹出框 动画-->
+    <style name="main_menu_animstyle">
+        <item name="android:windowEnterAnimation">@anim/recorder_dialog_in_anim</item>
+        <item name="android:windowExitAnimation">@anim/recorder_dialog_out_anim</item>
+    </style>
+    <!--　键盘的样式 -->
+    <style name="KeyboardViewBase">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:layout_marginTop">10dip</item>
+        <item name="android:keyBackground">@drawable/keyboard_key</item>
+        <item name="android:keyTextColor">@color/colorWhite</item>
+        <item name="android:labelTextSize">24sp</item>
+        <item name="android:keyTextSize">36sp</item>
+    </style>
+
+    <!--hole中场景item-->
+    <style name="changjing_item_title">
+        <item name="android:layout_marginStart">14dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorTexthintGrey</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:drawablePadding">7dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">start|center_vertical</item>
+    </style>
+
+    <style name="changjing_item_name">
+        <item name="android:layout_gravity">end|center_vertical</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:drawablePadding">7dp</item>
+        <item name="android:drawableEnd">@mipmap/quanbuyou</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="base_list_title_style">
+        <item name="android:textSize">16sp</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:lines">1</item>
+        <item name="android:textColor">@color/base_list_title_color</item>
+    </style>
+
+    <style name="base_list_desc_style">
+        <item name="android:textSize">14sp</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/base_list_desc_color</item>
+    </style>
+</resources>

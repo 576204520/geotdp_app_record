@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/record_title"
+        layout="@layout/incule_toolbar" />
+
+    <FrameLayout
+        android:id="@+id/locationFrame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/record_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/locationFrame"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="6dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.cj.record.views.MaterialEditTextElevation
+                    android:id="@+id/record_beginDepth"
+                    android:layout_width="0.0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:hint="起始深度*"
+                    android:phoneNumber="true"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelText="起始深度*"
+                    app:met_iconLeft="@mipmap/ai_icon_shendu" />
+
+                <com.cj.record.views.MaterialEditTextElevation
+                    android:id="@+id/record_endDepth"
+                    android:layout_width="0.0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:hint="终止深度*"
+                    android:phoneNumber="true"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelAlwaysShown="true"
+                    app:met_floatingLabelText="终止深度*"
+                    app:met_iconLeft="@mipmap/ic_to_grey600_24dp" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/record_content_fl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.cj.record.views.MaterialEditTextNoEmoji
+                android:id="@+id/record_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="记录编号*"
+                app:met_baseColor="@android:color/holo_red_light"
+                app:met_clearButton="true"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="记录编号*"
+                app:met_iconLeft="@mipmap/ai_icon_ktnumber" />
+
+            <com.cj.record.views.MaterialEditTextNoEmoji
+                android:id="@+id/record_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="其他描述"
+                android:singleLine="true"
+                app:met_clearButton="true"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelText="其他描述"
+                app:met_iconLeft="@mipmap/ai_icon_otherdes" />
+
+            <net.qiujuer.genius.ui.widget.Button
+                android:id="@+id/record_dptup_btn"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_52"
+                android:background="@color/colorPrimary"
+                android:text="保存并添加新记录"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:gTouchColor="#601e88e5"
+                app:gTouchEffect="ease" />
+
+
+            <TextView
+                android:id="@+id/record_edit_note_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="注：红色图标处为必填项"
+                android:textColor="@color/text_warning" />
+
+            <FrameLayout
+                android:id="@+id/mediaFrame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <android.inputmethodservice.KeyboardView
+        android:id="@+id/keyboard_view"
+        style="@style/KeyboardViewBase" />
+</RelativeLayout>

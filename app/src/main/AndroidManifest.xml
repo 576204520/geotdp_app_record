@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.cj.record">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+    <!-- 网络状态 -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!--Dangerous Permissions-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /><!--访问存储设备 -->
+    <uses-permission android:name="android.permission.CAMERA" /><!--调用相机-->
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- 调用硬件相机权限 -->
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.SET_TIME_ZONE"></uses-permission>
+
+    <application
+        android:name=".activity.base.App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.NoActionBar">
+        <activity
+            android:name=".activity.WelcomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MyAppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name=".activity.MainActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.ProjectEditActiity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.HoleListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.HoleEditActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.RecordListActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.RecordEditActivity"
+            android:screenOrientation="portrait"></activity>
+        <!--图片预览器-->
+        <activity
+            android:name="me.iwf.photopicker.PhotoPagerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <!--高德地图-->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="a051e536a3b4f3ad449f3da716c1b53b" />
+        <service android:name="com.amap.api.location.APSService"></service>
+        <!--离线地图 高德地图-->
+        <activity
+            android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
+            android:screenOrientation="portrait" />
+        <!--7.0 拍照-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.cj.reocrd.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+        <!--视频录制压缩-->
+        <activity
+            android:name="com.mabeijianxi.smallvideorecord2.MediaRecorderActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.VideoPlayerActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".activity.RelateHoleActivity" />
+        <!--更新app-->
+        <service android:name=".service.DownloadService"></service>
+
+        <activity
+            android:name=".activity.PreviewActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.HelpActivtiy"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.SettingActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.DictionaryActvity"
+            android:screenOrientation="portrait"></activity>
+    </application>
+
+</manifest>

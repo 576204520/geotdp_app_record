@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/ai_bg"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@+id/login_logo_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            android:background="@mipmap/logo" />
+
+        <TextView
+            android:id="@+id/logo_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/logo"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="8dp"
+            android:text="GEOTDP"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_logo_rl"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@mipmap/ai_import_frame"
+        android:clickable="false"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="38dp"
+            android:background="@mipmap/ai_icon_user" />
+
+        <com.cj.record.views.MaterialEditTextNoEmoji
+            android:id="@+id/login_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_toEndOf="@+id/imageView"
+            android:enabled="true"
+            android:hint="编录员账号"
+            android:textSize="16sp"
+            app:met_baseColor="@android:color/white"
+            app:met_floatingLabelText="编录员账号"
+            app:met_hideUnderline="true"
+            app:met_textColor="@android:color/white" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/relativeLayout2"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@mipmap/ai_import_frame"
+        android:clickable="false"
+        android:focusable="false">
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="38dp"
+            android:background="@mipmap/ai_icon_password" />
+
+        <com.cj.record.views.MaterialEditTextNoEmoji
+            android:id="@+id/login_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_toEndOf="@+id/imageView1"
+            android:hint="输入密码"
+            android:inputType="textPassword"
+            android:textSize="16sp"
+            app:met_baseColor="@android:color/white"
+            app:met_floatingLabelText="密码"
+            app:met_hideUnderline="true"
+            app:met_textColor="@android:color/white" />
+
+    </RelativeLayout>
+
+    <net.qiujuer.genius.ui.widget.Button
+        android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@+id/relativeLayout3"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="41dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="26dp"
+        android:background="@drawable/login_shape_button"
+        android:text="登录"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp" />
+
+
+</LinearLayout>

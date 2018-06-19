@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.cj.record.views.MaterialBetterSpinner
+        android:id="@+id/sprMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="护壁方法"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="护壁方法"
+        app:met_iconLeft="@mipmap/ai_icon_hubi" />
+
+    <com.cj.record.views.MaterialBetterSpinner
+        android:id="@+id/sprType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="钻进方法"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="钻进方法"
+        app:met_iconLeft="@mipmap/ai_icon_zuanjin" />
+
+
+    <com.cj.record.views.MaterialEditTextMillimeter
+        android:id="@+id/edtAperture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="钻孔孔径"
+        android:phoneNumber="true"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="钻孔孔径"
+        app:met_iconLeft="@mipmap/ai_icon_kongjing" />
+
+
+</LinearLayout>

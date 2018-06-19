@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <com.cj.record.views.MaterialEditTextElevation
+        android:id="@+id/edtWaterDepth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="取水深度"
+        android:phoneNumber="true"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="取水深度"
+        app:met_iconLeft="@mipmap/ai_icon_shendu" />
+
+    <com.cj.record.views.MaterialBetterSpinner
+        android:id="@+id/sprMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="取水方式"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="取水方式"
+        app:met_iconLeft="@mipmap/ai_icon_qushui" />
+
+
+</LinearLayout>

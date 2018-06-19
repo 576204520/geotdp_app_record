@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlate_user_rl"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_marginLeft="25dp"
+    android:orientation="vertical">
+
+
+    <CheckBox
+        android:id="@+id/relate_user_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/relate_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/relate_user_check"
+        android:text="描述员:爱因斯坦"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/relate_user_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:text="电话:18486889588"
+        android:textSize="14sp" />
+
+
+    <TextView
+        android:id="@+id/relate_user_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:text="关联时间:2018-05-05 02:02:02"
+        android:textSize="14sp" />
+
+    <!--<TextView-->
+    <!--android:id="@+id/relate_user_id"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/relate_user_rl"-->
+    <!--android:layout_toEndOf="@+id/relate_user_check"-->
+    <!--android:text="（本人）"-->
+    <!--android:textSize="14sp"-->
+    <!--android:visibility="gone" />-->
+</RelativeLayout>

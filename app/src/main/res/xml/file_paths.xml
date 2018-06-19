@@ -1,0 +1,11 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <paths>
+        <external-path
+            name="myImages"
+            path="" />
+
+        <external-path
+            name="external_storage_root"
+            path="." />
+    </paths>
+</resources>

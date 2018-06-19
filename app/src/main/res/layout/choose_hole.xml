@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00000000"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+
+    <net.qiujuer.genius.ui.widget.Button
+        android:id="@+id/choose_hole_local"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:background="@color/colorPrimary"
+        android:drawableLeft="@mipmap/ai_icon_add_hc"
+        android:drawablePadding="6dp"
+        android:onClick="onClick"
+        android:padding="20dp"
+        android:text="本地创建"
+        android:textColor="@color/colorWhite"
+        android:textSize="14sp"
+        app:gTouchEffect="ease" />
+
+    <net.qiujuer.genius.ui.widget.Button
+        android:id="@+id/choose_hole_relate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:background="@color/colorPrimary"
+        android:drawableLeft="@mipmap/ai_icon_add_bz"
+        android:drawablePadding="6dp"
+        android:onClick="onClick"
+        android:padding="20dp"
+        android:text="关联创建"
+        android:textColor="@color/colorWhite"
+        android:textSize="14sp"
+        app:gTouchEffect="ease" />
+
+    <net.qiujuer.genius.ui.widget.Button
+        android:id="@+id/choose_hole_down"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:background="@color/colorPrimary"
+        android:drawableLeft="@mipmap/ai_icon_add_bg"
+        android:drawablePadding="6dp"
+        android:onClick="onClick"
+        android:padding="20dp"
+        android:text="获取数据"
+        android:textColor="@color/colorWhite"
+        android:textSize="14sp"
+        app:gTouchEffect="ease" />
+
+</LinearLayout>

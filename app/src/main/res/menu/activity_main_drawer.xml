@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_project"
+            android:icon="@mipmap/ai_icon_allproject"
+            android:title="项目" />
+        <item
+            android:id="@+id/nav_test"
+            android:icon="@mipmap/ai_icon_allproject"
+            android:title="test" />
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@mipmap/ai_icon_set"
+            android:title="系统设置" />
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@mipmap/ai_icon_help"
+            android:title="使用帮助" />
+    </group>
+
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@mipmap/ai_icon_logout"
+                android:title="注销登录" />
+            <item
+                android:id="@+id/nav_quit"
+                android:icon="@mipmap/ai_icon_quit"
+                android:title="退出" />
+        </menu>
+    </item>
+
+</menu>

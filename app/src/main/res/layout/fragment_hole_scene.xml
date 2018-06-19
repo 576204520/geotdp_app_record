@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/scene_title"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:text="机长、描述员、钻机等信息描述"
+        android:textColor="@color/colorWhite"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:id="@+id/scene_item_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorTexthintGrey"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/scene_jizhang_fl"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="0.6dp"
+            android:background="@color/colorWhite">
+
+            <TextView
+                android:id="@+id/scene_jizhang_tv"
+                style="@style/changjing_item_title"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="14dp"
+                android:text="机长" />
+
+            <TextView
+                android:id="@+id/scene_jizhang"
+                style="@style/changjing_item_name" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/scene_zuanji_fl"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="0.6dp"
+            android:background="@color/colorWhite">
+
+            <TextView
+                android:id="@+id/scene_zuanji_tv"
+                style="@style/changjing_item_title"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="14dp"
+                android:text="钻机" />
+
+            <TextView
+                android:id="@+id/scene_zuanji"
+                style="@style/changjing_item_name" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/scene_miaoshu_fl"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="0.6dp"
+            android:background="@color/colorWhite">
+
+            <TextView
+                android:id="@+id/scene_miaoshu_tv"
+                style="@style/changjing_item_title"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="14dp"
+                android:text="描述员" />
+
+            <TextView
+                android:id="@+id/scene_miaoshu"
+                style="@style/changjing_item_name" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/scene_changjing_fl"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="0.6dp"
+            android:background="@color/colorWhite">
+
+            <TextView
+                android:id="@+id/scene_changjing_tv"
+                style="@style/changjing_item_title"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="14dp"
+                android:text="场景" />
+
+            <TextView
+                android:id="@+id/scene_changjing"
+                style="@style/changjing_item_name" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/scene_fuze_fl"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="0.6dp"
+            android:background="@color/colorWhite">
+
+            <TextView
+                android:id="@+id/scene_fuze_tv"
+                style="@style/changjing_item_title"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="14dp"
+                android:text="负责人" />
+
+            <TextView
+                android:id="@+id/scene_fuze"
+                style="@style/changjing_item_name" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/scene_gongcheng_fl"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="0.6dp"
+            android:background="@color/colorWhite">
+
+            <TextView
+                android:id="@+id/scene_gongcheng_tv"
+                style="@style/changjing_item_title"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="14dp"
+                android:text="工程师" />
+
+            <TextView
+                android:id="@+id/scene_gongcheng"
+                style="@style/changjing_item_name" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/scene_tizuan_fl"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="0.6dp"
+            android:background="@color/colorWhite">
+
+            <TextView
+                android:id="@+id/scene_tizuan_tv"
+                style="@style/changjing_item_title"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="14dp"
+                android:text="提钻录像" />
+
+            <TextView
+                android:id="@+id/scene_tizuan"
+                style="@style/changjing_item_name" />
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>

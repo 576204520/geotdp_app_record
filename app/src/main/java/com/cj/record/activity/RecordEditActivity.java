@@ -1,0 +1,438 @@
+package com.cj.record.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
+
+import com.amap.api.location.AMapLocation;
+import com.cj.record.R;
+import com.cj.record.activity.base.BaseActivity;
+import com.cj.record.baen.Gps;
+import com.cj.record.baen.Hole;
+import com.cj.record.baen.Media;
+import com.cj.record.baen.Record;
+import com.cj.record.db.DBHelper;
+import com.cj.record.db.GpsDao;
+import com.cj.record.db.HoleDao;
+import com.cj.record.db.RecordDao;
+import com.cj.record.fragment.RecordLocationFragment;
+import com.cj.record.fragment.RecordMediaFragment;
+import com.cj.record.fragment.record.RecordBaseFragment;
+import com.cj.record.fragment.record.RecordEditDPTFragment;
+import com.cj.record.fragment.record.RecordEditFrequencyFragment;
+import com.cj.record.fragment.record.RecordEditGetEarthFragment;
+import com.cj.record.fragment.record.RecordEditGetWaterFragment;
+import com.cj.record.fragment.record.RecordEditLayerFragment;
+import com.cj.record.fragment.record.RecordEditRemarkFragment;
+import com.cj.record.fragment.record.RecordEditSPTFragment;
+import com.cj.record.fragment.record.RecordEditWaterFragment;
+import com.cj.record.fragment.record.RecordOperateCodeFragment;
+import com.cj.record.fragment.record.RecordOperatePersionFragment;
+import com.cj.record.fragment.record.RecordPersonFragment;
+import com.cj.record.fragment.record.RecordPrincipalFragment;
+import com.cj.record.fragment.record.RecordSceneFragment;
+import com.cj.record.fragment.record.RecordTechnicianFragment;
+import com.cj.record.fragment.record.RecordVideoFragment;
+import com.cj.record.utils.Common;
+import com.cj.record.utils.DateUtil;
+import com.cj.record.utils.ObsUtils;
+import com.cj.record.utils.SPUtils;
+import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.Urls;
+import com.cj.record.views.MaterialEditTextElevation;
+import com.cj.record.views.MaterialEditTextNoEmoji;
+import com.j256.ormlite.dao.Dao;
+
+import net.qiujuer.genius.ui.widget.Button;
+
+import java.util.Date;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+
+/**
+ * Created by Administrator on 2018/6/5.
+ */
+
+public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLinstener {
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.record_beginDepth)
+    MaterialEditTextElevation recordBeginDepth;
+    @BindView(R.id.record_endDepth)
+    MaterialEditTextElevation recordEndDepth;
+    @BindView(R.id.record_content_fl)
+    FrameLayout recordContentFl;
+    @BindView(R.id.record_code)
+    MaterialEditTextNoEmoji recordCode;
+    @BindView(R.id.record_description)
+    MaterialEditTextNoEmoji recordDescription;
+    @BindView(R.id.record_dptup_btn)
+    Button recordDptupBtn;
+    @BindView(R.id.record_edit_note_tv)
+    TextView recordEditNoteTv;
+
+    private RecordBaseFragment recordBaseFragment;
+    private RecordLocationFragment locationFragment;
+    private RecordMediaFragment mediaFragment;
+    private ObsUtils obsUtils;
+    private Hole hole;
+    private HoleDao holeDao;
+    private boolean isEdit;
+    private RecordDao recordDao;
+    private GpsDao gpsDao;
+    private Record record;
+    private String recordType;
+
+    private Record recordOld;
+    private Gps gpsOld;
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_record_edit;
+    }
+
+    @Override
+    public void initData() {
+        super.initData();
+        obsUtils = new ObsUtils();
+        obsUtils.setObsLinstener(this);
+        obsUtils.execute(1);
+    }
+
+    @Override
+    public void onSubscribe(int type) {
+        switch (type) {
+            case 1:
+                isEdit = getIntent().getBooleanExtra(MainActivity.FROMTYPE, false);
+                hole = (Hole) getIntent().getSerializableExtra(MainActivity.HOLE);
+                holeDao = new HoleDao(this);
+                recordDao = new RecordDao(this);
+                gpsDao = new GpsDao(this);
+                if (isEdit) {
+                    //true编辑
+                    record = (Record) getIntent().getSerializableExtra(MainActivity.RECORD);
+                    recordType = record.getType();
+                    // 获取的记录就改成历史记录，关联的gps也关联到历史记录,历史记录要修改状态，重新上传
+                    recordOld = (Record) record.clone();
+                    recordOld.setId(Common.getUUID());
+                    recordOld.setUpdateId(record.getId());
+                    recordOld.setState("1");//到这里，都是说明将要保存这条记录，并打算上传，状态设置为1
+                    gpsOld = gpsDao.getGpsByRecord(record.getId());
+                    if (gpsOld != null) {
+                        gpsOld.setRecordID(recordOld.getId());
+                    }
+                } else {
+                    //false添加
+                    recordType = getIntent().getStringExtra(MainActivity.EXTRA_RECORD_TYPE);
+                    record = new Record(mContext, hole, recordType);
+                    recordDao.add(record);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onComplete(int type) {
+        switch (type) {
+            case 1:
+                initPage(record);
+                break;
+        }
+    }
+
+    private void initPage(Record record) {
+        //加载定位测模块
+        initLocationFragment(hole);
+        //加载媒体的模块
+        initMediaFragment(record);
+        //岩土是描述，其他都是编辑，title不一樣
+        String t = "";
+        if (recordType.equals(record.TYPE_LAYER)) {
+            t = "描述";
+        } else {
+            t = "记录";
+        }
+        toolbar.setTitle(recordType + t + "编辑");
+        if (null != record.getCode()) {
+            recordCode.setText(record.getCode());
+        }
+        recordBeginDepth.setText(record.getBeginDepth());
+        recordEndDepth.setText(record.getEndDepth());
+        recordDescription.setText(record.getDescription());
+        if (recordType.equals(Record.TYPE_FREQUENCY)) {
+            setRecordEditBaseFragment(new RecordEditFrequencyFragment());
+        } else if (recordType.equals(Record.TYPE_LAYER)) {
+            setRecordEditBaseFragment(new RecordEditLayerFragment());
+        } else if (recordType.equals(Record.TYPE_GET_EARTH)) {
+            setRecordEditBaseFragment(new RecordEditGetEarthFragment());
+        } else if (recordType.equals(Record.TYPE_GET_WATER)) {
+            setRecordEditBaseFragment(new RecordEditGetWaterFragment());
+        } else if (recordType.equals(Record.TYPE_DPT)) {
+            recordDptupBtn.setVisibility(View.VISIBLE);
+            setRecordEditBaseFragment(new RecordEditDPTFragment());
+        } else if (recordType.equals(Record.TYPE_SPT)) {
+            setRecordEditBaseFragment(new RecordEditSPTFragment());
+        } else if (recordType.equals(Record.TYPE_WATER)) {
+            setRecordEditBaseFragment(new RecordEditWaterFragment());
+        } else if (recordType.equals(Record.TYPE_SCENE)) {
+            setRecordEditBaseFragment(new RecordEditRemarkFragment());
+        } else if (recordType.equals(Record.TYPE_SCENE_OPERATEPERSON)) {//机长
+            setRecordEditBaseFragment(new RecordOperatePersionFragment());
+        } else if (recordType.equals(Record.TYPE_SCENE_OPERATECODE)) {//编号
+            setRecordEditBaseFragment(new RecordOperateCodeFragment());
+        } else if (recordType.equals(Record.TYPE_SCENE_RECORDPERSON)) {//描述员
+            setRecordEditBaseFragment(new RecordPersonFragment());
+        } else if (recordType.equals(Record.TYPE_SCENE_SCENE)) {//场景
+            setRecordEditBaseFragment(new RecordSceneFragment());
+        } else if (recordType.equals(Record.TYPE_SCENE_PRINCIPAL)) {//负责人
+            setRecordEditBaseFragment(new RecordPrincipalFragment());
+        } else if (recordType.equals(Record.TYPE_SCENE_TECHNICIAN)) {//工程师
+            setRecordEditBaseFragment(new RecordTechnicianFragment());
+        } else if (recordType.equals(Record.TYPE_SCENE_VIDEO)) {//短视频
+            setRecordEditBaseFragment(new RecordVideoFragment());
+        }
+
+        //短视频 负责人 工程师 机长、钻机、场景、描述
+        if (recordType.equals(Record.TYPE_SCENE_VIDEO) || recordType.equals(Record.TYPE_SCENE_PRINCIPAL) || recordType.equals(Record.TYPE_SCENE_TECHNICIAN) || recordType.equals(Record.TYPE_SCENE_OPERATEPERSON) || recordType.equals(Record.TYPE_SCENE_OPERATECODE) || recordType.equals(Record.TYPE_SCENE_RECORDPERSON) || recordType.equals(Record.TYPE_SCENE_SCENE)) {
+            recordBeginDepth.setVisibility(View.GONE);
+            recordEndDepth.setVisibility(View.GONE);
+            recordCode.setVisibility(View.GONE);
+            //修改注释内容
+            if (recordType.equals(Record.TYPE_SCENE_OPERATEPERSON)) {
+                recordEditNoteTv.setText(R.string.record_operatepersion);
+            } else if (recordType.equals(Record.TYPE_SCENE_OPERATECODE)) {
+                recordEditNoteTv.setText(R.string.record_operatecode);
+            } else if (recordType.equals(Record.TYPE_SCENE_RECORDPERSON)) {
+                recordEditNoteTv.setText(R.string.record_recordpersion);
+            } else if (recordType.equals(Record.TYPE_SCENE_SCENE)) {
+                recordEditNoteTv.setText(R.string.record_scenescene);
+            } else if (recordType.equals(Record.TYPE_SCENE_TECHNICIAN)) {
+                recordEditNoteTv.setText(R.string.record_technician);
+            } else if (recordType.equals(Record.TYPE_SCENE_VIDEO)) {
+                recordEditNoteTv.setText(R.string.record_video);
+            } else {
+                recordEditNoteTv.setText(R.string.record_principal);
+            }
+        }
+
+        // 取水、动探、标灌、水位
+        if (recordType.equals(Record.TYPE_GET_WATER) || recordType.equals(Record.TYPE_DPT) || recordType.equals(Record.TYPE_SPT) || recordType.equals(Record.TYPE_WATER)) {
+            recordBeginDepth.setVisibility(View.GONE);
+            recordEndDepth.setVisibility(View.GONE);
+        }
+        //备注
+        if (recordType.equals(Record.TYPE_SCENE)) {
+            recordBeginDepth.setVisibility(View.GONE);
+            recordEndDepth.setVisibility(View.GONE);
+            recordEditNoteTv.setText(R.string.record_scene);
+        }
+        //非回次
+        if (!recordType.equals(Record.TYPE_FREQUENCY)) {
+            recordDescription.setHint("编辑其他描述");
+            recordDescription.setFloatingLabelText("其他描述");
+        }
+        //岩土
+        if (recordType.equals(Record.TYPE_LAYER)) {
+            recordEditNoteTv.setText(R.string.record_layer);
+        }
+
+    }
+
+    private void setRecordEditBaseFragment(RecordBaseFragment recordBaseFragment) {
+        this.recordBaseFragment = recordBaseFragment;
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MainActivity.RECORD, record);
+        recordBaseFragment.setArguments(bundle);
+        android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.record_content_fl, recordBaseFragment, "type" + recordType);
+        ft.commit();
+    }
+
+    private void initMediaFragment(Record record) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MainActivity.RECORD, record);
+        mediaFragment = new RecordMediaFragment();
+        mediaFragment.setArguments(bundle);
+        android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.mediaFrame, mediaFragment, "mediaFragment");
+        ft.commit();
+    }
+
+    private void initLocationFragment(Hole hole) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MainActivity.HOLE, hole);
+        locationFragment = new RecordLocationFragment();
+        locationFragment.setArguments(bundle);
+        android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.locationFrame, locationFragment, "locationFragment");
+        ft.commit();
+    }
+
+    @Override
+    public void initView() {
+        toolbar.setTitle("编辑" + recordType);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setHomeAsUpIndicator(R.mipmap.ic_clear_white_24dp);
+        ab.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_record_edit, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (isEdit) {
+                    onBackPressed();
+                } else {
+                    record.delete(this);
+                    onBackPressed();
+                }
+                return true;
+            case R.id.act_save:
+                if (save()) {
+                    onBackPressed();
+                }
+                return true;
+            case R.id.act_help:
+                Intent intent = new Intent(this, HelpActivtiy.class);
+                intent.setAction(recordType);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private boolean save() {
+        if (!Common.gPSIsOPen(RecordEditActivity.this)) {
+            ToastUtil.showToastS(this, "GPS未开启，请开启以提高精度");
+            return false;
+        }
+        AMapLocation amapLocation = locationFragment.aMapLocation;
+        if (amapLocation == null) {
+            ToastUtil.showToastS(this, "无法获取定位信息");
+            return false;
+        }
+        if ("".equals(recordBeginDepth.getText().toString())) {
+            recordBeginDepth.setText(recordBeginDepth.getHint());
+        }
+        if ("".equals(recordEndDepth.getText().toString())) {
+            recordEndDepth.setText(recordEndDepth.getHint());
+        }
+        //取消必选项，只有取土不需要终止深度
+        if (recordType.equals(Record.TYPE_FREQUENCY) || recordType.equals(Record.TYPE_LAYER) || recordType.equals(Record.TYPE_GET_EARTH)) {
+            if (Double.valueOf(recordBeginDepth.getText().toString()) >= Double.valueOf(recordEndDepth.getText().toString())) {
+                recordEndDepth.setError("终止深度必须大于起始深度");
+                return false;
+            }
+        }
+        //起始值和终止值都不能重叠
+        if (recordType.equals(Record.TYPE_FREQUENCY) || recordType.equals(Record.TYPE_LAYER)) {
+            RecordDao recordDao = new RecordDao(this);
+            if (recordDao.validatorBeginDepth(record, recordType, recordEndDepth.getText().toString())) {
+                recordEndDepth.setError("与其他记录重叠");
+                return false;
+            }
+
+            if (recordDao.validatorEndDepth(record, recordType, recordEndDepth.getText().toString())) {
+                recordEndDepth.setError("与其他记录重叠");
+                return false;
+            }
+        }
+
+        if ("".equals(recordCode.getText().toString())) {
+            recordCode.setError("记录编号不能为空");
+            return false;
+        }
+        //获取不同fragment中表单验证
+        if (!recordBaseFragment.validator()) {
+            return false;
+        }
+        //获取不同fragment中record参数
+        record = recordBaseFragment.getRecord();
+        if (recordType.equals(Record.TYPE_GET_WATER) || recordType.equals(Record.TYPE_DPT) || recordType.equals(Record.TYPE_SPT) || recordType.equals(Record.TYPE_WATER)) {
+            record.setBeginDepth(recordBaseFragment.getBegin());
+            record.setEndDepth(recordBaseFragment.getEnd());
+        } else {
+            record.setBeginDepth(recordBeginDepth.getText().toString());
+            record.setEndDepth(recordEndDepth.getText().toString());
+        }
+        record.setType(recordBaseFragment.getTypeName());
+        record.setTitle(recordBaseFragment.getTitle());
+        //保存记录本身的相关参数
+        record.setCode(recordCode.getText().toString());
+        record.setDescription(recordDescription.getText().toString());
+        record.setState("1");
+        record.setIsDelete("0");
+        record.setRecordPerson((String) SPUtils.get(this, Urls.SPKey.USER_REALNAME, ""));
+        recordDao.add(record);
+        //保存记录下gps数据
+        Gps gps = new Gps(record, amapLocation, recordType);
+        gpsDao.add(gps);
+        //保存记录下媒体数据
+        saveMediaList();
+        //修改所属勘探点上传状态state，如果是新增，添加记录数量recordCount
+        hole.setState("1");
+        hole.setUpdateTime(DateUtil.date2Str(new Date()));
+        if (!isEdit) {
+            int count = Integer.parseInt(hole.getRecordsCount());
+            count++;
+            hole.setRecordsCount(String.valueOf(count));
+        }
+        holeDao.update(hole);
+        //如果是编辑模式，保存历史记录及其gps
+        if (isEdit) {
+            recordDao.update(recordOld);
+            gpsDao.update(gpsOld);
+        }
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        //该方法自动调用finish()
+        super.onBackPressed();
+    }
+
+    @OnClick(R.id.record_dptup_btn)
+    public void onViewClicked() {
+        //如果保存成功了，新建record，初始页面，继续编辑
+        if (save()) {
+            isEdit = false;
+            record = new Record(mContext, hole, Record.TYPE_DPT);
+            recordDao.add(record);
+            initPage(record);
+        }
+    }
+
+
+    public void saveMediaList() {
+        DBHelper dbHelper = DBHelper.getInstance(this);
+        try {
+            Dao<Media, String> mediaDao = dbHelper.getDao(Media.class);
+            List<Media> mediaList = mediaDao.queryBuilder().where().eq("recordID", record.getId()).and().eq("state", "0").query();
+            for (Media media : mediaList) {
+                media.setState("1");
+                mediaDao.update(media);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
