@@ -1,3 +1,0 @@
-D:/Workspaces/Record/SmallVideoLib2/.externalNativeBuild/cmake/debug/armeabi/CMakeFiles/jx_ffmpeg_jni.dir
-D:/Workspaces/Record/SmallVideoLib2/.externalNativeBuild/cmake/debug/armeabi/CMakeFiles/edit_cache.dir
-D:/Workspaces/Record/SmallVideoLib2/.externalNativeBuild/cmake/debug/armeabi/CMakeFiles/rebuild_cache.dir
