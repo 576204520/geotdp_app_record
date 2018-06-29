@@ -216,9 +216,16 @@ public class MaterialBetterSpinner extends MaterialAutoCompleteTextView implemen
     public void setAdapter(Context context, List<DropItemVo> list) {
         setAdapter(context, list, 0);
     }
-
+    DropListAdapter adapter;
+    List<DropItemVo> list;
+    public void refresh(List<DropItemVo> list){
+        this.list = list;
+        adapter = new DropListAdapter(context, R.layout.drop_item, list);
+        adapter.notifyDataSetChanged();
+    }
     public void setAdapter(Context context, List<DropItemVo> list, int mode) {
-        DropListAdapter adapter = new DropListAdapter(context, R.layout.drop_item, list);
+        this.list = list;
+        adapter = new DropListAdapter(context, R.layout.drop_item, list);
         setAdapter(adapter);
         if (mode == 1 || mode == 3) {
             setClear();

@@ -64,9 +64,8 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
     private int total = 0;//总条数
     private int size = 20;
     private int page = 0;//页数 初始值1
-    private Dialog dialog;
     private Dialog chooseDialog;
-
+    private int sortPosition = 0;
     @Override
     public int getLayoutId() {
         return R.layout.activity_record_list;
@@ -129,23 +128,24 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                 dataList = new ArrayList<>();
                 recordDao = new RecordDao(this);
                 total = recordDao.getSortCountMap(hole.getId()).get(1);
+                //记录分类
                 sprSort.setAdapter(this, getLayerTypeList());
                 sprSort.setText(listSort.get(0).getValue());
                 sprSort.setTag(listSort.get(0).getId());
                 sprSort.setOnItemClickListener(sortListener);
-
+                //记录排序
                 sprSequence.setAdapter(this, getModeList());
                 sprSequence.setText(listSequence.get(0).getValue());
                 sprSequence.setTag(listSequence.get(0).getId());
                 sprSequence.setOnItemClickListener(sequenceListener);
-
+                //记录列表
                 dataList = recordDao.getRecordList(hole.getId(), size, page, sprSort.getTag().toString(), sprSequence.getTag().toString());
-
                 break;
             case 2:
                 page = 0;
                 total = recordDao.getSortCountMap(hole.getId()).get(1);
                 dataList = recordDao.getRecordList(hole.getId(), size, page, sprSort.getTag().toString(), sprSequence.getTag().toString());
+                //todo 刷新是更新记录分类列表
                 break;
             case 3:
                 page++;
@@ -201,6 +201,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
     MaterialBetterSpinner.OnItemClickListener sortListener = new MaterialBetterSpinner.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            sortPosition = i;
             DropItemVo d = listSort.get(i);
             sprSort.setTag(d.getId());
             sprSort.setText(d.getValue());
@@ -278,8 +279,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
     private void deleteDialog(final int position) {
         final Record record = dataList.get(position);
         int con = record.getNotUploadCount() == 0 ? R.string.confirmDelete : R.string.confirmDelete4;
-        if (dialog == null) {
-            dialog = new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                     .setTitle(R.string.hint)
                     .setMessage(con)
                     .setNegativeButton(R.string.record_camera_cancel_dialog_yes,
@@ -297,9 +297,6 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                     .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)
                     .setCancelable(false)
                     .show();
-        } else {
-            dialog.show();
-        }
     }
 
     @Override

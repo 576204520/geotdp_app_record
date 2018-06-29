@@ -1,17 +1,24 @@
 package com.cj.record.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.cj.record.R;
 import com.cj.record.activity.base.BaseActivity;
 import com.cj.record.utils.SPUtils;
+import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.UpdateUtil;
 import com.cj.record.utils.Urls;
+import com.tbruyelle.rxpermissions2.Permission;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import butterknife.internal.Utils;
+import io.reactivex.functions.Action;
 
 /**
  * Created by Administrator on 2018/5/23.
@@ -46,23 +53,75 @@ public class WelcomeActivity extends BaseActivity {
 
         @Override
         public void onFinish() {
-            // 检查userid是否存在
-            String userID = (String) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_ID, "");
-            String email = (String) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_EMAIL, "");
-            String realName = (String) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_REALNAME, "");
-            //添加到base里，全局用
-            if (TextUtils.isEmpty(userID) || TextUtils.isEmpty(email) || TextUtils.isEmpty(realName)) {
-                startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
-            } else {
-                BaseActivity.userID = userID;
-                startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
-            }
-            finish();
+            requestPermissions();
         }
 
         @Override
         public void onTick(long millisUntilFinished) {
 
         }
+    }
+    private void requestPermissions() {
+        RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions.requestEach(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA)
+                .subscribe(new io.reactivex.functions.Consumer<Permission>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull Permission permission) throws Exception {
+                        switch (permission.name) {
+                            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                                if (permission.granted) {
+                                    // 检查userid是否存在
+                                    String userID = (String) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_ID, "");
+                                    String email = (String) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_EMAIL, "");
+                                    String realName = (String) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_REALNAME, "");
+                                    //添加到base里，全局用
+                                    if (TextUtils.isEmpty(userID) || TextUtils.isEmpty(email) || TextUtils.isEmpty(realName)) {
+                                        startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
+                                    } else {
+                                        BaseActivity.userID = userID;
+                                        startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+                                    }
+                                    finish();
+                                } else if (permission.shouldShowRequestPermissionRationale) {
+                                    ToastUtil.showToastS(mContext, "取消存储授权,不能存储图片文件");
+                                } else {
+                                    ToastUtil.showToastS(mContext, "您已经禁止弹出存储的授权操作,请在设置中手动开启");
+                                }
+                                break;
+                            case Manifest.permission.CAMERA:
+                                if (permission.granted) {
+                                } else if (permission.shouldShowRequestPermissionRationale) {
+                                    ToastUtil.showToastS(mContext, "取消照相机授权");
+                                } else {
+                                    ToastUtil.showToastS(mContext, "您已经禁止弹出照相机的授权操作,请在设置中手动开启");
+                                }
+                                break;
+                            case Manifest.permission.ACCESS_FINE_LOCATION:
+                                if (permission.granted) {
+                                } else if (permission.shouldShowRequestPermissionRationale) {
+                                    ToastUtil.showToastS(mContext, "取消定位授权,不能获取定位信息");
+                                } else {
+                                    ToastUtil.showToastS(mContext, "您已经禁止弹出定位的授权操作,请在设置中手动开启");
+                                }
+                            default:
+                                break;
+                        }
+
+                    }
+                }, new io.reactivex.functions.Consumer<Throwable>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull Throwable throwable) throws Exception {
+                        Log.i("--->>", "onError", throwable);
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+
+                    }
+                });
     }
 }

@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -34,7 +35,9 @@ import com.cj.record.baen.Hole;
 import com.cj.record.utils.Common;
 import com.cj.record.views.MaterialEditTextNoEmoji;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -45,14 +48,10 @@ public class RecordLocationFragment extends BaseFragment implements LocationSour
 
 
     public AMapLocation aMapLocation = null;
-    @BindView(R.id.edtLatitude)
-    MaterialEditTextNoEmoji edtLatitude;
-    @BindView(R.id.edtLongitude)
-    MaterialEditTextNoEmoji edtLongitude;
-    @BindView(R.id.edtLocationTime)
-    MaterialEditTextNoEmoji edtLocationTime;
     @BindView(R.id.edtAccuracy)
-    MaterialEditTextNoEmoji edtAccuracy;
+    EditText edtAccuracy;
+    @BindView(R.id.edtTime)
+    EditText edtTime;
     //声明AMapLocationClient类对象，定位发起端
     private AMapLocationClient mLocationClient = null;
     //声明mLocationOption对象，定位参数
@@ -80,10 +79,6 @@ public class RecordLocationFragment extends BaseFragment implements LocationSour
     @Override
     public void initView() {
         this.aMapLocation = null;
-        edtLongitude.setText("");
-        edtLatitude.setText("");
-        edtLocationTime.setText("");
-        edtAccuracy.setText("");
         location();
     }
 
@@ -139,17 +134,27 @@ public class RecordLocationFragment extends BaseFragment implements LocationSour
         if (aMapLocation != null) {
             if (aMapLocation.getErrorCode() == 0) {
                 this.aMapLocation = aMapLocation;
-                // 定位成功回调信息，设置相关消息
-                edtLongitude.setText(String.valueOf(aMapLocation.getLongitude()));
-                edtLatitude.setText(String.valueOf(aMapLocation.getLatitude()));
                 //定位时间
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date(aMapLocation.getTime());
-                edtLocationTime.setText(df.format(date));
+                if(null != hole){
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date date = new Date(aMapLocation.getTime());
+                    try {
+                        String totalTime = stringDaysBetween(hole.getCreateTime(),df.format(date));
+                        edtTime.setText(totalTime);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
                 //偏移值
                 if (null != hole) {
-                    edtAccuracy.setText(Common.GetDistance(aMapLocation.getLongitude(), aMapLocation.getLatitude(), Double.valueOf(hole.getMapLongitude()), Double.valueOf(hole.getMapLatitude())));
-                    aMapLocation.setAccuracy(Float.valueOf(edtAccuracy.getText().toString()));
+                    Double distance = Double.parseDouble(Common.GetDistance(aMapLocation.getLongitude(), aMapLocation.getLatitude(), Double.valueOf(hole.getMapLongitude()), Double.valueOf(hole.getMapLatitude())));
+                    edtAccuracy.setText(distance+"m");
+                    aMapLocation.setAccuracy(Float.valueOf(distance+""));
+                    if(distance > 200){
+                        edtAccuracy.setTextColor(getResources().getColor(R.color.colorRed));
+                    }else{
+                        edtAccuracy.setTextColor(getResources().getColor(R.color.colorBlack));
+                    }
                 }
                 if (mListener != null) {
                     mListener.onLocationChanged(aMapLocation);
@@ -158,11 +163,25 @@ public class RecordLocationFragment extends BaseFragment implements LocationSour
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
 //                ToastUtil.showToastS(context, "信号弱,请耐心等待");
                 this.aMapLocation = null;
-                edtLongitude.setText("");
-                edtLatitude.setText("");
-                edtLocationTime.setText("");
                 edtAccuracy.setText("");
+                edtTime.setText("");
             }
         }
+    }
+    public String stringDaysBetween(String smdate, String bdate) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(sdf.parse(smdate));
+        long time1 = cal.getTimeInMillis();
+        cal.setTime(sdf.parse(bdate));
+        long time2 = cal.getTimeInMillis();
+        long between_days = (time2 - time1);
+//        return Integer.parseInt(String.valueOf(between_days));
+        long days = between_days / (1000 * 60 * 60 * 24);
+        long hours = (between_days % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
+        long minutes = (between_days % (1000 * 60 * 60)) / (1000 * 60);
+        long seconds = (between_days % (1000 * 60)) / 1000;
+        return days + " 天 " + hours + " 小时 " + minutes + " 分 " + seconds + " 秒 ";
+
     }
 }

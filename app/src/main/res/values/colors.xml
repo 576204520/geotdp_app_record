@@ -11,4 +11,5 @@
     <color name="text_warning">#fe8f4d</color>
     <color name="base_list_title_color">#ff2f2f2f</color>
     <color name="base_list_desc_color">#ff808080</color>
+    <color name="colorRed">#FF0000</color>
 </resources>
