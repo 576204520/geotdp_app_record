@@ -52,7 +52,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = E:\AS\sdk\cmake\3.6.4111459\bin\cmake.exe -HD:\Workspaces\geotdp_app_record\SmallVideoLib2 -BD:\Workspaces\geotdp_app_record\SmallVideoLib2\.externalNativeBuild\cmake\release\x86
+  command = E:\AS\sdk\cmake\3.6.4111459\bin\cmake.exe -HD:\Workspaces\Record\SmallVideoLib2 -BD:\Workspaces\Record\SmallVideoLib2\.externalNativeBuild\cmake\release\x86
   description = Re-running CMake...
   generator = 1
 
