@@ -1,10 +1,10 @@
 Executable : E:\AS\sdk\cmake\3.6.4111459\bin\cmake.exe
 arguments : 
--HD:\Workspaces\Record\SmallVideoLib2
--BD:\Workspaces\Record\SmallVideoLib2\.externalNativeBuild\cmake\release\x86
+-HD:\Workspaces\geotdp_app_record\SmallVideoLib2
+-BD:\Workspaces\geotdp_app_record\SmallVideoLib2\.externalNativeBuild\cmake\release\x86
 -DANDROID_ABI=x86
 -DANDROID_PLATFORM=android-14
--DCMAKE_LIBRARY_OUTPUT_DIRECTORY=D:\Workspaces\Record\SmallVideoLib2\build\intermediates\cmake\release\obj\x86
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=D:\Workspaces\geotdp_app_record\SmallVideoLib2\build\intermediates\cmake\release\obj\x86
 -DCMAKE_BUILD_TYPE=Release
 -DANDROID_NDK=E:\AS\sdk\ndk-bundle
 -DCMAKE_CXX_FLAGS=-std=c++11

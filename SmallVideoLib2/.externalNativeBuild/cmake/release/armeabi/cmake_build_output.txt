@@ -12,4 +12,4 @@
 -- Detecting CXX compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: D:/Workspaces/Record/SmallVideoLib2/.externalNativeBuild/cmake/release/armeabi
+-- Build files have been written to: D:/Workspaces/geotdp_app_record/SmallVideoLib2/.externalNativeBuild/cmake/release/armeabi
