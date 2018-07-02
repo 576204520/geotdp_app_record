@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class DBHelper extends OrmLiteSqliteOpenHelper {
     public static final String DB_NAME = Urls.DATABASE_BASE;//完整路径
-    public static final int DB_VERSION = 5;
+    public static final int DB_VERSION = 6;
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -151,6 +151,10 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             "('灰色','冲填土_颜色','6','0')," +
             "('灰褐色','冲填土_颜色','7','0')," +
             "('灰黑色','冲填土_颜色','8','0')";
+    //version==6
+    private String MAIN_LAYER_CODE = "ALTER TABLE `record` ADD COLUMN mainLayerCode VARCHAR(50) default '0'";
+    private String SUB_LAYER_CODE = "ALTER TABLE `record` ADD COLUMN subLayerCode VARCHAR(50) default '0'";
+    private String SECONDSUB_LAYER_CODE = "ALTER TABLE `record` ADD COLUMN secondSubLayerCode VARCHAR(50) default '0'";
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         L.e("TAG", "DBHelper>>>>>onUpgrade--old=" + oldVersion + "--new=" + newVersion);
@@ -211,6 +215,11 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
         if(oldVersion<5){
             sqLiteDatabase.execSQL(ADD_YS_JC);
+        }
+        if(oldVersion<6){
+            sqLiteDatabase.execSQL(MAIN_LAYER_CODE);
+            sqLiteDatabase.execSQL(SUB_LAYER_CODE);
+            sqLiteDatabase.execSQL(SECONDSUB_LAYER_CODE);
         }
     }
 
