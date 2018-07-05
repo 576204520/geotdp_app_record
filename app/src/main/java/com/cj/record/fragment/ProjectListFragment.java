@@ -22,6 +22,7 @@ import com.cj.record.R;
 import com.cj.record.activity.HoleListActivity;
 import com.cj.record.activity.MainActivity;
 import com.cj.record.activity.ProjectEditActiity;
+import com.cj.record.activity.ReleteLocationActivity;
 import com.cj.record.activity.base.BaseFragment;
 import com.cj.record.adapter.ProjectAdapter;
 import com.cj.record.adapter.SpacesItemDecoration;
@@ -29,6 +30,7 @@ import com.cj.record.baen.Project;
 import com.cj.record.db.ProjectDao;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
+import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;
 
 import java.util.ArrayList;
@@ -201,7 +203,14 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public void navClick(int position) {
-
+        String sn = dataList.get(position).getSerialNumber();
+        if(!TextUtils.isEmpty(sn)){
+            Bundle bundle = new Bundle();
+            bundle.putString(MainActivity.SN,sn);
+            startActivity(ReleteLocationActivity.class,bundle);
+        }else{
+            ToastUtil.showToastS(mActivity,"该项目未关联，无法定位");
+        }
     }
 
     @Override
@@ -211,7 +220,6 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public void deleteClick(int position) {
-
         deleteDialog(position);
     }
 

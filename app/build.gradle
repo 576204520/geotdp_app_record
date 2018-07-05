@@ -97,4 +97,6 @@ dependencies {
     //分割 Dex 文件解决方法限制
     compile 'com.android.support:multidex:1.0.1'
     implementation files('libs/AMap3DMap_5.7.0_AMapNavi_5.6.0_AMapLocation_3.7.0_20180109.jar')
+    //https://github.com/yipianfengye/android-zxingLibrary
+    compile 'cn.yipianfengye.android:zxing-library:2.2'
 }

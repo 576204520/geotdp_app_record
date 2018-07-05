@@ -56,12 +56,12 @@ public class RecordAdapter extends AbstractSlideExpandableListAdapter<RecordAdap
         myHolder.recordType.setText(record.getType());
         myHolder.recordName.setText(record.getTitle());
         myHolder.recordUpdateTime.setText("修改时间:" + record.getUpdateTime());
-        if (record.getType().equals("取水")) {
+        if (record.getType().equals(Record.TYPE_GET_WATER)) {
             myHolder.recordBeginDepth.setVisibility(View.VISIBLE);
             myHolder.recordEb.setVisibility(View.GONE);
             myHolder.recordEndDepth.setVisibility(View.GONE);
             myHolder.recordEb.setText("~");
-        } else if (record.getType().equals("水位")) {
+        } else if (record.getType().equals(Record.TYPE_WATER)) {
             myHolder.recordBeginDepth.setVisibility(View.VISIBLE);
             myHolder.recordEb.setVisibility(View.VISIBLE);
             myHolder.recordEndDepth.setVisibility(View.VISIBLE);
@@ -72,6 +72,13 @@ public class RecordAdapter extends AbstractSlideExpandableListAdapter<RecordAdap
             myHolder.recordEb.setVisibility(View.VISIBLE);
             myHolder.recordEndDepth.setVisibility(View.VISIBLE);
             myHolder.recordEb.setText("~");
+        }
+        //岩土顯示分層編號
+        if (record.getType().equals(Record.TYPE_LAYER)) {
+            myHolder.recordLayerCode.setVisibility(View.VISIBLE);
+            myHolder.recordLayerCode.setText(" 土层编号:"+record.getMainLayerCode() + "-" + record.getSubLayerCode() + "-" + record.getSecondSubLayerCode());
+        } else {
+            myHolder.recordLayerCode.setVisibility(View.GONE);
         }
         myHolder.recordDetail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,6 +181,8 @@ public class RecordAdapter extends AbstractSlideExpandableListAdapter<RecordAdap
         LinearLayout recordBtnLl;
         @BindView(R.id.record_ll)
         LinearLayout recordLl;
+        @BindView(R.id.record_layerCode)
+        TextView recordLayerCode;
 
         public MyHolder(View itemView) {
             super(itemView);

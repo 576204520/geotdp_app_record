@@ -91,6 +91,12 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/record_layerCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/record_updateTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +28,7 @@ import com.cj.record.baen.Record;
 import com.cj.record.db.RecordDao;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.views.MaterialBetterSpinner;
+import com.cj.record.views.dialog.RecordInfoDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +68,8 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
     private int page = 0;//页数 初始值1
     private Dialog chooseDialog;
     private int sortPosition = 0;
+    private RecordInfoDialog recordInfoDialog;//记录详情
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_record_list;
@@ -127,6 +131,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                 hole = (Hole) getIntent().getSerializableExtra(MainActivity.HOLE);
                 dataList = new ArrayList<>();
                 recordDao = new RecordDao(this);
+                recordInfoDialog = new RecordInfoDialog();
                 total = recordDao.getSortCountMap(hole.getId()).get(1);
                 //记录分类
                 sprSort.setAdapter(this, getLayerTypeList());
@@ -259,7 +264,8 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
 
     @Override
     public void detailClick(int position) {
-
+        Record record = dataList.get(position);
+        recordInfoDialog.show(this, record, hole.getCode());
     }
 
     @Override
@@ -280,23 +286,23 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
         final Record record = dataList.get(position);
         int con = record.getNotUploadCount() == 0 ? R.string.confirmDelete : R.string.confirmDelete4;
         new AlertDialog.Builder(this)
-                    .setTitle(R.string.hint)
-                    .setMessage(con)
-                    .setNegativeButton(R.string.record_camera_cancel_dialog_yes,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //删除记录，其实是添加这条记录的updateID为本记录id
-                                    Record delRecord = recordDao.queryForId(record.getId());
-                                    delRecord.setUpdateId(record.getId());
-                                    delRecord.setState("1");
-                                    recordDao.update(delRecord);
-                                    onRefresh();
-                                }
-                            })
-                    .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)
-                    .setCancelable(false)
-                    .show();
+                .setTitle(R.string.hint)
+                .setMessage(con)
+                .setNegativeButton(R.string.record_camera_cancel_dialog_yes,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //删除记录，其实是添加这条记录的updateID为本记录id
+                                Record delRecord = recordDao.queryForId(record.getId());
+                                delRecord.setUpdateId(record.getId());
+                                delRecord.setState("1");
+                                recordDao.update(delRecord);
+                                onRefresh();
+                            }
+                        })
+                .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)
+                .setCancelable(false)
+                .show();
     }
 
     @Override

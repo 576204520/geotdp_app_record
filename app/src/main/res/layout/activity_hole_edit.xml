@@ -51,9 +51,9 @@
                 android:id="@+id/hole_doRelate"
                 android:layout_width="match_parent"
                 android:layout_height="34dp"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/textview_stroke_btn"
                 android:text="点击获取勘探点列表"
-                android:textColor="#ffffff"
+                android:textColor="@color/colorPrimary"
                 android:textSize="14sp" />
 
             <com.cj.record.views.MaterialBetterSpinner

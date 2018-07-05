@@ -59,35 +59,13 @@ public class PreviewShowFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frt_preview_show, container, false);
+        RecordDao recordDao = new RecordDao(context);
+        listRecord1 = recordDao.getRecordOne(hole.getId());
         preview_show_list1 = (RecyclerView) view.findViewById(R.id.preview_show_list1);
-//        preview_show_list2 = (RecyclerView) view.findViewById(R.id.preview_show_list2);
         preview_show_list1.setLayoutManager(new LinearLayoutManager(context));
-//        preview_show_list2.setLayoutManager(new LinearLayoutManager(context));
-        loadData();
+        preview_show_list1.setAdapter(new ItemAdapter(context, listRecord1));
         return view;
     }
-
-    public void loadData() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                RecordDao recordDao = new RecordDao(context);
-                listRecord1 = recordDao.getRecordOne(hole.getId());
-                listRecord1.addAll(recordDao.getRecordTwo(hole.getId()));
-//                listRecord2 = recordDao.getRecordTwo(hole.getId());
-                handler.sendMessage(new Message());
-
-            }
-        }).start();
-    }
-
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            preview_show_list1.setAdapter(new ItemAdapter(context, listRecord1));
-//            preview_show_list2.setAdapter(new ItemAdapter(context, listRecord2));
-        }
-    };
 
     public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         private final TypedValue mTypedValue = new TypedValue();

@@ -27,6 +27,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(getLayoutId());
         mContext = getApplicationContext();
         ButterKnife.bind(this);
+        initMust(savedInstanceState);
         init();
     }
 
@@ -35,6 +36,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         initView();
     }
 
+    public void initMust(Bundle savedInstanceState){
+
+    }
     public void initData() {
 
     }

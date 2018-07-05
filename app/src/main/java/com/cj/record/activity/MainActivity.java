@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public static final int GO_DOWNLOAD_CREATE = 403;
     public static final String CHECKLIST = "checkList";
     public static final String LOCALUSERLIST = "localUserList";
-
+    public static final String SN = "serialNumber";
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;
@@ -137,7 +137,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            finishDialog();
         }
     }
 
@@ -256,8 +256,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
 
-
-
     /**
      * 检查数据库文件是否存在
      */
@@ -287,5 +285,24 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         } catch (Exception e) {
             System.out.println(e.toString());
         }
+    }
+
+    /**
+     * 退出
+     */
+    private void finishDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.hint)
+                .setMessage("是否退出应用")
+                .setNegativeButton(R.string.agree,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                MainActivity.this.finish();
+                            }
+                        })
+                .setPositiveButton(R.string.disagree,null)
+                .setCancelable(false)
+                .show();
     }
 }

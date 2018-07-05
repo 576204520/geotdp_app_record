@@ -10,11 +10,11 @@
         android:layout_height="34dp"
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/textview_stroke_btn"
         android:gravity="center"
         android:paddingLeft="10dp"
         android:text="机长、描述员、钻机等信息描述"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorPrimary"
         android:textSize="14sp" />
 
     <LinearLayout

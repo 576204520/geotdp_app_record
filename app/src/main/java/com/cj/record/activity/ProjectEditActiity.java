@@ -1,25 +1,25 @@
 package com.cj.record.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cj.record.R;
 import com.cj.record.activity.base.BaseActivity;
 import com.cj.record.baen.JsonResult;
-import com.cj.record.baen.LocalUser;
 import com.cj.record.baen.Project;
 import com.cj.record.db.HoleDao;
 import com.cj.record.db.MediaDao;
 import com.cj.record.db.ProjectDao;
 import com.cj.record.db.RecordDao;
-import com.cj.record.utils.L;
-import com.cj.record.utils.MD5Utils;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
@@ -28,14 +28,17 @@ import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.uuzuche.lib_zxing.activity.CaptureActivity;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static me.iwf.photopicker.PhotoPreview.REQUEST_CODE;
 
 /**
  * Created by Administrator on 2018/5/24.
@@ -108,16 +111,24 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
         projecEditDescribe.setText(project.getDescribe());
     }
 
-    @OnClick(R.id.projec_edit_relevance)
-    public void onViewClicked() {
-        doRelevance();
+    @OnClick({R.id.projec_edit_relevance, R.id.project_zxing})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.projec_edit_relevance:
+                doRelevance();
+                break;
+            case R.id.project_zxing:
+                Intent intent = new Intent(this, CaptureActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
+                break;
+        }
     }
 
     /**
      * 关联获取项目信息
      */
     public void doRelevance() {
-        showPPW();
+
         String number = projecEditNumber.getText().toString().trim();
         if (TextUtils.isEmpty(number)) {
             ToastUtil.showToastS(mContext, "请输入项目序列号");
@@ -131,6 +142,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
         }
         Map<String, String> map = new HashMap<>();
         map.put("project.serialNumber", number);
+        showPPW();
         OkGo.<String>post(Urls.GET_PROJECT_INFO_BY_KEY_POST)
                 .params(map)
                 .execute(new StringCallback() {
@@ -155,6 +167,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                             obsUtils.execute(2);
                         }
                         ToastUtil.showToastS(mContext, jsonResult.getMessage());
+
                     }
 
                     @Override
@@ -182,13 +195,13 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (!isEdit && TextUtils.isEmpty(project.getSerialNumber())) {
-                    projectDao.delete(project);
-                }
-                setResult(RESULT_OK);
-                finish();
+                onBackPressed();
                 return true;
             case R.id.act_save:
+                if (TextUtils.isEmpty(projecEditName.getText().toString())) {
+                    ToastUtil.showToastS(mContext, "请输入项目名称");
+                    return true;
+                }
                 setResult(RESULT_OK);
                 finish();
                 return true;
@@ -198,6 +211,9 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
 
     @Override
     public void onBackPressed() {
+        if (!isEdit && TextUtils.isEmpty(project.getSerialNumber())) {
+            projectDao.delete(project);
+        }
         setResult(RESULT_OK);
         //该方法自动调用finish()
         super.onBackPressed();
@@ -248,6 +264,29 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
             case 2:
                 initPage(project);
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        /**
+         * 处理二维码扫描结果
+         */
+        if (requestCode == REQUEST_CODE) {
+            //处理扫描结果（在界面上显示）
+            if (null != data) {
+                Bundle bundle = data.getExtras();
+                if (bundle == null) {
+                    return;
+                }
+                if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                    String result = bundle.getString(CodeUtils.RESULT_STRING);
+                    projecEditNumber.setText(result);
+                } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
+                    Toast.makeText(this, "解析二维码失败", Toast.LENGTH_LONG).show();
+                }
+            }
         }
     }
 }

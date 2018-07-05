@@ -32,7 +32,52 @@
             app:met_floatingLabelText="@string/label_record_layer_name"
             app:met_iconLeft="@mipmap/ai_icon_yantufenlei" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <com.cj.record.views.MaterialEditTextNoEmoji
+            android:id="@+id/mainLayerCode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:digits="0123456789"
+            android:hint="主层"
+            android:inputType="number"
+            android:maxLength="3"
+            app:met_clearButton="false"
+            app:met_floatingLabel="highlight"
+            app:met_floatingLabelText="主层"
+            app:met_iconLeft="@mipmap/ai_icon_ktnumber" />
+
+        <com.cj.record.views.MaterialEditTextNoEmoji
+            android:id="@+id/subLayerCode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:digits="0123456789"
+            android:hint="亚层"
+            android:inputType="number"
+            android:maxLength="3"
+            app:met_floatingLabel="highlight"
+            app:met_floatingLabelText="亚层"
+            app:met_iconLeft="@mipmap/ai_icon_ktnumber" />
+
+        <com.cj.record.views.MaterialEditTextNoEmoji
+            android:id="@+id/secondSubLayerCode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:digits="0123456789"
+            android:hint="次压层"
+            android:inputType="number"
+            android:maxLength="3"
+            app:met_clearButton="false"
+            app:met_floatingLabel="highlight"
+            app:met_floatingLabelText="次压层"
+            app:met_iconLeft="@mipmap/ai_icon_ktnumber" />
+    </LinearLayout>
     <FrameLayout
         android:id="@+id/fltContent"
         android:layout_width="match_parent"

@@ -9,6 +9,7 @@ import java.io.File;
  */
 public class Urls {
     public static final String SERVER_PATH = "http://test.geotdp.com/";//测试
+//    public static final String SERVER_PATH = "http://g.geotdp.com/";//广西
     // 登录请求
     public static final String LOGIN_POST = SERVER_PATH + "geotdp/compileUser/login";
     //获取版本信息

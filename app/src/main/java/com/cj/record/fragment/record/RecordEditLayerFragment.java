@@ -4,14 +4,13 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.cj.record.R;
@@ -32,6 +31,7 @@ import com.cj.record.fragment.record.layer.LayerDescYnFragment;
 import com.cj.record.fragment.record.layer.LayerDescYsFragment;
 import com.cj.record.fragment.record.layer.LayerDescZdyFragment;
 import com.cj.record.views.MaterialBetterSpinner;
+import com.cj.record.views.MaterialEditTextNoEmoji;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +54,12 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
     MaterialBetterSpinner edtCauses;
     @BindView(R.id.edtEra)
     MaterialBetterSpinner edtEra;
+    @BindView(R.id.mainLayerCode)
+    MaterialEditTextNoEmoji mainLayerCode;
+    @BindView(R.id.subLayerCode)
+    MaterialEditTextNoEmoji subLayerCode;
+    @BindView(R.id.secondSubLayerCode)
+    MaterialEditTextNoEmoji secondSubLayerCode;
 
     private List<DropItemVo> layerTypeList;
     private List<DropItemVo> layerNameList;
@@ -96,6 +102,10 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
         sprName.setAdapter(mActivity, getLayerNameList(record.getLayerType()), MaterialBetterSpinner.MODE_CLEAR_CUSTOM);
         sprType.setOnItemClickListener(typeListener);
         sprName.setOnItemClickListener(nameListener);
+        //分层编号
+        mainLayerCode.setText(record.getMainLayerCode());
+        subLayerCode.setText(record.getSubLayerCode());
+        secondSubLayerCode.setText(record.getSecondSubLayerCode());
     }
 
     MaterialBetterSpinner.OnItemClickListener nameListener = new MaterialBetterSpinner.OnItemClickListener() {
@@ -308,6 +318,21 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
         record.setLayerName(sprName.getText().toString());
         record.setCauses(edtCauses.getText().toString());
         record.setEra(edtEra.getText().toString());
+        String main = mainLayerCode.getText().toString();
+        String sub = subLayerCode.getText().toString();
+        String secondSub = secondSubLayerCode.getText().toString();
+        if (TextUtils.isEmpty(main)) {
+            main = "0";
+        }
+        if (TextUtils.isEmpty(sub)) {
+            sub = "0";
+        }
+        if (TextUtils.isEmpty(secondSub)) {
+            secondSub = "0";
+        }
+        record.setMainLayerCode(main);
+        record.setSubLayerCode(sub);
+        record.setSecondSubLayerCode(secondSub);
         return record;
     }
 
@@ -432,6 +457,8 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
         record.setFtfchd("");
         record.setFzntfchd("");
 
+        record.setMainLayerCode("0");
+        record.setSubLayerCode("0");
+        record.setSecondSubLayerCode("0");
     }
-
 }

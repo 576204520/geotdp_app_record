@@ -148,6 +148,7 @@
                 android:drawableTop="@mipmap/ai_icon_detail"
                 android:paddingTop="6dp"
                 android:text="勘探点详情"
+                android:visibility="gone"
                 android:textColor="@color/colorWhite"
                 android:textSize="10sp"
                 app:gTouchEffect="ease" />
@@ -161,7 +162,7 @@
                 android:background="@color/colorPrimary"
                 android:drawableTop="@mipmap/ai_icon_edit"
                 android:paddingTop="6dp"
-                android:text="编辑勘探点"
+                android:text="详情/编辑"
                 android:textColor="@color/colorWhite"
                 android:textSize="10sp"
                 app:gTouchEffect="ease" />

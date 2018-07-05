@@ -219,7 +219,12 @@ public class Record implements Serializable, Cloneable {
     String kwx = "";//'可挖性',
     @DatabaseField
     String jglx = "";//'结构类型',
-
+    @DatabaseField
+    String mainLayerCode = "0";//'主层',
+    @DatabaseField
+    String subLayerCode = "0";//'亚层',
+    @DatabaseField
+    String secondSubLayerCode = "0";//'次亚层',
 
 //    public static final String TYPE_DPY = "动力触探";
 //    public static final String TYPE_SPT = "标准贯入";
@@ -390,7 +395,9 @@ public class Record implements Serializable, Cloneable {
             this.state = "0";
 
             this.updateID = "";
-
+            this.mainLayerCode = "0";
+            this.subLayerCode = "0";
+            this.secondSubLayerCode = "0";
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -971,7 +978,15 @@ public class Record implements Serializable, Cloneable {
             if (!TextUtils.isEmpty(record.getStillTime())) {
                 map.put("record[" + i + "].stillTime", record.getStillTime());
             }
-
+            if(!TextUtils.isEmpty(record.getMainLayerCode())){
+                map.put("record[" + i + "].mainLayerCode", record.getMainLayerCode());
+            }
+            if(!TextUtils.isEmpty(record.getSubLayerCode())){
+                map.put("record[" + i + "].subLayerCode", record.getSubLayerCode());
+            }
+            if(!TextUtils.isEmpty(record.getSecondSubLayerCode())){
+                map.put("record[" + i + "].secondSubLayerCode", record.getSecondSubLayerCode());
+            }
         }
         return map;
     }
@@ -1869,6 +1884,30 @@ public class Record implements Serializable, Cloneable {
 
     public void setUpdateId(String updateId) {
         this.updateID = updateId;
+    }
+
+    public String getMainLayerCode() {
+        return mainLayerCode;
+    }
+
+    public void setMainLayerCode(String mainLayerCode) {
+        this.mainLayerCode = mainLayerCode;
+    }
+
+    public String getSubLayerCode() {
+        return subLayerCode;
+    }
+
+    public void setSubLayerCode(String subLayerCode) {
+        this.subLayerCode = subLayerCode;
+    }
+
+    public String getSecondSubLayerCode() {
+        return secondSubLayerCode;
+    }
+
+    public void setSecondSubLayerCode(String secondSubLayerCode) {
+        this.secondSubLayerCode = secondSubLayerCode;
     }
 
     @Override

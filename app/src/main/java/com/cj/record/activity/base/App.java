@@ -19,6 +19,7 @@ import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.model.HttpParams;
 import com.mabeijianxi.smallvideorecord2.DeviceUtils;
 import com.mabeijianxi.smallvideorecord2.JianXiCamera;
+import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,6 +49,8 @@ public class App extends Application implements Thread.UncaughtExceptionHandler 
         initOkGo();
         //初始化视频录制压缩
         initSmallVideo();
+        //二维码扫描
+        ZXingLibrary.initDisplayOpinion(this);
 
     }
 

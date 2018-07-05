@@ -1,11 +1,14 @@
 package com.cj.record.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -297,12 +300,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (isEdit) {
-                    onBackPressed();
-                } else {
-                    record.delete(this);
-                    onBackPressed();
-                }
+                finishDialog();
                 return true;
             case R.id.act_save:
                 if (save()) {
@@ -397,7 +395,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         holeDao.update(hole);
         //如果是编辑模式，保存历史记录及其gps
         if (isEdit) {
-            recordDao.update(recordOld);
+            recordDao.add(recordOld);
             gpsDao.update(gpsOld);
         }
         return true;
@@ -408,6 +406,46 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         setResult(RESULT_OK);
         //该方法自动调用finish()
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finishDialog();
+        }
+        return true;
+    }
+
+    /**
+     * 删除勘察点dialog
+     */
+    private void finishDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.hint)
+                .setMessage("是否退出编辑记录吗")
+                .setNegativeButton("保存并退出",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (save()) {
+                                    onBackPressed();
+                                }
+                            }
+                        })
+                .setPositiveButton("放弃保存退出",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (isEdit) {
+                                    onBackPressed();
+                                } else {
+                                    record.delete(RecordEditActivity.this);
+                                    onBackPressed();
+                                }
+                            }
+                        })
+                .setCancelable(false)
+                .show();
     }
 
     @OnClick(R.id.record_dptup_btn)

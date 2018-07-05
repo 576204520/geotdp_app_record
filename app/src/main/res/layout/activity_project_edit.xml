@@ -35,6 +35,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <net.qiujuer.genius.ui.widget.Button
+                    android:id="@+id/project_zxing"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="100dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/textview_stroke_btn"
+                    android:text="二维码扫描"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/projec_edit_relevance"
                     android:layout_width="80dp"
@@ -56,12 +67,10 @@
             <EditText
                 android:id="@+id/projec_edit_name"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:background="@null"
-                android:textColor="@color/colorBlack"
                 android:drawableBottom="@drawable/editview_line"
-                android:enabled="false"
-                android:maxLines="1" />
+                android:textColor="@color/colorBlack" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -73,12 +82,12 @@
             <EditText
                 android:id="@+id/projec_edit_code"
                 android:layout_width="match_parent"
-                android:textColor="@color/colorBlack"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:background="@null"
                 android:drawableBottom="@drawable/editview_line"
                 android:enabled="false"
-                android:maxLines="1" />
+                android:textColor="@color/colorBlack" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -89,12 +98,12 @@
             <EditText
                 android:id="@+id/projec_edit_leader"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:background="@null"
-                android:textColor="@color/colorBlack"
                 android:drawableBottom="@drawable/editview_line"
                 android:enabled="false"
-                android:maxLines="1" />
+                android:textColor="@color/colorBlack" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -105,12 +114,12 @@
             <EditText
                 android:id="@+id/projec_edit_company"
                 android:layout_width="match_parent"
-                android:textColor="@color/colorBlack"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:background="@null"
                 android:drawableBottom="@drawable/editview_line"
                 android:enabled="false"
-                android:maxLines="1" />
+                android:textColor="@color/colorBlack" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -121,12 +130,12 @@
             <EditText
                 android:id="@+id/projec_edit_owner"
                 android:layout_width="match_parent"
-                android:textColor="@color/colorBlack"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:background="@null"
                 android:drawableBottom="@drawable/editview_line"
                 android:enabled="false"
-                android:maxLines="1" />
+                android:textColor="@color/colorBlack" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -137,12 +146,12 @@
             <EditText
                 android:id="@+id/projec_edit_address"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:textColor="@color/colorBlack"
+                android:layout_height="wrap_content"
                 android:background="@null"
                 android:drawableBottom="@drawable/editview_line"
                 android:enabled="false"
-                android:maxLines="1" />
+                android:textColor="@color/colorBlack" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -153,12 +162,11 @@
             <EditText
                 android:id="@+id/projec_edit_describe"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:textColor="@color/colorBlack"
+                android:layout_height="wrap_content"
                 android:background="@null"
                 android:drawableBottom="@drawable/editview_line"
                 android:enabled="false"
-                android:maxLines="1" />
+                android:textColor="@color/colorBlack" />
         </LinearLayout>
 
     </ScrollView>

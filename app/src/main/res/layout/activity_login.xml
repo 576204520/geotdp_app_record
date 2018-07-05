@@ -43,7 +43,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="30dp"
-        android:background="@mipmap/ai_import_frame"
+        android:background="@drawable/textview_stroke_white_btn"
         android:clickable="false"
         android:focusable="true"
         android:focusableInTouchMode="true">
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="38dp"
+            android:layout_marginStart="18dp"
             android:background="@mipmap/ai_icon_user" />
 
         <com.cj.record.views.MaterialEditTextNoEmoji
@@ -85,7 +85,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="20dp"
-        android:background="@mipmap/ai_import_frame"
+        android:background="@drawable/textview_stroke_white_btn"
         android:clickable="false"
         android:focusable="false">
 
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="38dp"
+            android:layout_marginStart="18dp"
             android:background="@mipmap/ai_icon_password" />
 
         <com.cj.record.views.MaterialEditTextNoEmoji

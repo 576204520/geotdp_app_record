@@ -258,7 +258,7 @@ public class RecordDao {
     }
 
     /**
-     * 获取一个勘探点某个深度在类别内是否存在
+     * 展示
      *
      * @param holeID
      * @return
@@ -270,8 +270,6 @@ public class RecordDao {
             Where where = qb.where();
             where.eq("holeID", holeID).and().ne("state", "0");
             where.and().in("type", Record.TYPE_LAYER, Record.TYPE_WATER);
-            System.out.println("where:=========:" + where.getStatement());
-
             list = qb.query();
         } catch (Exception e) {
             e.printStackTrace();
@@ -280,8 +278,7 @@ public class RecordDao {
     }
 
     /**
-     * 获取一个勘探点某个深度在类别内是否存在
-     *
+     * 展示
      * @param holeID
      * @return
      */
@@ -292,8 +289,6 @@ public class RecordDao {
             Where where = qb.where();
             where.eq("holeID", holeID).and().ne("state", "0");
             where.and().in("type", Record.TYPE_GET_EARTH, Record.TYPE_GET_WATER, Record.TYPE_DPT, Record.TYPE_SPT);
-            System.out.println("where:=========:" + where.getStatement());
-
             list = qb.query();
         } catch (Exception e) {
             e.printStackTrace();
