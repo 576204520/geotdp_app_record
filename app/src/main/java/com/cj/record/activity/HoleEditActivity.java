@@ -153,12 +153,11 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     }
 
     private void initPage(Hole hole) {
-        //判断是否定位 定位了显示定位信息，不需要地图,加载场景fragment
+        //判断是否定位
         if (TextUtils.isEmpty(hole.getMapLatitude()) || TextUtils.isEmpty(hole.getMapLongitude())) {
             //未定位，加载地图fragment，隐藏定位信息
             holeLocationLl.setVisibility(View.GONE);
             holeDoLocation.setVisibility(View.VISIBLE);
-            initLocationFragment();
             holeSceneFragment.setVisibility(View.GONE);
         } else {
             holeLocationLl.setVisibility(View.VISIBLE);
@@ -166,6 +165,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
             initSenceFragment(hole.getType());
             holeSceneFragment.setVisibility(View.VISIBLE);
         }
+        initLocationFragment();
         holeCode.setText(hole.getCode());
         holeCode.addTextChangedListener(edtCodeChangeListener);
         holeCodeRelate.setText(hole.getRelateCode());

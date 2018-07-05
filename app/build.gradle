@@ -18,9 +18,25 @@ android {
         }
     }
     buildTypes {
-        release {
-            minifyEnabled false
+        debug {
+            //启用代码混淆
+            minifyEnabled true
+            //混淆规则配置文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //去掉无用资源
+            shrinkResources true
+            //Zip代码压缩优化
+            zipAlignEnabled true
+        }
+        release {
+            //启用代码混淆
+            minifyEnabled true
+            //混淆规则配置文件
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //去掉无用资源
+            shrinkResources true
+            //Zip代码压缩优化
+            zipAlignEnabled true
         }
 
     }
