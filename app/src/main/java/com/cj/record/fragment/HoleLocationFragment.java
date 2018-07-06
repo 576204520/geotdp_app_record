@@ -16,8 +16,6 @@
 
 package com.cj.record.fragment;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,7 +25,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -38,7 +35,6 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
-import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
@@ -46,12 +42,14 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.cj.record.R;
 import com.cj.record.activity.MainActivity;
+import com.cj.record.activity.base.BaseFragment;
 import com.cj.record.baen.Hole;
 import com.cj.record.db.DBHelper;
+import com.cj.record.utils.L;
+import com.cj.record.utils.ObsUtils;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -65,13 +63,18 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class HoleLocationFragment extends Fragment implements LocationSource, AMapLocationListener {
-    public TextView edtLongitude;
-    public TextView edtLatitude;
-    public TextView edtLocationTime;
-    public TextView edtRadius;
+public class HoleLocationFragment extends BaseFragment implements ObsUtils.ObsLinstener, LocationSource, AMapLocationListener {
 
-    private MapView mMapView;
+    @BindView(R.id.hole_map)
+    MapView holeMap;
+    @BindView(R.id.hole_latitude)
+    TextView holeLatitude;
+    @BindView(R.id.hole_longitude)
+    TextView holeLongitude;
+    @BindView(R.id.hole_time)
+    TextView holeTime;
+    @BindView(R.id.hole_radius)
+    TextView holeRadius;
 
     private AMap aMap;
     public AMapLocation aMapLocation = null;
@@ -81,37 +84,34 @@ public class HoleLocationFragment extends Fragment implements LocationSource, AM
     public AMapLocationClientOption mLocationOption = null;
     //声明mListener对象，定位监听器
     private OnLocationChangedListener mListener = null;
-    //标识，用于判断是否只显示一次定位信息和用户重新定位
-    private MarkerOptions markerOption;
     private Marker marker;
     private boolean isFirstLoc = true;
-    String projectID;
-    Hole hole;
-    List<Hole> list;
-    DBHelper dbHelper;
-    public Activity activity;
+    private String projectID;
+    private Hole hole;
+    private List<Hole> list;
+    private DBHelper dbHelper;
+    private ObsUtils obsUtils;
+    private int firstInt = 1;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        activity = getActivity();
-        hole = (Hole) getArguments().getSerializable(MainActivity.HOLE);
-        projectID = hole.getProjectID();
+    public int getLayoutId() {
+        return R.layout.fragment_hole_location;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        final LinearLayout convertView = (LinearLayout) inflater.inflate(R.layout.fragment_hole_location, null);
-        edtLongitude = (TextView) convertView.findViewById(R.id.hole_longitude);
-        edtLatitude = (TextView) convertView.findViewById(R.id.hole_latitude);
-        edtLocationTime = (TextView) convertView.findViewById(R.id.hole_time);
-        edtRadius = (TextView) convertView.findViewById(R.id.hole_radius);
-        mMapView = (MapView) convertView.findViewById(R.id.map);
+    public void initMust(Bundle savedInstanceState) {
+        super.initMust(savedInstanceState);
+        holeMap.onCreate(savedInstanceState);// 此方法必须重写
+    }
 
-        mMapView.onCreate(savedInstanceState);// 此方法必须重写
+    @Override
+    public void initView() {
+        hole = (Hole) getArguments().getSerializable(MainActivity.HOLE);
+        projectID = hole.getProjectID();
+        obsUtils = new ObsUtils();
+        obsUtils.setObsLinstener(this);
         if (aMap == null) {
-            aMap = mMapView.getMap();
+            aMap = holeMap.getMap();
             //设置显示定位按钮 并且可以点击
             aMap.setLocationSource(this);//设置了定位的监听
             //Map的一些风格
@@ -129,45 +129,32 @@ public class HoleLocationFragment extends Fragment implements LocationSource, AM
             aMap.setOnMapTouchListener(new AMap.OnMapTouchListener() {
                 @Override
                 public void onTouch(MotionEvent motionEvent) {
-                    mMapView.getParent().getParent().requestDisallowInterceptTouchEvent(true);  //scorllview是父控件就用给一个getParent就好了，多个就用多个 getParent
+                    holeMap.getParent().getParent().requestDisallowInterceptTouchEvent(true);  //scorllview是父控件就用给一个getParent就好了，多个就用多个 getParent
                 }
             });
         }
         doLocation();
-        return convertView;
     }
 
+    @Override
+    public void onSubscribe(int type) {
+        switch (type) {
+            case 1:
+                list = getList(projectID);
+                break;
+        }
 
-    private boolean mWorking = true;
-    private Thread mThread;
+    }
 
-    /**
-     * 获取定位信息之后，启动线程，获取其他的点，并与当前的点坐标进行比较，离得近的10个点，在地图上标注出来
-     */
-    public void loadData() {
-        if (mThread != null && mThread.isAlive()) {
-        } else {
-            mThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (mWorking) {
-                        mWorking = false;
-                        list = getList(projectID);
-                        handler.sendMessage(new Message());
-                    }
-                }
-            });
-            mThread.start();
+    @Override
+    public void onComplete(int type) {
+        switch (type) {
+            case 1:
+                addMarkersToMap();
+                break;
         }
     }
 
-    //为地图上添加其他的点
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            addMarkersToMap();
-        }
-    };
 
     //获取所有的点信息
     private List<Hole> getList(String projectID) {
@@ -175,8 +162,8 @@ public class HoleLocationFragment extends Fragment implements LocationSource, AM
         dbHelper = DBHelper.getInstance(getActivity());
         try {
             Dao<Hole, String> dao = dbHelper.getDao(Hole.class);
-            String allSql = "select id,code,type,state,recordsCount,updateTime,mapLatitude,mapLongitude,mapTime from hole where projectID='" + projectID + "' and locationState ='0' and id <> '" + hole.getId() + "' order by updateTime desc";
-            String oneSql = "select id,code,type,state,recordsCount,updateTime,cast(mapLatitude as text),cast(mapLongitude as text),mapTime ,abs(mapLatitude - " + aMapLocation.getLatitude() + ") + abs(mapLongitude - " + aMapLocation.getLongitude() + ") as  adsvalue  from hole where projectID='" + projectID + "' and locationState ='0' and id <> '" + hole.getId() + "'order by  adsvalue LIMIT 10";
+            String oneSql = "select id,code,type,state,recordsCount,updateTime,cast(mapLatitude as text),cast(mapLongitude as text),mapTime ,abs(mapLatitude - " + aMapLocation.getLatitude() + ") + abs(mapLongitude - " + aMapLocation.getLongitude() + ") as  adsvalue  from hole where projectID='" + projectID + "' and locationState ='1' order by  adsvalue LIMIT 10";
+            L.e(oneSql);
             GenericRawResults<Hole> results = dao.queryRaw(oneSql, new RawRowMapper<Hole>() {
                 @Override
                 public Hole mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
@@ -213,27 +200,53 @@ public class HoleLocationFragment extends Fragment implements LocationSource, AM
             marker.destroy();
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        drawMarkers("当前勘探点", aMapLocation.getLatitude(), aMapLocation.getLongitude(), String.valueOf(df.format(new Date(aMapLocation.getTime()))));
+        MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude()));
+        markerOption.title("当前勘探点");
+        markerOption.snippet("经度:" + aMapLocation.getLongitude() + ",纬度" + aMapLocation.getLatitude() + "\n" + "时间:" + String.valueOf(df.format(new Date(aMapLocation.getTime()))));
+        markerOption.draggable(true);
+        markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        marker = aMap.addMarker(markerOption);
+        // marker旋转90度
+        marker.showInfoWindow();
     }
-
 
     /**
      * 在地图上添加marker
      */
     private void addMarkersToMap() {
-        for (Hole hole : list) {
-            if (!TextUtils.isEmpty(hole.getMapLatitude()) && !TextUtils.isEmpty(hole.getMapLongitude())) {
-                aMap.addMarker(new MarkerOptions().anchor(0.5f, 0.5f)
-                        .position(new LatLng(Double.valueOf(hole.getMapLatitude()), Double.valueOf(hole.getMapLongitude()))).title(hole.getCode())
-                        .snippet(hole.getMapLatitude() + ":" + hole.getMapLongitude()).draggable(true));
+        for (Hole hole1 : list) {
+            MarkerOptions options = new MarkerOptions();
+            if (!TextUtils.isEmpty(hole1.getMapLatitude()) && !TextUtils.isEmpty(hole1.getMapLongitude())) {
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                options.anchor(0.5f, 0.5f);
+                options.position(new LatLng(Double.valueOf(hole1.getMapLatitude()), Double.valueOf(hole1.getMapLongitude())));
+                options.title(hole1.getCode());
+                options.snippet("经度:" + hole1.getMapLongitude() + ",纬度:" + hole1.getMapLatitude() + "\n" + "时间:" + String.valueOf(df.format(new Date(aMapLocation.getTime()))));
+                options.draggable(false);
             }
+            if (hole1.getId().equals(hole.getId())) {
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            }
+            aMap.addMarker(options);
+            aMap.setOnMarkerClickListener(listener);
         }
     }
 
+    /**
+     * 覆盖物点击事件
+     */
+    AMap.OnMarkerClickListener listener = new AMap.OnMarkerClickListener() {
+        @Override
+        public boolean onMarkerClick(Marker marker) {
+            marker.showInfoWindow();
+            return true;
+        }
+    };
 
     private void doLocation() {
         //初始化定位
-        mLocationClient = new AMapLocationClient(activity);
+        mLocationClient = new AMapLocationClient(mActivity);
         //设置定位回调监听
         mLocationClient.setLocationListener(this);
         //初始化定位参数
@@ -266,7 +279,7 @@ public class HoleLocationFragment extends Fragment implements LocationSource, AM
     public void onResume() {
         super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，实现地图生命周期管理
-        mMapView.onResume();
+        holeMap.onResume();
     }
 
 
@@ -274,14 +287,14 @@ public class HoleLocationFragment extends Fragment implements LocationSource, AM
     public void onPause() {
         super.onPause();
         //在activity执行onPause时执行mMapView.onPause ()，实现地图生命周期管理
-        mMapView.onPause();
+        holeMap.onPause();
     }
 
     @Override
     public void onDestroyView() {
+        //销毁放到super之前，否则binder已经销毁，map会为空
+        holeMap.onDestroy();
         super.onDestroyView();
-        //在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
-        mMapView.onDestroy();
         mLocationClient.stopLocation();//停止定位
         mLocationClient.onDestroy();//销毁定位客户端。
     }
@@ -290,7 +303,7 @@ public class HoleLocationFragment extends Fragment implements LocationSource, AM
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，实现地图生命周期管理
-        mMapView.onSaveInstanceState(outState);
+        holeMap.onSaveInstanceState(outState);
     }
 
     @Override
@@ -309,12 +322,12 @@ public class HoleLocationFragment extends Fragment implements LocationSource, AM
             if (aMapLocation.getErrorCode() == 0) {
                 this.aMapLocation = aMapLocation;
                 // 定位成功回调信息，设置相关消息
-                edtLongitude.setText(String.valueOf(aMapLocation.getLongitude()));
-                edtLatitude.setText(String.valueOf(aMapLocation.getLatitude()));
+                holeLongitude.setText(String.valueOf(aMapLocation.getLongitude()));
+                holeLatitude.setText(String.valueOf(aMapLocation.getLatitude()));
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = new Date(aMapLocation.getTime());
-                edtLocationTime.setText(df.format(date));
-                edtRadius.setText(hole.getRadius());
+                holeTime.setText(df.format(date));
+                holeRadius.setText(hole.getRadius());
                 // 如果不设置标志位，此时再拖动地图时，它会不断将地图移动到当前的位置
                 if (isFirstLoc) {
                     //将地图移动到定位点
@@ -325,37 +338,20 @@ public class HoleLocationFragment extends Fragment implements LocationSource, AM
                 if (mListener != null) {
                     mListener.onLocationChanged(aMapLocation);
                 }
-                //启动获取其他点的线程
-                int i = 1;
-                if (i == 1) {
-                    i++;
-                    loadData();
+                if (firstInt == 1) {
+                    firstInt++;
+                    obsUtils.execute(1);
                 }
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
 //                ToastUtil.showToastS(context, "信号弱,请耐心等待");
                 this.aMapLocation = null;
-                edtLongitude.setText("");
-                edtLatitude.setText("");
-                edtLocationTime.setText("");
-                edtRadius.setText("");
+                holeLatitude.setText("");
+                holeLongitude.setText("");
+                holeTime.setText("");
+                holeRadius.setText("");
             }
         }
-    }
-
-    /**
-     * 绘制系统默认的1种marker背景图片
-     */
-    public void drawMarkers(String title, double latitude, double longitude, String time) {
-        markerOption = new MarkerOptions();
-        markerOption.position(new LatLng(latitude, longitude));
-        markerOption.title(title).snippet("基准坐标:" + latitude + "," + longitude + "\n" + "基准时间:" + time);
-        markerOption.draggable(true);
-        markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        marker = aMap.addMarker(markerOption);
-
-        // marker旋转90度
-        marker.showInfoWindow();
     }
 
 

@@ -1,8 +1,10 @@
 package com.cj.record.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +23,7 @@ import com.cj.record.adapter.RelateHoleAdapter;
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.JsonResult;
 import com.cj.record.baen.LocalUser;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialEditTextNoEmoji;
@@ -177,12 +180,7 @@ public class RelateHoleActivity extends BaseActivity {
         public void onItemClick(int position) {
             //hole编辑界面才需要这个动作
             if (relateType == RelateHoleAdapter.HAVE_NOALL) {
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(MainActivity.HOLE, relateList.get(position));
-                intent.putExtras(bundle);
-                setResult(RESULT_OK, intent);
-                finish();
+                showDialog(relateList.get(position));
             } else {
                 addOrRemove(position);
             }
@@ -193,6 +191,27 @@ public class RelateHoleActivity extends BaseActivity {
             addOrRemove(position);
         }
     };
+
+    private void showDialog(Hole hole) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.hint)
+                .setMessage("确定选择关联该勘探点吗？当前该点已有" + hole.getUserList().size() + "人关联")
+                .setNegativeButton(R.string.agree,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent();
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable(MainActivity.HOLE, hole);
+                                intent.putExtras(bundle);
+                                setResult(RESULT_OK, intent);
+                                finish();
+                            }
+                        })
+                .setPositiveButton(R.string.disagree, null)
+                .setCancelable(false)
+                .show();
+    }
 
     private void addOrRemove(int position) {
         if (checkList.contains(relateHoleAdapter.getItem(position))) {

@@ -123,12 +123,12 @@
     public void *(android.webkit.webView, jav.lang.String);
 }
 # 在开发的时候我们可以将所有的实体类放在一个包内，这样我们写一次混淆就行了。
--keep public class com.geotdb.compile.vo.** {
+-keep public class com.cj.record.baen.** {
     public void set*(***);
     public *** get*();
     public *** is*();
 }
--keep public class com.geotdb.compile.utils.** {
+-keep public class com.cj.record.utils.** {
     public *;
 }
 
@@ -146,7 +146,7 @@
 
 -keepattributes Signature
 -keepattributes *Annotation*
--keep public class com.geotdb.compile.vo.JsonResult { private *; }
+-keep public class com.cj.record.baen.JsonResult { private *; }
 
 ##---------------End: proguard configuration for Gson ----------
 # 高德相关依赖

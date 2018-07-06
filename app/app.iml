@@ -49,13 +49,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/debug/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/rs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/shaders" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/rs" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testDebug/res" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/testDebug/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/testDebug/assets" type="java-test-resource" />
@@ -63,6 +56,13 @@
       <sourceFolder url="file://$MODULE_DIR$/src/testDebug/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testDebug/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testDebug/shaders" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/assets" type="java-resource" />
@@ -92,9 +92,12 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/javaPrecompile" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/merged-not-compiled-resources" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/multi-dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/prebuild" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/proguard-rules" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res_stripped" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/shaders" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/splits-support" />
@@ -102,6 +105,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
+      <excludeFolder url="file://$MODULE_DIR$/build/reports" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 27 Platform" jdkType="Android SDK" />
@@ -109,11 +113,11 @@
     <orderEntry type="library" name="com.android.support:multidex-1.0.2" level="project" />
     <orderEntry type="library" name="com.android.support:animated-vector-drawable-27.0.2" level="project" />
     <orderEntry type="library" scope="TEST" name="com.android.support:multidex-1.0.1" level="project" />
-    <orderEntry type="library" name="__local_aars__:D.\Workspaces\Record\app\libs\gson-2.2.1.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="net.qiujuer.genius:ui-2.0.0-beta4" level="project" />
     <orderEntry type="library" name="com.nineoldandroids:library:2.4.0@jar" level="project" />
     <orderEntry type="library" name="id.zelory:compressor-2.1.0" level="project" />
     <orderEntry type="library" name="com.android.support.constraint:constraint-layout-solver:1.1.0@jar" level="project" />
+    <orderEntry type="library" name="__local_aars__:D.\Workspaces\geotdp_app_record\app\libs\gson-2.2.1.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="android.arch.lifecycle:runtime-1.0.3" level="project" />
     <orderEntry type="library" name="com.android.support:support-vector-drawable-27.0.2" level="project" />
     <orderEntry type="library" name="fm.jiecao:jiecaovideoplayer-5.5.2" level="project" />
@@ -126,6 +130,7 @@
     <orderEntry type="library" scope="TEST" name="com.android.support:multidex-instrumentation-1.0.2" level="project" />
     <orderEntry type="library" name="com.android.support:support-fragment-27.0.2" level="project" />
     <orderEntry type="library" name="net.qiujuer.genius:res-2.0.0-beta4" level="project" />
+    <orderEntry type="library" name="__local_aars__:D.\Workspaces\geotdp_app_record\app\libs\ormlite-android-4.48.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="com.android.support:support-media-compat-27.0.2" level="project" />
     <orderEntry type="library" name="com.github.bumptech.glide:gifdecoder:4.1.1@jar" level="project" />
     <orderEntry type="library" name="com.pnikosis:materialish-progress-1.7" level="project" />
@@ -137,11 +142,11 @@
     <orderEntry type="library" name="com.github.razerdp:BasePopup-v1.8.0" level="project" />
     <orderEntry type="library" scope="TEST" name="junit:junit:4.12@jar" level="project" />
     <orderEntry type="library" name="com.android.support:transition-27.0.2" level="project" />
+    <orderEntry type="library" name="__local_aars__:D.\Workspaces\geotdp_app_record\app\libs\AMap3DMap_5.7.0_AMapNavi_5.6.0_AMapLocation_3.7.0_20180109.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="com.android.support:recyclerview-v7-27.0.2" level="project" />
     <orderEntry type="library" name="com.squareup.okhttp3:okhttp:3.8.1@jar" level="project" />
     <orderEntry type="library" name="com.afollestad.material-dialogs:core-0.8.5.9" level="project" />
     <orderEntry type="library" name="com.lzy.net:okgo-3.0.4" level="project" />
-    <orderEntry type="library" name="__local_aars__:D.\Workspaces\Record\app\libs\AMap3DMap_5.7.0_AMapNavi_5.6.0_AMapLocation_3.7.0_20180109.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="com.rengwuxian.materialedittext:library-2.1.4" level="project" />
     <orderEntry type="library" name="me.zhanghai.android.materialprogressbar:library-1.1.5" level="project" />
     <orderEntry type="library" name="com.android.support.constraint:constraint-layout-1.1.0" level="project" />
@@ -154,8 +159,7 @@
     <orderEntry type="library" name="com.jakewharton:butterknife-8.6.0" level="project" />
     <orderEntry type="library" name="org.reactivestreams:reactive-streams:1.0.2@jar" level="project" />
     <orderEntry type="library" name="com.github.bumptech.glide:annotations:4.1.1@jar" level="project" />
-    <orderEntry type="library" name="__local_aars__:D.\Workspaces\Record\app\libs\ormlite-android-4.48.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="__local_aars__:D.\Workspaces\Record\app\libs\ormlite-core-4.48.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="__local_aars__:D.\Workspaces\geotdp_app_record\app\libs\ormlite-core-4.48.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="com.android.support:support-core-utils-27.0.2" level="project" />
     <orderEntry type="library" name="com.jakewharton:butterknife-annotations:8.6.0@jar" level="project" />
     <orderEntry type="library" name="io.reactivex.rxjava2:rxjava:2.1.10@jar" level="project" />

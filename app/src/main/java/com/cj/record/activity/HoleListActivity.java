@@ -177,6 +177,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 break;
             case 2:
                 holeAdapter.refresh(dataList);
+                holeAdapter.openFrist();
                 refresh.setRefreshing(false);
                 break;
             case 3:
@@ -208,7 +209,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
     private void initRecycleView() {
         holeAdapter = new HoleAdapter(this, dataList);
         //默认打开第一条数据的按钮
-        holeAdapter.openItems.set(0, true);
+        holeAdapter.openFrist();
         holeAdapter.setOnItemListener(this);
         refresh.setOnRefreshListener(this);
         recycler.addItemDecoration(new SpacesItemDecoration(6));

@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:background="@null"
-                android:hint="搜索勘探点"
+                android:hint="勘探点编号搜索"
                 android:textSize="14sp" />
         </LinearLayout>
 

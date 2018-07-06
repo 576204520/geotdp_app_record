@@ -27,7 +27,7 @@ import java.util.List;
 import butterknife.BindView;
 
 /**
- * 机长
+ * 机长 改成司钻员
  */
 public class RecordOperatePersionFragment extends RecordBaseFragment implements ObsUtils.ObsLinstener {
     @BindView(R.id.operateperson_name)

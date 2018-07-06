@@ -221,7 +221,6 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
 
     @Override
     public void onSubscribe(int type) {
-        showPPW();
         switch (type) {
             case 1:
                 userID = (String) SPUtils.get(mContext, Urls.SPKey.USER_ID, "");
@@ -256,7 +255,6 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
 
     @Override
     public void onComplete(int type) {
-        dismissPPW();
         switch (type) {
             case 1:
                 initPage(project);

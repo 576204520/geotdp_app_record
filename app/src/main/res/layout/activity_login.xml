@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="50dp"
             android:background="@mipmap/logo" />
 
         <TextView
@@ -42,7 +42,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/textview_stroke_white_btn"
         android:clickable="false"
         android:focusable="true"
@@ -117,6 +117,7 @@
 
     </RelativeLayout>
 
+
     <net.qiujuer.genius.ui.widget.Button
         android:id="@+id/login"
         android:layout_width="match_parent"
@@ -127,7 +128,7 @@
         android:layout_marginBottom="41dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/login_shape_button"
         android:text="登录"
         android:textColor="@color/colorPrimary"

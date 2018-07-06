@@ -106,7 +106,7 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
         recycler.addOnScrollListener(onScrollListener);
         recycler.setAdapter(projectAdapter);
         //默认打开第一条数据的按钮
-        projectAdapter.openItems.set(0, true);
+        projectAdapter.openFrist();
     }
 
     RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
@@ -169,6 +169,7 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
                 break;
             case 2:
                 projectAdapter.refresh(dataList);
+                projectAdapter.openFrist();
                 refresh.setRefreshing(false);
                 break;
             case 3:
@@ -209,7 +210,7 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
             bundle.putString(MainActivity.SN,sn);
             startActivity(ReleteLocationActivity.class,bundle);
         }else{
-            ToastUtil.showToastS(mActivity,"该项目未关联，无法定位");
+            ToastUtil.showToastS(mActivity,"该项目未关联，请先关联项目信息");
         }
     }
 

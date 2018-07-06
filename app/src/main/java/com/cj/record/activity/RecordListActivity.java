@@ -94,7 +94,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
     private void initRecycleView() {
         recordAdapter = new RecordAdapter(this, dataList);
         //默认打开第一条数据的按钮
-        recordAdapter.openItems.set(0, true);
+        recordAdapter.openFrist();
         recordAdapter.setOnItemListener(this);
         refresh.setOnRefreshListener(this);
         recycler.addItemDecoration(new SpacesItemDecoration(6));
@@ -168,6 +168,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                 break;
             case 2:
                 recordAdapter.refresh(dataList);
+                recordAdapter.openFrist();
                 refresh.setRefreshing(false);
                 break;
             case 3:

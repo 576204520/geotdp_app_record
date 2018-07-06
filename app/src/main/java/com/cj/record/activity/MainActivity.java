@@ -209,8 +209,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private void logoutDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.hint)
-                .setMessage("注销后将清空用户信息，需重新登陆。确定注销吗？")
-                .setNegativeButton(R.string.record_camera_cancel_dialog_yes,
+                .setMessage("注销后将清空当前用户的登录信息（但不会清除该用户的项目信息），返回到登录页面重新登陆。确定注销吗？")
+                .setNegativeButton(R.string.agree,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -221,7 +221,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                                 startActivity(LoginActivity.class);
                             }
                         })
-                .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)
+                .setPositiveButton(R.string.disagree, null)
                 .setCancelable(false)
                 .show();
     }
@@ -229,15 +229,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private void quitDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.hint)
-                .setMessage("注销后将清空用户信息，需重新登陆。确定注销吗？")
-                .setNegativeButton(R.string.record_camera_cancel_dialog_yes,
+                .setMessage("将关闭APP")
+                .setNegativeButton(R.string.agree,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 finish();
                             }
                         })
-                .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)
+                .setPositiveButton(R.string.disagree, null)
                 .setCancelable(false)
                 .show();
     }

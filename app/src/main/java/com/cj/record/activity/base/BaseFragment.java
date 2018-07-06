@@ -50,6 +50,7 @@ public abstract class BaseFragment extends Fragment {
         View view = inflater.inflate(getLayoutId(), container, false);
         unbinder = ButterKnife.bind(this, view);
         this.inflater = inflater;
+        initMust(savedInstanceState);
         init();
         return view;
     }
@@ -65,6 +66,10 @@ public abstract class BaseFragment extends Fragment {
         if (progressPopupWindow != null) {
             progressPopupWindow.dismiss();
         }
+    }
+
+    public void initMust(Bundle savedInstanceState) {
+
     }
 
     private final void init() {

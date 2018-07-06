@@ -40,7 +40,7 @@ public abstract class AbstractSlideExpandableListAdapter<newVH extends RecyclerV
      * If -1 there is no list item expanded.
      * Otherwise it points to the position of the last expanded list item
      */
-    private int lastOpenPosition = -1;
+    public int lastOpenPosition = -1;
 
     /**
      * Default Animation duration
@@ -380,6 +380,24 @@ public abstract class AbstractSlideExpandableListAdapter<newVH extends RecyclerV
             return true;
         }
         return false;
+    }
+
+    public void openFrist() {
+        if (!isAnyItemExpanded()) {
+            // if visible animate it out
+            if (lastOpen != null) {
+                animateView(lastOpen, ExpandCollapseAnimation.EXPAND);
+            }
+            openItems.set(0, true);
+            lastOpenPosition = 0;
+        }else{
+            collapseLastOpen();
+            if (lastOpen != null) {
+                animateView(lastOpen, ExpandCollapseAnimation.EXPAND);
+            }
+            openItems.set(0, true);
+            lastOpenPosition = 0;
+        }
     }
 
     public Parcelable onSaveInstanceState(Parcelable parcelable) {

@@ -41,7 +41,7 @@ public class ProjectAdapter extends AbstractSlideExpandableListAdapter<ProjectAd
         this.list = list;
         inflater = LayoutInflater.from(mContext);
         holderList = new ArrayList<>();
-//        setItemExpandCollapseListener(this);
+        setItemExpandCollapseListener(this);
     }
 
     @Override
@@ -168,27 +168,27 @@ public class ProjectAdapter extends AbstractSlideExpandableListAdapter<ProjectAd
     @Override
     public void onExpand(View itemView, int position) {
         //打开状态
-        MyHolder myHolder = holderList.get(position);
-        myHolder.projectConRl.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
-        myHolder.projectLogo.setBackgroundResource(R.mipmap.project_icon_select);
-        myHolder.projectFullName.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
-        myHolder.projectCode.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
-        myHolder.projectHoleNumber.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
-        myHolder.projectState.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
-        myHolder.projectUpdateTime.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+//        MyHolder myHolder = holderList.get(position);
+//        myHolder.projectConRl.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
+//        myHolder.projectLogo.setBackgroundResource(R.mipmap.project_icon_select);
+//        myHolder.projectFullName.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+//        myHolder.projectCode.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+//        myHolder.projectHoleNumber.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+//        myHolder.projectState.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+//        myHolder.projectUpdateTime.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
     }
 
     @Override
     public void onCollapse(View itemView, int position) {
         //闭合状态
-        MyHolder myHolder = holderList.get(position);
-        myHolder.projectConRl.setBackgroundColor(mContext.getResources().getColor(R.color.colorWhite));
-        myHolder.projectLogo.setBackgroundResource(R.mipmap.project_icon);
-        myHolder.projectFullName.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
-        myHolder.projectCode.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
-        myHolder.projectHoleNumber.setTextColor(mContext.getResources().getColor(R.color.colorTexthintGrey2));
-        myHolder.projectState.setTextColor(mContext.getResources().getColor(R.color.colorTexthintGrey2));
-        myHolder.projectUpdateTime.setTextColor(mContext.getResources().getColor(R.color.colorTexthintGrey2));
+//        MyHolder myHolder = holderList.get(position);
+//        myHolder.projectConRl.setBackgroundColor(mContext.getResources().getColor(R.color.colorWhite));
+//        myHolder.projectLogo.setBackgroundResource(R.mipmap.project_icon);
+//        myHolder.projectFullName.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
+//        myHolder.projectCode.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
+//        myHolder.projectHoleNumber.setTextColor(mContext.getResources().getColor(R.color.colorTexthintGrey2));
+//        myHolder.projectState.setTextColor(mContext.getResources().getColor(R.color.colorTexthintGrey2));
+//        myHolder.projectUpdateTime.setTextColor(mContext.getResources().getColor(R.color.colorTexthintGrey2));
     }
 
     class MyHolder extends RecyclerView.ViewHolder {

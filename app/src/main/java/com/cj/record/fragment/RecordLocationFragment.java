@@ -45,9 +45,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class RecordLocationFragment extends BaseFragment implements LocationSource, AMapLocationListener {
-
-
-    public AMapLocation aMapLocation = null;
     @BindView(R.id.edtAccuracy)
     EditText edtAccuracy;
     @BindView(R.id.edtTime)
@@ -58,18 +55,8 @@ public class RecordLocationFragment extends BaseFragment implements LocationSour
     public AMapLocationClientOption mLocationOption = null;
     //声明mListener对象，定位监听器
     private OnLocationChangedListener mListener = null;
+    public AMapLocation aMapLocation = null;
     private Hole hole;
-    public Context context;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        context = getActivity();
-        if (getArguments().containsKey(MainActivity.HOLE)) {
-            hole = (Hole) getArguments().getSerializable(MainActivity.HOLE);
-        }
-
-    }
 
     @Override
     public int getLayoutId() {
@@ -78,14 +65,16 @@ public class RecordLocationFragment extends BaseFragment implements LocationSour
 
     @Override
     public void initView() {
-        this.aMapLocation = null;
+        if (getArguments().containsKey(MainActivity.HOLE)) {
+            hole = (Hole) getArguments().getSerializable(MainActivity.HOLE);
+        }
         location();
     }
 
 
     public void location() {
         //初始化定位
-        mLocationClient = new AMapLocationClient(context);
+        mLocationClient = new AMapLocationClient(mActivity);
         //设置定位回调监听
         mLocationClient.setLocationListener(this);
         //初始化定位参数
@@ -135,11 +124,11 @@ public class RecordLocationFragment extends BaseFragment implements LocationSour
             if (aMapLocation.getErrorCode() == 0) {
                 this.aMapLocation = aMapLocation;
                 //定位时间
-                if(null != hole){
+                if (null != hole) {
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     Date date = new Date(aMapLocation.getTime());
                     try {
-                        String totalTime = stringDaysBetween(hole.getCreateTime(),df.format(date));
+                        String totalTime = stringDaysBetween(hole.getCreateTime(), df.format(date));
                         edtTime.setText(totalTime);
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -148,11 +137,11 @@ public class RecordLocationFragment extends BaseFragment implements LocationSour
                 //偏移值
                 if (null != hole) {
                     Double distance = Double.parseDouble(Common.GetDistance(aMapLocation.getLongitude(), aMapLocation.getLatitude(), Double.valueOf(hole.getMapLongitude()), Double.valueOf(hole.getMapLatitude())));
-                    edtAccuracy.setText(distance+"m");
-                    aMapLocation.setAccuracy(Float.valueOf(distance+""));
-                    if(distance > 200){
+                    edtAccuracy.setText(distance + "m");
+                    aMapLocation.setAccuracy(Float.valueOf(distance + ""));
+                    if (distance > 200) {
                         edtAccuracy.setTextColor(getResources().getColor(R.color.colorRed));
-                    }else{
+                    } else {
                         edtAccuracy.setTextColor(getResources().getColor(R.color.colorBlack));
                     }
                 }
@@ -161,13 +150,13 @@ public class RecordLocationFragment extends BaseFragment implements LocationSour
                 }
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
-//                ToastUtil.showToastS(context, "信号弱,请耐心等待");
                 this.aMapLocation = null;
                 edtAccuracy.setText("");
                 edtTime.setText("");
             }
         }
     }
+
     public String stringDaysBetween(String smdate, String bdate) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();

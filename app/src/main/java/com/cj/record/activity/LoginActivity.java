@@ -1,10 +1,8 @@
 package com.cj.record.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -13,7 +11,6 @@ import com.cj.record.R;
 import com.cj.record.activity.base.BaseActivity;
 import com.cj.record.baen.JsonResult;
 import com.cj.record.baen.LocalUser;
-import com.cj.record.utils.KeyboardChangeListener;
 import com.cj.record.utils.L;
 import com.cj.record.utils.MD5Utils;
 import com.cj.record.utils.SPUtils;
@@ -81,6 +78,8 @@ public class LoginActivity extends BaseActivity {
         Map<String, String> map = new HashMap<>();
         map.put("email", email);
         map.put("password", MD5Utils.MD5(password));
+        L.e(email);
+        L.e(MD5Utils.MD5(password));
         OkGo.<String>post(Urls.LOGIN_POST)
                 .params(map)
                 .execute(new StringCallback() {
@@ -95,14 +94,13 @@ public class LoginActivity extends BaseActivity {
                         if (jsonResult.getStatus()) {
                             String result = jsonResult.getResult();
                             LocalUser localUser = gson.fromJson(result.toString(), LocalUser.class);
-                            L.e(localUser.getRealName());
                             SPUtils.put(mContext, Urls.SPKey.USER_ID, localUser.getId());
                             SPUtils.put(mContext, Urls.SPKey.USER_EMAIL, localUser.getEmail());
                             SPUtils.put(mContext, Urls.SPKey.USER_REALNAME, localUser.getRealName());
                             startActivity(MainActivity.class);
                             finish();
                         }
-                        ToastUtil.showToastS(mContext, jsonResult.getMessage());
+                        ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
                     }
 
                     @Override

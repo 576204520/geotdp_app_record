@@ -25,6 +25,7 @@ import com.cj.record.db.HoleDao;
 import com.cj.record.db.ProjectDao;
 import com.cj.record.fragment.HoleLocationFragment;
 import com.cj.record.fragment.HoleSceneFragment;
+import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
 import com.cj.record.utils.GPSutils;
 import com.cj.record.utils.JsonUtils;
@@ -240,12 +241,21 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
 
     @Override
     public void onBackPressed() {
+        //添加模式，为定位并且未关联，退出要删除该孔
+        if (!isEdit && TextUtils.isEmpty(hole.getRelateID()) && hole.getLocationState().equals("0")) {
+            holeDao.delete(hole);
+        }
         setResult(RESULT_OK);
         //该方法自动调用finish()
         super.onBackPressed();
     }
 
     private void save() {
+        String code = holeCode.getText().toString().trim();
+        if(TextUtils.isEmpty(code)){
+            ToastUtil.showToastS(HoleEditActivity.this, "请输入钻孔编号");
+            return;
+        }
         hole.setCode(holeCode.getText().toString().trim());
         hole.setType(holeType.getText().toString());
         hole.setElevation(holeElevation.getText().toString());
@@ -253,7 +263,8 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
         hole.setUpdateTime(DateUtil.date2Str(new Date()));
         hole.setRadius(holeRadius.getText().toString());
         holeDao.add(hole);
-        onBackPressed();
+        setResult(RESULT_OK);
+        finish();
     }
 
     @OnClick({R.id.hole_doRelate, R.id.hole_doLocation})
@@ -263,6 +274,10 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                 doRelete();
                 break;
             case R.id.hole_doLocation:
+                if (!Common.gPSIsOPen(HoleEditActivity.this)) {
+                    ToastUtil.showToastS(HoleEditActivity.this, "GPS未开启，请开启以提高精度");
+                    return;
+                }
                 //判断定位信息是否为空
                 if (locationFragment.aMapLocation != null) {
                     //地图上添加点
