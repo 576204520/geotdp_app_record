@@ -6,3 +6,5 @@
 /build
 /captures
 /SmallVideoLib2/.externalNativeBuild
+/app/release
+/app/build

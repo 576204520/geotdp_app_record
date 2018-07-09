@@ -48,8 +48,8 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
-        loginEmail.setText("13681555165@126.com");
-        loginPassword.setText("liyan525200");
+        loginEmail.setText("576204520@qq.com");
+        loginPassword.setText("123456");
     }
 
     @Override

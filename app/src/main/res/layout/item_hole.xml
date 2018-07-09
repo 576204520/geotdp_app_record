@@ -147,8 +147,7 @@
                 android:background="@color/colorPrimary"
                 android:drawableTop="@mipmap/ai_icon_detail"
                 android:paddingTop="6dp"
-                android:text="勘探点详情"
-                android:visibility="gone"
+                android:text="详情"
                 android:textColor="@color/colorWhite"
                 android:textSize="10sp"
                 app:gTouchEffect="ease" />
@@ -162,7 +161,7 @@
                 android:background="@color/colorPrimary"
                 android:drawableTop="@mipmap/ai_icon_edit"
                 android:paddingTop="6dp"
-                android:text="详情/编辑"
+                android:text="编辑"
                 android:textColor="@color/colorWhite"
                 android:textSize="10sp"
                 app:gTouchEffect="ease" />
@@ -214,7 +213,7 @@
                 android:drawableTop="@mipmap/ai_icon_upload"
                 android:padding="4dp"
                 android:paddingTop="6dp"
-                android:text="上传"
+                android:text="关联/上传"
                 android:textColor="@color/colorWhite"
                 android:textSize="10sp"
                 app:gTouchEffect="ease" />

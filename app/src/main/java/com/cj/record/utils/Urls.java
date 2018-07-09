@@ -8,8 +8,9 @@ import java.io.File;
  * Created by Administrator on 2017/8/25.
  */
 public class Urls {
-    public static final String SERVER_PATH = "http://test.geotdp.com/";//测试
+//    public static final String SERVER_PATH = "http://test.geotdp.com/";//测试
 //    public static final String SERVER_PATH = "http://g.geotdp.com/";//广西
+    public static final String SERVER_PATH = "http://192.168.11.247:8089/";//广西测试
     // 登录请求
     public static final String LOGIN_POST = SERVER_PATH + "geotdp/compileUser/login";
     //获取版本信息
@@ -32,7 +33,8 @@ public class Urls {
     public static final String DICTIONARY_DOWNLOAD = SERVER_PATH + "geotdp/dictionary/download";
     // 勘探点上传所有
     public static final String UPLOAD_HOLE_NEW = SERVER_PATH + "geotdp/hole/uploadNew";
-
+    //模板下载
+    public static final String TEMPLATE_DOWNLOAD = SERVER_PATH + "geotdp/template/download";
 
     public static final String APP_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "com.geotdb.compile" + File.separator + "files";
     public static final String APP_PATH_CACHE = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "com.geotdb.compile" + File.separator + "chche";

@@ -57,7 +57,7 @@ public class RelateHoleAdapter extends RecyclerView.Adapter<RelateHoleAdapter.My
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        holder.relate_code_tv.setText("编号:" + list.get(position).getCode());
+        holder.relate_code_tv.setText(list.get(position).getCode());
         int h = RelateHoleUserAdapter.HAVE_USER_NO;//区分二级list的是否需要checkBox
         switch (have) {
             case HAVE_NOALL:
@@ -108,7 +108,6 @@ public class RelateHoleAdapter extends RecyclerView.Adapter<RelateHoleAdapter.My
         holder.relate_hole_open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                L.e("hole列表展開按鈕点击事件");
                 if (holder.relate_hole_open.isChecked()) {
                     holder.recyclerView.setVisibility(View.VISIBLE);
                 } else {
@@ -236,6 +235,5 @@ public class RelateHoleAdapter extends RecyclerView.Adapter<RelateHoleAdapter.My
             relate_hole_open = (CheckBox) itemView.findViewById(R.id.relate_hole_open);
             relate_hole_check = (CheckBox) itemView.findViewById(R.id.relate_hole_check);
         }
-
     }
 }

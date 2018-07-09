@@ -89,6 +89,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public static final String CHECKLIST = "checkList";
     public static final String LOCALUSERLIST = "localUserList";
     public static final String SN = "serialNumber";
+    public static final int EDIT_GO_TEMPLATE = 501;
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;

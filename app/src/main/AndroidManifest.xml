@@ -128,6 +128,9 @@
         <activity
             android:name=".activity.RouteNaviActivity"
             android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.TemplateActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

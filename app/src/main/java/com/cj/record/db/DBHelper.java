@@ -151,10 +151,31 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             "('灰色','冲填土_颜色','6','0')," +
             "('灰褐色','冲填土_颜色','7','0')," +
             "('灰黑色','冲填土_颜色','8','0')";
-    //version==6
+    //version==6 分层编号
     private String MAIN_LAYER_CODE = "ALTER TABLE `record` ADD COLUMN mainLayerCode VARCHAR(50) default '0'";
     private String SUB_LAYER_CODE = "ALTER TABLE `record` ADD COLUMN subLayerCode VARCHAR(50) default '0'";
     private String SECONDSUB_LAYER_CODE = "ALTER TABLE `record` ADD COLUMN secondSubLayerCode VARCHAR(50) default '0'";
+    //模板表
+    private String ADD_TEMPLATE = "CREATE TABLE `compile_template` (" +
+            "  `ids` char(32) PRIMARY KEY  NOT NULL ," +
+            "  `name` varchar(100)," +
+            "  `type` varchar(20)," +
+            "  `solidType` varchar(20)," +
+            "  `createTime` datetime," +
+            "  `createUser` char(32)," +
+            "  `companyID` char(32)," +
+            "  `level` char(1) ," +
+            "  `checkUser` char(32)," +
+            "  `checkTime` datetime" +
+            ")";
+    private String ADD_TEMPLATE_DETAIL = "CREATE TABLE `compile_template_detail` (" +
+            "  `ids` char(32) PRIMARY KEY NOT NULL," +
+            "  `templateId` char(32)," +
+            "  `fieldKey` varchar(100)," +
+            "  `fieldValue` varchar(100)," +
+            "  `sort` tinyint(2)" +
+            ") ";
+
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         L.e("TAG", "DBHelper>>>>>onUpgrade--old=" + oldVersion + "--new=" + newVersion);
@@ -213,13 +234,15 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             sqLiteDatabase.execSQL(ADD_INDEX_RECORD);
             sqLiteDatabase.execSQL(ADD_INDEX_MEDIA);
         }
-        if(oldVersion<5){
+        if (oldVersion < 5) {
             sqLiteDatabase.execSQL(ADD_YS_JC);
         }
-        if(oldVersion<6){
+        if (oldVersion < 6) {
             sqLiteDatabase.execSQL(MAIN_LAYER_CODE);
             sqLiteDatabase.execSQL(SUB_LAYER_CODE);
             sqLiteDatabase.execSQL(SECONDSUB_LAYER_CODE);
+            sqLiteDatabase.execSQL(ADD_TEMPLATE);
+            sqLiteDatabase.execSQL(ADD_TEMPLATE_DETAIL);
         }
     }
 

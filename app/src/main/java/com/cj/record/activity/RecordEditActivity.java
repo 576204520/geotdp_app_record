@@ -1,10 +1,9 @@
 package com.cj.record.activity;
 
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -60,6 +60,7 @@ import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -83,6 +84,10 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
     Button recordDptupBtn;
     @BindView(R.id.record_edit_note_tv)
     TextView recordEditNoteTv;
+    @BindView(R.id.record_template_et)
+    MaterialEditTextNoEmoji recordTemplateEt;
+    @BindView(R.id.record_template_ll)
+    LinearLayout recordTemplateLl;
 
     private RecordBaseFragment recordBaseFragment;
     private RecordLocationFragment locationFragment;
@@ -248,7 +253,10 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         if (recordType.equals(Record.TYPE_LAYER)) {
             recordEditNoteTv.setText(R.string.record_layer);
         }
-
+        //模板是否显示 回次 岩土 取土 取水 动探
+//        if (recordType.equals(Record.TYPE_FREQUENCY) || recordType.equals(Record.TYPE_LAYER) || recordType.equals(Record.TYPE_GET_WATER) || recordType.equals(Record.TYPE_DPT)) {
+//            recordTemplateLl.setVisibility(View.VISIBLE);
+//        }
     }
 
     private void setRecordEditBaseFragment(RecordBaseFragment recordBaseFragment) {
@@ -256,7 +264,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         Bundle bundle = new Bundle();
         bundle.putSerializable(MainActivity.RECORD, record);
         recordBaseFragment.setArguments(bundle);
-        android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.record_content_fl, recordBaseFragment, "type" + recordType);
         ft.commit();
     }
@@ -266,7 +274,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         bundle.putSerializable(MainActivity.RECORD, record);
         mediaFragment = new RecordMediaFragment();
         mediaFragment.setArguments(bundle);
-        android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.mediaFrame, mediaFragment, "mediaFragment");
         ft.commit();
     }
@@ -276,7 +284,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         bundle.putSerializable(MainActivity.HOLE, hole);
         locationFragment = new RecordLocationFragment();
         locationFragment.setArguments(bundle);
-        android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.locationFrame, locationFragment, "locationFragment");
         ft.commit();
     }
@@ -448,14 +456,21 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
                 .show();
     }
 
-    @OnClick(R.id.record_dptup_btn)
-    public void onViewClicked() {
-        //如果保存成功了，新建record，初始页面，继续编辑
-        if (save()) {
-            isEdit = false;
-            record = new Record(mContext, hole, Record.TYPE_DPT);
-            recordDao.add(record);
-            initPage(record);
+    @OnClick({R.id.record_dptup_btn, R.id.record_template_btn})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.record_dptup_btn:
+                //如果保存成功了，新建record，初始页面，继续编辑
+                if (save()) {
+                    isEdit = false;
+                    record = new Record(mContext, hole, Record.TYPE_DPT);
+                    recordDao.add(record);
+                    initPage(record);
+                }
+                break;
+            case R.id.record_template_btn:
+                startActivityForResult(TemplateActivity.class, MainActivity.EDIT_GO_TEMPLATE);
+                break;
         }
     }
 
