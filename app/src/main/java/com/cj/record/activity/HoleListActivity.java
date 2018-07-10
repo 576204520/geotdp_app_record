@@ -47,6 +47,8 @@ import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialBetterSpinner;
+import com.cj.record.views.dialog.HoleInfoDialog;
+import com.cj.record.views.dialog.RecordInfoDialog;
 import com.google.gson.Gson;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
@@ -113,6 +115,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
     private Hole uploadHole;
     private MediaDao mediaDao;
     private Dialog chooseDialog;
+    private HoleInfoDialog holeInfoDialog;//详情
 
     @Override
     public int getLayoutId() {
@@ -132,7 +135,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         mediaDao = new MediaDao(this);
         obsUtils = new ObsUtils();
         obsUtils.setObsLinstener(this);
-
+        holeInfoDialog = new HoleInfoDialog();
     }
 
     @Override
@@ -499,7 +502,8 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
 
     @Override
     public void detailClick(int position) {
-
+        Hole hole = dataList.get(position);
+        holeInfoDialog.show(this, project, hole);
     }
 
     @Override

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -12,19 +11,19 @@
         android:background="@color/colorPrimary">
 
         <TextView
-            android:id="@+id/reocrd_hole_code"
+            android:id="@+id/hole_project_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginRight="50dp"
             android:singleLine="true"
-            android:text="勘探点编号"
+            android:text="项目名称项目名称项目名称项目名称项目名称项目名称项目名称项目名称项目名称"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 
         <ImageButton
-            android:id="@+id/record_close_ib"
+            android:id="@+id/hole_close_ib"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -36,160 +35,202 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="459dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="记录编号:"
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:text="编号:"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
+
                 <TextView
-                    android:id="@+id/reocrd_code"
+                    android:id="@+id/hole_code"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="898989"
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="记录类型:"
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:text="类型:"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
+
                 <TextView
-                    android:id="@+id/reocrd_type"
+                    android:id="@+id/hole_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="岩土"
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="记录深度:"
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:text="高程:"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
+
                 <TextView
-                    android:id="@+id/reocrd_depth"
+                    android:id="@+id/hole_elevation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0~6"
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="描述内容:"
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:text="设计孔深:"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
+
                 <TextView
-                    android:id="@+id/reocrd_content"
+                    android:id="@+id/hole_depth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容"
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="创建时间:"
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:text="司钻员:"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
+
                 <TextView
-                    android:id="@+id/reocrd_createTime"
+                    android:id="@+id/hole_operatePerson"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:text="未填写"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="修改时间:"
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:text="钻机编号:"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
+
                 <TextView
-                    android:id="@+id/reocrd_updateTime"
+                    android:id="@+id/hole_operateCode"
                     android:layout_width="wrap_content"
+                    android:text="未填写"
                     android:layout_height="wrap_content"
-                    android:text=""
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="照片数量:"
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:text="警示范围:"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
+
                 <TextView
-                    android:id="@+id/reocrd_media"
+                    android:id="@+id/hole_radius"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
                     android:layout_margin="6dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlack"/>
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="6dp"
+                    android:text="基准时间:"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/hole_mapTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="6dp"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
 
     </ScrollView>
+
+
 </LinearLayout>
