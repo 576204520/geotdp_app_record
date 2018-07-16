@@ -121,6 +121,8 @@ public class Hole implements Serializable {
     @DatabaseField
     String uploaded = ""; //0没上传过、1已经上传过
     int userCount;//relateHoleDialog 中对list进行排序
+    @DatabaseField
+    String downloadID = "";         //下载数据的id
 
     public int getUserCount() {
         return userCount;
@@ -644,5 +646,13 @@ public class Hole implements Serializable {
 
     public void setUserID(String userID) {
         this.userID = userID;
+    }
+
+    public String getDownloadID() {
+        return downloadID;
+    }
+
+    public void setDownloadID(String downloadID) {
+        this.downloadID = downloadID;
     }
 }

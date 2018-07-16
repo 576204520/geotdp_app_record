@@ -100,7 +100,6 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     HoleSceneFragment sceneFragment;
 
     private boolean isEdit;//true编辑、false添加
-    private String userID;
     private Hole hole;
     private HoleDao holeDao;
     private Project project;
@@ -125,7 +124,6 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     public void onSubscribe(int type) {
         switch (type) {
             case 1:
-                userID = (String) SPUtils.get(mContext, Urls.SPKey.USER_ID, "");
                 isEdit = getIntent().getBooleanExtra(MainActivity.FROMTYPE, false);
                 project = (Project) getIntent().getSerializableExtra(MainActivity.PROJECT);
                 holeDao = new HoleDao(this);
@@ -156,7 +154,6 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     private void initPage(Hole hole) {
         //判断是否定位
         if (TextUtils.isEmpty(hole.getMapLatitude()) || TextUtils.isEmpty(hole.getMapLongitude())) {
-            //未定位，加载地图fragment，隐藏定位信息
             holeLocationLl.setVisibility(View.GONE);
             holeDoLocation.setVisibility(View.VISIBLE);
             holeSceneFragment.setVisibility(View.GONE);
@@ -251,20 +248,20 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     }
 
     private void save() {
-        String code = holeCode.getText().toString().trim();
-        if(TextUtils.isEmpty(code)){
-            ToastUtil.showToastS(HoleEditActivity.this, "请输入钻孔编号");
-            return;
-        }
-        hole.setCode(holeCode.getText().toString().trim());
-        hole.setType(holeType.getText().toString());
-        hole.setElevation(holeElevation.getText().toString());
-        hole.setDepth(holeDepth.getText().toString());
-        hole.setUpdateTime(DateUtil.date2Str(new Date()));
-        hole.setRadius(holeRadius.getText().toString());
-        holeDao.add(hole);
-        setResult(RESULT_OK);
-        finish();
+            String code = holeCode.getText().toString().trim();
+            if (TextUtils.isEmpty(code)) {
+                ToastUtil.showToastS(HoleEditActivity.this, "请输入钻孔编号");
+                return;
+            }
+            hole.setCode(holeCode.getText().toString().trim());
+            hole.setType(holeType.getText().toString());
+            hole.setElevation(holeElevation.getText().toString());
+            hole.setDepth(holeDepth.getText().toString());
+            hole.setUpdateTime(DateUtil.date2Str(new Date()));
+            hole.setRadius(holeRadius.getText().toString());
+            holeDao.add(hole);
+            setResult(RESULT_OK);
+            finish();
     }
 
     @OnClick({R.id.hole_doRelate, R.id.hole_doLocation})

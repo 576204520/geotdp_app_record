@@ -49,7 +49,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.MyView
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Template template = list.get(position);
         holder.templateName.setText(template.getName());
-        holder.templateType.setText(template.getType());
+        holder.templateType.setText(template.getType() + "-" + template.getSolidType());
         List<TemplateDetail> templateDetails = template.getDetailList();
         if (null != templateDetails && templateDetails.size() > 0) {
             holder.templateCheck.setVisibility(View.VISIBLE);
@@ -71,6 +71,19 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.MyView
                 } else {
                     holder.templateDetailRecycler.setVisibility(View.GONE);
                 }
+            }
+        });
+        holder.templateItemRl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnItemListener.onItemClick(position);
+            }
+        });
+        holder.templateItemRl.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mOnItemListener.onLongItemClick(position);
+                return true;
             }
         });
     }
@@ -96,6 +109,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.MyView
 
     public interface OnItemListener {
         void onItemClick(int position);
+
+        void onLongItemClick(int position);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

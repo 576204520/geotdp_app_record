@@ -3,6 +3,7 @@ package com.cj.record.db;
 import android.content.Context;
 
 import com.cj.record.baen.Gps;
+import com.cj.record.baen.Record;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
@@ -151,5 +152,24 @@ public class GpsDao {
         return false;
     }
 
+    public boolean checkByID(String id, String recordID, String holeID, String projectID) {
+        try {
+            List<Gps> gpsList = gpsDao.queryBuilder().where().eq("id", id).and().eq("recordID", recordID).and().eq("holeID", holeID).and().eq("projectID", projectID).query();
+            if (gpsList != null && gpsList.size() > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
+    public Gps checkByDownloadID(String DownloadID, String recordID, String holeID, String projectID) {
+        try {
+            return gpsDao.queryBuilder().where().eq("DownloadID", DownloadID).and().eq("recordID", recordID).and().eq("holeID", holeID).and().eq("projectID", projectID).queryForFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

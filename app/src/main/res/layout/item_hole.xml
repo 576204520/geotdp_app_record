@@ -124,6 +124,17 @@
                 android:text="开始时间:2018-12-11 12:45:45"
                 android:textSize="12sp" />
 
+            <TextView
+                android:id="@+id/hole_getData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:lines="1"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimary"
+                android:text="获取的数据"
+                android:textSize="12sp" />
+
         </LinearLayout>
     </RelativeLayout>
 

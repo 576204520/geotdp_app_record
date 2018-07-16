@@ -78,6 +78,7 @@ public class RelateHoleAdapter extends RecyclerView.Adapter<RelateHoleAdapter.My
         if (null != list.get(position).getUserList() && list.get(position).getUserList().size() > 0) {
             userList = list.get(position).getUserList();
             holder.relate_hole_open.setVisibility(View.VISIBLE);
+
         } else {
             userList = new ArrayList<>();
             holder.relate_hole_open.setVisibility(View.GONE);
@@ -88,7 +89,7 @@ public class RelateHoleAdapter extends RecyclerView.Adapter<RelateHoleAdapter.My
         layoutParams.height = userList.size() * dip2px(50);
         holder.recyclerView.setLayoutParams(layoutParams);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        relateHoleUserAdapter = new RelateHoleUserAdapter(context, list.get(position).getUserList(), h);
+        relateHoleUserAdapter = new RelateHoleUserAdapter(context, userList, h);
         holder.recyclerView.setAdapter(relateHoleUserAdapter);
         if (h == RelateHoleUserAdapter.HAVE_USER_ALL) {
             //实现子list发布的点击事件

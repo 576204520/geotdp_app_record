@@ -112,7 +112,6 @@ public class App extends Application implements Thread.UncaughtExceptionHandler 
                 .setRetryCount(3);                               //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
 //                .addCommonHeaders(headers)                      //全局公共头
 //                .addCommonParams(params);                       //全局公共参数
-
     }
 
     public static void initSmallVideo() {

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.cj.record.R;
 import com.cj.record.activity.base.BaseActivity;
+import com.cj.record.baen.Template;
 import com.cj.record.utils.UpdateUtil;
 
 import butterknife.BindView;
@@ -57,7 +58,7 @@ public class SettingActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.setting_dictionary, R.id.setting_map, R.id.setting_update, R.id.setting_about})
+    @OnClick({R.id.setting_dictionary, R.id.setting_map, R.id.setting_update, R.id.setting_about, R.id.setting_template})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.setting_dictionary:
@@ -69,6 +70,9 @@ public class SettingActivity extends BaseActivity {
             case R.id.setting_update:
                 //检查版本
                 UpdateUtil.checkVersion(this, true);
+                break;
+            case R.id.setting_template:
+                startActivity(TemplateActivity.class);
                 break;
         }
     }

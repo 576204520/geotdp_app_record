@@ -38,6 +38,11 @@ public class DropListAdapter extends ArrayAdapter {
         }
     }
 
+    public void refresh(List<DropItemVo> list) {
+        this.list.clear();
+        this.list.addAll(list);
+        notifyDataSetChanged();
+    }
 
     @Override
     public void insert(Object object, int index) {

@@ -205,12 +205,12 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void navClick(int position) {
         String sn = dataList.get(position).getSerialNumber();
-        if(!TextUtils.isEmpty(sn)){
+        if (!TextUtils.isEmpty(sn)) {
             Bundle bundle = new Bundle();
-            bundle.putString(MainActivity.SN,sn);
-            startActivity(ReleteLocationActivity.class,bundle);
-        }else{
-            ToastUtil.showToastS(mActivity,"该项目未关联，请先关联项目信息");
+            bundle.putString(MainActivity.SN, sn);
+            startActivity(ReleteLocationActivity.class, bundle);
+        } else {
+            ToastUtil.showToastS(mActivity, "该项目未关联，请先关联项目信息");
         }
     }
 

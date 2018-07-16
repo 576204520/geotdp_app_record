@@ -4,6 +4,6 @@
     <item
         android:id="@+id/act_down"
         android:orderInCategory="90"
-        android:title="下载"
+        android:title="更新"
         app:showAsAction="ifRoom" />
 </menu>

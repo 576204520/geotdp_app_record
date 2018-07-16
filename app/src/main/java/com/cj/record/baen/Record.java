@@ -283,7 +283,8 @@ public class Record implements Serializable, Cloneable {
     String mediaCount = "0";    //拥有媒体数
     int uploadedCount;          //已上传
     int notUploadCount;         //未上传
-
+    @DatabaseField
+    String downloadID = "";         //下载数据的id
     List<Gps> gpsList;//下载hole时，封装数据
 
     public List<Gps> getGpsList() {
@@ -978,13 +979,13 @@ public class Record implements Serializable, Cloneable {
             if (!TextUtils.isEmpty(record.getStillTime())) {
                 map.put("record[" + i + "].stillTime", record.getStillTime());
             }
-            if(!TextUtils.isEmpty(record.getMainLayerCode())){
+            if (!TextUtils.isEmpty(record.getMainLayerCode())) {
                 map.put("record[" + i + "].mainLayerCode", record.getMainLayerCode());
             }
-            if(!TextUtils.isEmpty(record.getSubLayerCode())){
+            if (!TextUtils.isEmpty(record.getSubLayerCode())) {
                 map.put("record[" + i + "].subLayerCode", record.getSubLayerCode());
             }
-            if(!TextUtils.isEmpty(record.getSecondSubLayerCode())){
+            if (!TextUtils.isEmpty(record.getSecondSubLayerCode())) {
                 map.put("record[" + i + "].secondSubLayerCode", record.getSecondSubLayerCode());
             }
         }
@@ -1163,6 +1164,129 @@ public class Record implements Serializable, Cloneable {
             content += "<br/><font color='black'>其他描述:</font>" + description + ";";
         this.setTitle(content);
         return content;
+    }
+
+    public void templateToRecord(Template template) {
+        this.layerType = template.getSolidType();
+        List<TemplateDetail> detailList = template.getDetailList();
+        if (detailList != null && detailList.size() > 0) {
+            for (TemplateDetail templateDetail : detailList) {
+                if ("钻进方法".equals(templateDetail.getFieldKey())) {
+                    this.frequencyType = templateDetail.getFieldValue();
+                }
+                if ("护壁方法".equals(templateDetail.getFieldKey())) {
+                    this.frequencyMode = templateDetail.getFieldValue();
+                }
+                if ("岩土定名".equals(templateDetail.getFieldKey())) {
+                    this.layerName = templateDetail.getFieldValue();
+                }
+                if ("主要成分".equals(templateDetail.getFieldKey())) {
+                    this.zycf = templateDetail.getFieldValue();
+                }
+                if ("次要成分".equals(templateDetail.getFieldKey())) {
+                    this.cycf = templateDetail.getFieldValue();
+                }
+                if ("颜色".equals(templateDetail.getFieldKey())) {
+                    this.ys = templateDetail.getFieldValue();
+                }
+                if ("堆积年代".equals(templateDetail.getFieldKey())) {
+                    this.djnd = templateDetail.getFieldValue();
+                }
+                if ("密实度".equals(templateDetail.getFieldKey())) {
+                    this.msd = templateDetail.getFieldValue();
+                }
+                if ("均匀性".equals(templateDetail.getFieldKey())) {
+                    this.jyx = templateDetail.getFieldValue();
+                }
+                if ("地质成因".equals(templateDetail.getFieldKey())) {
+                    this.causes = templateDetail.getFieldValue();
+                }
+                if ("地质年代".equals(templateDetail.getFieldKey())) {
+                    this.era = templateDetail.getFieldValue();
+                }
+                if ("状态".equals(templateDetail.getFieldKey())) {
+                    this.zt = templateDetail.getFieldValue();
+                }
+                if ("包含物".equals(templateDetail.getFieldKey())) {
+                    this.bhw = templateDetail.getFieldValue();
+                }
+                if ("夹层".equals(templateDetail.getFieldKey())) {
+                    this.jc = templateDetail.getFieldValue();
+                }
+                if ("湿度".equals(templateDetail.getFieldKey())) {
+                    this.sd = templateDetail.getFieldValue();
+                }
+                if ("矿物组成".equals(templateDetail.getFieldKey())) {
+                    this.kwzc = templateDetail.getFieldValue();
+                }
+                if ("颗粒级配".equals(templateDetail.getFieldKey())) {
+                    this.kljp = templateDetail.getFieldValue();
+                }
+                if ("颗粒形状".equals(templateDetail.getFieldKey())) {
+                    this.klxz = templateDetail.getFieldValue();
+                }
+                if ("一般粒径小".equals(templateDetail.getFieldKey())) {
+                    this.ybljx = templateDetail.getFieldValue();
+                }
+                if ("一般粒径大".equals(templateDetail.getFieldKey())) {
+                    this.ybljd = templateDetail.getFieldValue();
+                }
+                if ("较大粒径小".equals(templateDetail.getFieldKey())) {
+                    this.jdljx = templateDetail.getFieldValue();
+                }
+                if ("较大粒径大".equals(templateDetail.getFieldKey())) {
+                    this.jdljd = templateDetail.getFieldValue();
+                }
+                if ("最大粒径".equals(templateDetail.getFieldKey())) {
+                    this.zdlj = templateDetail.getFieldValue();
+                }
+                if ("风化程度".equals(templateDetail.getFieldKey())) {
+                    this.fhcd = templateDetail.getFieldValue();
+                }
+                if ("母岩成分".equals(templateDetail.getFieldKey())) {
+                    this.mycf = templateDetail.getFieldValue();
+                }
+                if ("充填物".equals(templateDetail.getFieldKey())) {
+                    this.tcw = templateDetail.getFieldValue();
+                }
+                if ("含水量".equals(templateDetail.getFieldKey())) {
+                    this.hsl = templateDetail.getFieldValue();
+                }
+                if ("坚硬程度".equals(templateDetail.getFieldKey())) {
+                    this.jycd = templateDetail.getFieldValue();
+                }
+                if ("完整程度".equals(templateDetail.getFieldKey())) {
+                    this.wzcd = templateDetail.getFieldValue();
+                }
+                if ("基本质量等级".equals(templateDetail.getFieldKey())) {
+                    this.jbzldj = templateDetail.getFieldValue();
+                }
+                if ("可挖性".equals(templateDetail.getFieldKey())) {
+                    this.kwx = templateDetail.getFieldValue();
+                }
+                if ("结构类型".equals(templateDetail.getFieldKey())) {
+                    this.jglx = templateDetail.getFieldValue();
+                }
+                if ("选择质量等级".equals(templateDetail.getFieldKey())) {
+                    this.earthType = templateDetail.getFieldValue();
+                }
+                if ("选择取样工具和方法".equals(templateDetail.getFieldKey())) {
+                    this.getMode = templateDetail.getFieldValue();
+                }
+                if ("选择实验内容".equals(templateDetail.getFieldKey())) {
+                    this.testType = templateDetail.getFieldValue();
+                }
+                if ("动探类型".equals(templateDetail.getFieldKey())) {
+                    this.powerType = templateDetail.getFieldValue();
+                }
+                if ("选择地下水类型".equals(templateDetail.getFieldKey())) {
+                    this.getMode = templateDetail.getFieldValue();
+                }
+                if ("是否添加大理石粉".equals(templateDetail.getFieldKey())) {
+                    this.waterType = templateDetail.getFieldValue();
+                }
+            }
+        }
     }
 
     public String getContentType() {
@@ -1908,6 +2032,14 @@ public class Record implements Serializable, Cloneable {
 
     public void setSecondSubLayerCode(String secondSubLayerCode) {
         this.secondSubLayerCode = secondSubLayerCode;
+    }
+
+    public String getDownloadID() {
+        return downloadID;
+    }
+
+    public void setDownloadID(String downloadID) {
+        this.downloadID = downloadID;
     }
 
     @Override

@@ -208,12 +208,11 @@ public class DictionaryActvity extends BaseActivity {
      */
 
     private void downloadDialog() {
-        final String relateID = (String) SPUtils.get(this, Urls.SPKey.USER_ID, "");
-        if (!TextUtils.isEmpty(relateID)) {
+        if (!TextUtils.isEmpty(userID)) {
             new MaterialDialog.Builder(this).content("下载关联词库，将删除本地词库，是否下载？").positiveText(R.string.agree).negativeText(R.string.disagree).callback(new MaterialDialog.ButtonCallback() {
                 @Override
                 public void onPositive(MaterialDialog dialog) {
-                    downloadDictionary(relateID);
+                    downloadDictionary(userID);
                 }
             }).show();
         } else {

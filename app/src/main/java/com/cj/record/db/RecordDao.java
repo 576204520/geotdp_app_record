@@ -3,6 +3,7 @@ package com.cj.record.db;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.cj.record.baen.Hole;
 import com.cj.record.baen.Record;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
@@ -154,7 +155,7 @@ public class RecordDao {
             qb.where().eq("holeID", holeID).and().eq("updateID", "").and().eq("type", Record.TYPE_GET_WATER).and().ne("state", "0");
             countMap.put(8, qb.query().size());
             qb.reset();
-            qb.where().eq("holeID", holeID).and().eq("updateID", "").eq("type", Record.TYPE_SCENE).and().ne("state", "0");
+            qb.where().eq("holeID", holeID).and().eq("updateID", "").and().eq("type", Record.TYPE_SCENE).and().ne("state", "0");
             countMap.put(9, qb.query().size());
         } catch (Exception e) {
             e.printStackTrace();
@@ -279,6 +280,7 @@ public class RecordDao {
 
     /**
      * 展示
+     *
      * @param holeID
      * @return
      */
@@ -435,4 +437,24 @@ public class RecordDao {
         return null;
     }
 
+    public boolean checkByID(String id, String holeID, String projectID) {
+        try {
+            List<Record> recordList = recordDao.queryBuilder().where().eq("id", id).and().eq("holeID", holeID).and().eq("projectID", projectID).query();
+            if (recordList != null && recordList.size() > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Record checkByDownloadID(String DownloadID, String holeID, String projectID) {
+        try {
+            return recordDao.queryBuilder().where().eq("DownloadID", DownloadID).and().eq("holeID", holeID).and().eq("projectID", projectID).queryForFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

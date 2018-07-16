@@ -13,6 +13,7 @@ import com.cj.record.R;
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.Record;
 import com.cj.record.slide.AbstractSlideExpandableListAdapter;
+import com.cj.record.utils.ToastUtil;
 
 import net.qiujuer.genius.ui.widget.Button;
 
@@ -21,6 +22,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.cj.record.activity.base.BaseActivity.userID;
 
 /**
  * Created by Administrator on 2018/6/7.
@@ -76,7 +79,7 @@ public class RecordAdapter extends AbstractSlideExpandableListAdapter<RecordAdap
         //岩土顯示分層編號
         if (record.getType().equals(Record.TYPE_LAYER)) {
             myHolder.recordLayerCode.setVisibility(View.VISIBLE);
-            myHolder.recordLayerCode.setText(" 土层编号:"+record.getMainLayerCode() + "-" + record.getSubLayerCode() + "-" + record.getSecondSubLayerCode());
+            myHolder.recordLayerCode.setText("土层编号:" + record.getMainLayerCode() + "-" + record.getSubLayerCode() + "-" + record.getSecondSubLayerCode());
         } else {
             myHolder.recordLayerCode.setVisibility(View.GONE);
         }

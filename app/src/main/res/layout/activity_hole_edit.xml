@@ -27,12 +27,12 @@
                 android:id="@+id/hole_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="勘探点编号"
+                android:hint="勘探点编号(本地)"
                 android:textSize="14sp"
                 app:met_baseColor="@android:color/holo_red_light"
                 app:met_clearButton="true"
                 app:met_floatingLabel="highlight"
-                app:met_floatingLabelText="勘探点编号"
+                app:met_floatingLabelText="勘探点编号(本地)"
                 app:met_iconLeft="@mipmap/ai_icon_ktxl" />
 
             <com.cj.record.views.MaterialEditTextNoEmoji
@@ -40,11 +40,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
-                android:hint="关联勘探点编号"
+                android:hint="关联勘探点编号(平台)"
                 android:textSize="14sp"
                 app:met_clearButton="true"
                 app:met_floatingLabel="highlight"
-                app:met_floatingLabelText="关联勘探点编号"
+                app:met_floatingLabelText="关联勘探点编号(平台)"
                 app:met_iconLeft="@mipmap/ai_icon_ktxl" />
 
             <net.qiujuer.genius.ui.widget.Button

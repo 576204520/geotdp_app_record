@@ -1,31 +1,40 @@
 package com.cj.record.activity;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocation;
 import com.cj.record.R;
 import com.cj.record.activity.base.BaseActivity;
 import com.cj.record.baen.Gps;
 import com.cj.record.baen.Hole;
+import com.cj.record.baen.JsonResult;
+import com.cj.record.baen.LocalUser;
 import com.cj.record.baen.Media;
 import com.cj.record.baen.Record;
+import com.cj.record.baen.Template;
 import com.cj.record.db.DBHelper;
 import com.cj.record.db.GpsDao;
 import com.cj.record.db.HoleDao;
 import com.cj.record.db.RecordDao;
+import com.cj.record.db.TemplateDao;
 import com.cj.record.fragment.RecordLocationFragment;
 import com.cj.record.fragment.RecordMediaFragment;
 import com.cj.record.fragment.record.RecordBaseFragment;
@@ -46,18 +55,28 @@ import com.cj.record.fragment.record.RecordTechnicianFragment;
 import com.cj.record.fragment.record.RecordVideoFragment;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
+import com.cj.record.utils.JsonUtils;
+import com.cj.record.utils.L;
+import com.cj.record.utils.MD5Utils;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialEditTextElevation;
 import com.cj.record.views.MaterialEditTextNoEmoji;
+import com.google.gson.Gson;
 import com.j256.ormlite.dao.Dao;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 
 import net.qiujuer.genius.ui.widget.Button;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -84,8 +103,6 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
     Button recordDptupBtn;
     @BindView(R.id.record_edit_note_tv)
     TextView recordEditNoteTv;
-    @BindView(R.id.record_template_et)
-    MaterialEditTextNoEmoji recordTemplateEt;
     @BindView(R.id.record_template_ll)
     LinearLayout recordTemplateLl;
 
@@ -100,9 +117,9 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
     private GpsDao gpsDao;
     private Record record;
     private String recordType;
-
     private Record recordOld;
     private Gps gpsOld;
+    private AMapLocation amapLocation;
 
     @Override
     public int getLayoutId() {
@@ -254,9 +271,9 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
             recordEditNoteTv.setText(R.string.record_layer);
         }
         //模板是否显示 回次 岩土 取土 取水 动探
-//        if (recordType.equals(Record.TYPE_FREQUENCY) || recordType.equals(Record.TYPE_LAYER) || recordType.equals(Record.TYPE_GET_WATER) || recordType.equals(Record.TYPE_DPT)) {
-//            recordTemplateLl.setVisibility(View.VISIBLE);
-//        }
+        if (recordType.equals(Record.TYPE_FREQUENCY) || recordType.equals(Record.TYPE_LAYER) || recordType.equals(Record.TYPE_GET_EARTH) || recordType.equals(Record.TYPE_GET_WATER) || recordType.equals(Record.TYPE_DPT)) {
+            recordTemplateLl.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setRecordEditBaseFragment(RecordBaseFragment recordBaseFragment) {
@@ -324,12 +341,13 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean save() {
+    //验证，并完善record信息
+    private boolean verify() {
         if (!Common.gPSIsOPen(RecordEditActivity.this)) {
             ToastUtil.showToastS(this, "GPS未开启，请开启以提高精度");
             return false;
         }
-        AMapLocation amapLocation = locationFragment.aMapLocation;
+        amapLocation = locationFragment.aMapLocation;
         if (amapLocation == null) {
             ToastUtil.showToastS(this, "无法获取定位信息");
             return false;
@@ -386,6 +404,14 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         record.setState("1");
         record.setIsDelete("0");
         record.setRecordPerson((String) SPUtils.get(this, Urls.SPKey.USER_REALNAME, ""));
+        return true;
+    }
+
+
+    private boolean save() {
+        if (!verify()) {
+            return false;
+        }
         recordDao.add(record);
         //保存记录下gps数据
         Gps gps = new Gps(record, amapLocation, recordType);
@@ -408,6 +434,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         }
         return true;
     }
+
 
     @Override
     public void onBackPressed() {
@@ -456,7 +483,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
                 .show();
     }
 
-    @OnClick({R.id.record_dptup_btn, R.id.record_template_btn})
+    @OnClick({R.id.record_dptup_btn, R.id.record_template_btn, R.id.record_template_up_btn})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.record_dptup_btn:
@@ -469,11 +496,67 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
                 }
                 break;
             case R.id.record_template_btn:
-                startActivityForResult(TemplateActivity.class, MainActivity.EDIT_GO_TEMPLATE);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(MainActivity.RECORD, record);
+                startActivityForResult(TemplateActivity.class, bundle, MainActivity.EDIT_GO_TEMPLATE);
+                break;
+            case R.id.record_template_up_btn:
+                templateDialog();
                 break;
         }
     }
 
+    private void templateDialog() {
+        if (!verify()) {
+            return;
+        }
+        new MaterialDialog.Builder(this).title("提示").inputType(InputType.TYPE_CLASS_TEXT |
+                InputType.TYPE_TEXT_VARIATION_PERSON_NAME |
+                InputType.TYPE_TEXT_FLAG_CAP_WORDS).maxIconSize(10).input("请输入模板名称", "", false, new MaterialDialog.InputCallback() {
+            @Override
+            public void onInput(MaterialDialog dialog, CharSequence input) {
+                if (!TextUtils.isEmpty(input.toString())) {
+                    uploadTemplate(input.toString());
+                }
+            }
+        }).show();
+    }
+
+    private void uploadTemplate(String templateName) {
+        Gson gson = new Gson();
+        Template template = new Template(templateName, userID, record);
+        String templateJson = gson.toJson(template).replace("detailList", "detailListStr");
+        L.e(templateJson);
+        showPPW();
+        OkGo.<String>post(Urls.TEMPLATE_UPLOAD).upJson(templateJson)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        String data = response.body();//这个就是返回来的结果
+                        if (JsonUtils.isGoodJson(data)) {
+                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                            if (jsonResult.getStatus()) {
+                                String result = jsonResult.getResult();
+                            }
+                            ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
+                        } else {
+                            ToastUtil.showToastS(RecordEditActivity.this, "服务器异常，请联系客服");
+                        }
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        super.onFinish();
+                        dismissPPW();
+                    }
+
+                    @Override
+                    public void onError(Response<String> response) {
+                        super.onError(response);
+                        ToastUtil.showToastS(mContext, "网络连接错误");
+                    }
+                });
+    }
 
     public void saveMediaList() {
         DBHelper dbHelper = DBHelper.getInstance(this);
@@ -486,6 +569,18 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MainActivity.EDIT_GO_TEMPLATE && resultCode == RESULT_OK) {
+            if (data != null) {
+                Template template = (Template) data.getSerializableExtra(MainActivity.TEMPLATE);
+                record.templateToRecord(template);
+                initPage(record);
+            }
         }
     }
 }

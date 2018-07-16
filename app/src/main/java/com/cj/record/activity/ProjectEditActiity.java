@@ -134,7 +134,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
             ToastUtil.showToastS(mContext, "请输入项目序列号");
             return;
         }
-        boolean isHave = projectDao.checkNumber(userID, number);
+        boolean isHave = projectDao.checkNumber(userID, number, project.getId());
         if (isHave) {
             ToastUtil.showToastS(mContext, "该序列号本地已经存在");
             dismissPPW();
@@ -281,6 +281,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                 if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
                     String result = bundle.getString(CodeUtils.RESULT_STRING);
                     projecEditNumber.setText(result);
+                    doRelevance();
                 } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
                     Toast.makeText(this, "解析二维码失败", Toast.LENGTH_LONG).show();
                 }

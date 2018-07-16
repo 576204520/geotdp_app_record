@@ -45,7 +45,7 @@ public class ReleteLocationAdapter extends RecyclerView.Adapter<ReleteLocationAd
         if (hole.getLatitude() != null && !"".equals(hole.getLatitude()) && hole.getLongitude() != null && !"".equals(hole.getLongitude())) {
             holder.relateLocationItemName.setTextColor(mContext.getResources().getColor(R.color.colorBlack));
         } else {
-            holder.relateLocationItemName.setTextColor(mContext.getResources().getColor(R.color.colorTexthintGrey2));
+            holder.relateLocationItemName.setTextColor(mContext.getResources().getColor(R.color.colorTexthintGrey));
         }
         holder.relateLocationItemName.setText(hole.getCode());
         holder.relateLocationItemName.setOnClickListener(new View.OnClickListener() {

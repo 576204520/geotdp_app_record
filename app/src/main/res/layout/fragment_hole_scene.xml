@@ -14,6 +14,7 @@
         android:gravity="center"
         android:paddingLeft="10dp"
         android:text="司钻员、描述员、钻机等信息描述"
+        android:drawableRight="@mipmap/ic_keyboard_arrow_down_black_36dp"
         android:textColor="@color/colorPrimary"
         android:textSize="14sp" />
 

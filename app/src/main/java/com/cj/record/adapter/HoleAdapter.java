@@ -14,6 +14,8 @@ import com.cj.record.R;
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.Project;
 import com.cj.record.slide.AbstractSlideExpandableListAdapter;
+import com.cj.record.utils.SPUtils;
+import com.cj.record.utils.Urls;
 
 import net.qiujuer.genius.ui.widget.Button;
 
@@ -83,6 +85,17 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
         }
         myHolder.holeType.setText("类型:" + hole.getType());
         myHolder.holeCreateTime.setText("开始时间:" + hole.getCreateTime());
+        //判断是否是获取的数据
+        if (TextUtils.isEmpty(hole.getUserID())) {
+            myHolder.holeGetData.setVisibility(View.GONE);
+        } else {
+            if (hole.getUserID().equals(SPUtils.get(mContext, Urls.SPKey.USER_ID, ""))) {
+                myHolder.holeGetData.setText("获取的本人数据，可以编辑");
+            }else{
+                myHolder.holeGetData.setText("获取的他人数据，不可以编辑，只能查看");
+            }
+            myHolder.holeGetData.setVisibility(View.VISIBLE);
+        }
         myHolder.holeDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,6 +230,8 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
         LinearLayout holeBtnLl;
         @BindView(R.id.hole_ll)
         LinearLayout holeLl;
+        @BindView(R.id.hole_getData)
+        TextView holeGetData;
 
         public MyHolder(View itemView) {
             super(itemView);

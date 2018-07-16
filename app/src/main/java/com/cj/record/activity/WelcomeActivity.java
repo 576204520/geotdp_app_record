@@ -10,6 +10,7 @@ import android.view.WindowManager;
 
 import com.cj.record.R;
 import com.cj.record.activity.base.BaseActivity;
+import com.cj.record.utils.L;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
@@ -61,6 +62,7 @@ public class WelcomeActivity extends BaseActivity {
 
         }
     }
+
     private void requestPermissions() {
         RxPermissions rxPermissions = new RxPermissions(this);
         rxPermissions.requestEach(

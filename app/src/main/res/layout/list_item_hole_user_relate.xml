@@ -17,10 +17,11 @@
         android:id="@+id/relate_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/relate_user_check"
-        android:text="描述员:爱因斯坦"
+        android:text="爱因斯坦"
         android:textColor="@android:color/black"
         android:textSize="16sp" />
 

@@ -79,7 +79,7 @@
         <activity
             android:name="me.iwf.photopicker.PhotoPagerActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <!--高德地图-->
+        <!--高德地图 576204520-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="a051e536a3b4f3ad449f3da716c1b53b" />

@@ -258,6 +258,26 @@ public class HoleDao {
         return false;
     }
 
+    public boolean checkByID(String id, String projectID) {
+        try {
+            List<Hole> holes = holeDao.queryBuilder().where().eq("id", id).and().eq("projectID", projectID).query();
+            if (holes != null && holes.size() > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public Hole checkByDownloadID(String DownloadID, String projectID) {
+        try {
+            return holeDao.queryBuilder().where().eq("DownloadID", DownloadID).and().eq("projectID", projectID).queryForFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * 想办法验证将要保存的编号数据库里是否存在
      *

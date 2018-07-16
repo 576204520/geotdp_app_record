@@ -13,12 +13,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="没有搜索结果"
-        android:textSize="15sp"
-        android:visibility="gone" />
+        android:textSize="12sp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/template_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+
 </LinearLayout>

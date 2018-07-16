@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.cj.record.baen.Hole;
 import com.cj.record.baen.Record;
 import com.cj.record.db.RecordDao;
 import com.cj.record.utils.ObsUtils;
+import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
 import com.cj.record.views.dialog.RecordInfoDialog;
 
@@ -67,8 +69,9 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
     private int size = 20;
     private int page = 0;//页数 初始值1
     private Dialog chooseDialog;
-    private int sortPosition = 0;
     private RecordInfoDialog recordInfoDialog;//记录详情
+    private DropItemVo divSort;//分类
+    private DropItemVo divSequence;//排序的对象
 
     @Override
     public int getLayoutId() {
@@ -132,25 +135,18 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                 dataList = new ArrayList<>();
                 recordDao = new RecordDao(this);
                 recordInfoDialog = new RecordInfoDialog();
-                total = recordDao.getSortCountMap(hole.getId()).get(1);
-                //记录分类
-                sprSort.setAdapter(this, getLayerTypeList());
-                sprSort.setText(listSort.get(0).getValue());
-                sprSort.setTag(listSort.get(0).getId());
-                sprSort.setOnItemClickListener(sortListener);
-                //记录排序
-                sprSequence.setAdapter(this, getModeList());
-                sprSequence.setText(listSequence.get(0).getValue());
-                sprSequence.setTag(listSequence.get(0).getId());
-                sprSequence.setOnItemClickListener(sequenceListener);
-                //记录列表
-                dataList = recordDao.getRecordList(hole.getId(), size, page, sprSort.getTag().toString(), sprSequence.getTag().toString());
+                getLayerTypeList();
+                getModeList();
                 break;
             case 2:
+                getLayerTypeList();
+                sprSort.setTag(divSort.getId());
+                //排序这里都是固定值，不需要重新获取
+                sprSequence.setTag(divSequence.getId());
+                //获取分页数据
                 page = 0;
                 total = recordDao.getSortCountMap(hole.getId()).get(1);
                 dataList = recordDao.getRecordList(hole.getId(), size, page, sprSort.getTag().toString(), sprSequence.getTag().toString());
-                //todo 刷新是更新记录分类列表
                 break;
             case 3:
                 page++;
@@ -164,12 +160,29 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
     public void onComplete(int type) {
         switch (type) {
             case 1:
+                //记录分类显示
+                divSort = listSort.get(0);
+                sprSort.setAdapter(this, listSort);
+                sprSort.setOnItemClickListener(sortListener);
+                //记录排序
+                divSequence = listSequence.get(0);
+                sprSequence.setAdapter(this, listSequence);
+                sprSequence.setOnItemClickListener(sequenceListener);
+                //初始化列表布局
                 initRecycleView();
+                //调用刷新方法
+                onRefresh();
                 break;
             case 2:
+                //刷新列表
                 recordAdapter.refresh(dataList);
                 recordAdapter.openFrist();
                 refresh.setRefreshing(false);
+                //刷新记录分类
+                sprSort.refresh(listSort);
+                sprSort.setText(getsortValue(divSort.getId()));
+                //刷新记录排序
+                sprSequence.setText(divSequence.getValue());
                 break;
             case 3:
                 recordAdapter.loadMore(newList);
@@ -192,6 +205,15 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
         return listSort;
     }
 
+    private String getsortValue(String id) {
+        for (DropItemVo div : listSort) {
+            if (id.equals(div.getId())) {
+                return div.getValue();
+            }
+        }
+        return listSort.get(0).getValue();
+    }
+
     private List<DropItemVo> getModeList() {
         listSequence = new ArrayList<DropItemVo>();
         listSequence.add(new DropItemVo("1", "最新修改"));
@@ -207,10 +229,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
     MaterialBetterSpinner.OnItemClickListener sortListener = new MaterialBetterSpinner.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            sortPosition = i;
-            DropItemVo d = listSort.get(i);
-            sprSort.setTag(d.getId());
-            sprSort.setText(d.getValue());
+            divSort = listSort.get(i);
             onRefresh();
         }
     };
@@ -220,9 +239,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
     MaterialBetterSpinner.OnItemClickListener sequenceListener = new MaterialBetterSpinner.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            DropItemVo d = listSequence.get(i);
-            sprSequence.setTag(d.getId());
-            sprSequence.setText(d.getValue());
+            divSequence = listSequence.get(i);
             onRefresh();
         }
     };
@@ -250,7 +267,11 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                 finish();
                 return true;
             case R.id.act_add:
-                showChooseDialog();
+                if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals(userID)) {
+                    showChooseDialog();
+                } else {
+                    ToastUtil.showToastS(this, "不可以编辑他人数据");
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -271,11 +292,16 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
 
     @Override
     public void editClick(int position) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(MainActivity.FROMTYPE, true);
-        bundle.putSerializable(MainActivity.HOLE, hole);
-        bundle.putSerializable(MainActivity.RECORD, dataList.get(position));
-        startActivityForResult(RecordEditActivity.class, bundle, MainActivity.RECORD_GO_EDIT);
+        if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals(userID)) {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(MainActivity.FROMTYPE, true);
+            bundle.putSerializable(MainActivity.HOLE, hole);
+            bundle.putSerializable(MainActivity.RECORD, dataList.get(position));
+            startActivityForResult(RecordEditActivity.class, bundle, MainActivity.RECORD_GO_EDIT);
+        } else {
+            ToastUtil.showToastS(this,"不可以编辑他人数据");
+        }
+
     }
 
     @Override

@@ -48,8 +48,8 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
-        loginEmail.setText("576204520@qq.com");
-        loginPassword.setText("123456");
+//        loginEmail.setText("576204520@qq.com");
+//        loginPassword.setText("123456");
     }
 
     @Override
@@ -78,8 +78,6 @@ public class LoginActivity extends BaseActivity {
         Map<String, String> map = new HashMap<>();
         map.put("email", email);
         map.put("password", MD5Utils.MD5(password));
-        L.e(email);
-        L.e(MD5Utils.MD5(password));
         OkGo.<String>post(Urls.LOGIN_POST)
                 .params(map)
                 .execute(new StringCallback() {
@@ -97,6 +95,7 @@ public class LoginActivity extends BaseActivity {
                             SPUtils.put(mContext, Urls.SPKey.USER_ID, localUser.getId());
                             SPUtils.put(mContext, Urls.SPKey.USER_EMAIL, localUser.getEmail());
                             SPUtils.put(mContext, Urls.SPKey.USER_REALNAME, localUser.getRealName());
+                            BaseActivity.userID = localUser.getId();
                             startActivity(MainActivity.class);
                             finish();
                         }

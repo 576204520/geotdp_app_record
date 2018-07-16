@@ -57,7 +57,7 @@ public class RelateHoleUserAdapter extends RecyclerView.Adapter<RelateHoleUserAd
                 break;
         }
         holder.relate_user_check.setChecked(list.get(position).isSelect);
-        holder.userName.setText("描述员:" + list.get(position).getRealName());
+        holder.userName.setText(list.get(position).getRealName());
         if (list.get(position).getUploadTime() != null && !"".equals(list.get(position).getUploadTime())) {
             holder.userTime.setText("上传时间:" + list.get(position).getUploadTime());
         } else {

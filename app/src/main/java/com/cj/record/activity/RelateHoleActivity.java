@@ -65,6 +65,7 @@ public class RelateHoleActivity extends BaseActivity {
     private List<Hole> checkList;
     private List<LocalUser> localUserList;
     private List<Hole> holeList;
+    private String path;
 
     @Override
     public int getLayoutId() {
@@ -85,12 +86,15 @@ public class RelateHoleActivity extends BaseActivity {
     public void initView() {
         switch (relateType) {
             case 1:
+                path = Urls.GET_RELATE_HOLE;
                 toolbar.setTitle("选择关联勘探点");
                 break;
             case 2:
+                path = Urls.GET_RELATE_HOLE;
                 toolbar.setTitle("选择关联勘探点");
                 break;
             case 3:
+                path = Urls.GET_RELATE_HOLEWITHRECORD;
                 toolbar.setTitle("选择获取数据");
                 break;
         }
@@ -106,7 +110,7 @@ public class RelateHoleActivity extends BaseActivity {
         showPPW();
         Map<String, String> map = new HashMap<>();
         map.put("serialNumber", serialNumber);
-        OkGo.<String>post(Urls.GET_RELATE_HOLE)
+        OkGo.<String>post(path)
                 .params(map)
                 .execute(new StringCallback() {
                     @Override
@@ -193,9 +197,13 @@ public class RelateHoleActivity extends BaseActivity {
     };
 
     private void showDialog(Hole hole) {
+        int num = 0;
+        if (hole.getUserList() != null && hole.getUserList().size() > 0) {
+            num = hole.getUserList().size();
+        }
         new AlertDialog.Builder(this)
                 .setTitle(R.string.hint)
-                .setMessage("确定选择关联该勘探点吗？当前该点已有" + hole.getUserList().size() + "人关联")
+                .setMessage("确定选择关联该勘探点吗？当前该点已有" + num + "人关联")
                 .setNegativeButton(R.string.agree,
                         new DialogInterface.OnClickListener() {
                             @Override

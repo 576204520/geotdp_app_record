@@ -143,10 +143,10 @@ public class ProjectDao {
     /**
      * 查询当前用户下，该序列号是否存在
      */
-    public boolean checkNumber(String userID, String number) {
+    public boolean checkNumber(String userID, String number, String id) {
         try {
             QueryBuilder queryBuilder = projectDao.queryBuilder();
-            queryBuilder.where().eq("recordPerson", "").or().eq("recordPerson", userID).and().eq("serialNumber", number);
+            queryBuilder.where().eq("recordPerson", "").or().eq("recordPerson", userID).and().eq("serialNumber", number).and().ne("id", id);
             List<Project> list = queryBuilder.query();
             int size = list.size();
             if (size > 0) {

@@ -65,7 +65,8 @@ public class Gps implements Serializable {
     String isDelete = "";           // tinyint(1) DEFAULT '0' COMMENT '是否删除',
     @DatabaseField
     String distance = "";
-
+    @DatabaseField
+    String downloadID = "";         //下载数据的id
     public Gps() {
 
     }
@@ -262,5 +263,13 @@ public class Gps implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getDownloadID() {
+        return downloadID;
+    }
+
+    public void setDownloadID(String downloadID) {
+        this.downloadID = downloadID;
     }
 }

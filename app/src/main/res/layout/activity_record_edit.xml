@@ -100,31 +100,28 @@
                 android:id="@+id/record_template_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
 
-                <com.cj.record.views.MaterialEditTextNoEmoji
-                    android:id="@+id/record_template_et"
+                <net.qiujuer.genius.ui.widget.Button
+                    android:id="@+id/record_template_up_btn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:enabled="false"
-                    android:hint="模板"
-                    android:textSize="14sp"
-                    app:met_clearButton="true"
-                    app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="模板"
-                    app:met_iconLeft="@mipmap/ai_icon_ktxl" />
+                    android:layout_height="34dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/textview_stroke_btn"
+                    android:text="上传模板"
+                    android:textColor="@color/colorPrimary" />
 
                 <net.qiujuer.genius.ui.widget.Button
                     android:id="@+id/record_template_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="34dp"
+                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
                     android:background="@drawable/textview_stroke_btn"
-                    android:text="模板"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="14sp" />
+                    android:text="使用模板"
+                    android:textColor="@color/colorPrimary" />
             </LinearLayout>
 
 

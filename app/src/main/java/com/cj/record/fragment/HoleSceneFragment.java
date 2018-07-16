@@ -1,6 +1,7 @@
 package com.cj.record.fragment;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,6 +89,8 @@ public class HoleSceneFragment extends BaseFragment implements ObsUtils.ObsLinst
     private RecordDao recordDao;
     private List<Record> recordList;
     private ObsUtils obsUtils;
+    private Drawable drawableBottom;
+    private Drawable drawableRight;
 
     @Override
     public int getLayoutId() {
@@ -101,6 +104,8 @@ public class HoleSceneFragment extends BaseFragment implements ObsUtils.ObsLinst
         type = getArguments().getString(MainActivity.EXTRA_HOLE_TYPE);
         recordDao = new RecordDao(mActivity);
         recordList = new ArrayList<>();
+        drawableBottom = getResources().getDrawable(R.mipmap.ic_keyboard_arrow_down_black_36dp);
+        drawableRight = getResources().getDrawable(R.mipmap.ic_keyboard_arrow_right_black_36dp);
         obsUtils = new ObsUtils();
         obsUtils.setObsLinstener(this);
         obsUtils.execute(1);
@@ -125,8 +130,10 @@ public class HoleSceneFragment extends BaseFragment implements ObsUtils.ObsLinst
             case R.id.scene_title:
                 if (sceneItemLl.getVisibility() == View.GONE) {
                     sceneItemLl.setVisibility(View.VISIBLE);
+                    sceneTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableBottom, null);
                 } else {
                     sceneItemLl.setVisibility(View.GONE);
+                    sceneTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableRight, null);
                 }
                 break;
             case R.id.scene_jizhang_fl:

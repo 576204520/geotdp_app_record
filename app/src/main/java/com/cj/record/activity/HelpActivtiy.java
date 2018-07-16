@@ -6,9 +6,13 @@ import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 
 import com.cj.record.R;
 import com.cj.record.activity.base.BaseActivity;
+import com.cj.record.utils.Urls;
+
+import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,4 +86,5 @@ public class HelpActivtiy extends BaseActivity {
         return super.onOptionsItemSelected(item);
 
     }
+
 }

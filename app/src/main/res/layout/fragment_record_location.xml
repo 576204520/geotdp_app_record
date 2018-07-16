@@ -26,7 +26,6 @@
                 android:layout_centerVertical="true"
                 android:layout_marginTop="10dp"
                 android:text="偏移距离"
-                android:textSize="14sp"
                 android:textColor="@color/colorPrimary" />
 
             <EditText
@@ -40,8 +39,7 @@
                 android:enabled="false"
                 android:hint="正在获取..."
                 android:maxLines="1"
-                android:textColor="@color/colorBlack"
-                android:textSize="14sp" />
+                android:textColor="@color/colorBlack" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -54,8 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="已工作时间"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp" />
+                android:textColor="@color/colorPrimary" />
 
             <EditText
                 android:id="@+id/edtTime"
@@ -68,8 +65,7 @@
                 android:enabled="false"
                 android:hint="正在获取..."
                 android:maxLines="1"
-                android:textColor="@color/colorBlack"
-                android:textSize="14sp" />
+                android:textColor="@color/colorBlack" />
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

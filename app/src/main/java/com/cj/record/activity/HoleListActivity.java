@@ -43,6 +43,7 @@ import com.cj.record.db.RecordDao;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
 import com.cj.record.utils.JsonUtils;
+import com.cj.record.utils.L;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;
@@ -453,8 +454,32 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     String data = response.body();//这个就是返回来的结果
                     if (JsonUtils.isGoodJson(data)) {
                         Gson gson = new Gson();
-                        //创建新的id,修改holeID
                         Hole hole = gson.fromJson(data, Hole.class);
+                        /**
+                         * 判断该项目下hole的id是否存在，
+                         *    存在就覆盖她，（存在说明是本人的，并且本地有已有）
+                         *    不存在，再判断downloadID跟获取的hole的id是否存在
+                         *               存在说明这条数据获取过，覆盖这条hole，覆盖就是把查出来的holeId给获取的holeID
+                         *               不存在，新建hole的id，获取的holeID赋值给downloadID
+                         * 获取数据判断是否是本人的数据，是本人的，就用原数据，不是则新建id
+                         */
+                        if (!localUser.getDeptID().equals(userID)) {
+                            hole.setId(Common.getUUID());
+                        }
+                        L.e("--" + localUser.getDeptID());
+                        L.e("--" + userID);
+//                        if (!holeDao.checkByID(hole.getId(), project.getId())) {
+//                            Hole downloadHole = holeDao.checkByDownloadID(hole.getId(), project.getId());
+//                            //记录获取的holeID，保存到downloadID
+//                            hole.setDownloadID(hole.getId());
+//                            hole.setRelateID("");
+//                            hole.setRelateCode("");
+//                            if (null != downloadHole) {
+//                                hole.setId(downloadHole.getId());
+//                            } else {
+//                                hole.setId(Common.getUUID());
+//                            }
+//                        }
                         hole.setProjectID(project.getId());
                         //下载的勘探点都是未关联、已经定位的不需要重新定位、
                         if (hole.getMapLatitude() != null && hole.getMapLongitude() != null) {
@@ -469,7 +494,21 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                         List<Record> recordList = hole.getRecordList();
                         if (recordList != null && recordList.size() > 0) {
                             for (Record record : recordList) {
+                                //同勘探点，要判断是否存在
+                                if (!localUser.getDeptID().equals(userID)) {
+                                    record.setId(Common.getUUID());
+                                }
+//                                if (!recordDao.checkByID(record.getId(), hole.getId(), project.getId())) {
+//                                    Record downloadRecord = recordDao.checkByDownloadID(record.getId(), hole.getId(), project.getId());
+//                                    record.setDownloadID(record.getId());
+//                                    if (null != downloadRecord) {
+//                                        record.setId(downloadRecord.getId());
+//                                    } else {
+//                                        record.setId(Common.getUUID());
+//                                    }
+//                                }
                                 record.setProjectID(project.getId());
+                                record.setHoleID(hole.getId());
                                 record.setState("1");
                                 record.setIsDelete("0");
                                 record.setUpdateId(record.getUpdateId() == null ? "" : record.getUpdateId());//这里有历史记录，不能情况updateID
@@ -477,7 +516,21 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                                 List<Gps> gpsList = record.getGpsList();
                                 if (gpsList != null && gpsList.size() > 0) {
                                     for (Gps gps : gpsList) {
+                                        if (!localUser.getDeptID().equals(userID)) {
+                                            gps.setId(Common.getUUID());
+                                        }
+//                                        if (!gpsDao.checkByID(gps.getId(), record.getId(), hole.getId(), project.getId())) {
+//                                            Gps downloadGps = gpsDao.checkByDownloadID(gps.getId(), record.getId(), hole.getId(), project.getId());
+//                                            gps.setDownloadID(gps.getId());
+//                                            if (null != downloadGps) {
+//                                                gps.setId(downloadGps.getId());
+//                                            } else {
+//                                                gps.setId(Common.getUUID());
+//                                            }
+//                                        }
                                         gps.setProjectID(project.getId());
+                                        gps.setHoleID(hole.getId());
+                                        gps.setRecordID(record.getId());
                                         gpsDao.add(gps);
                                     }
                                 }
@@ -508,7 +561,12 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
 
     @Override
     public void editClick(int position) {
-        goEdit(dataList.get(position));
+        Hole hole = dataList.get(position);
+        if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals(userID)) {
+            goEdit(hole);
+        } else {
+            ToastUtil.showToastS(this, "不可以编辑他人数据");
+        }
     }
 
     private void goEdit(Hole hole) {

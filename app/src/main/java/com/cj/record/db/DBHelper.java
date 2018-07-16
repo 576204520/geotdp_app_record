@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.LocalUser;
+import com.cj.record.baen.Template;
+import com.cj.record.baen.TemplateDetail;
 import com.cj.record.utils.L;
 import com.cj.record.utils.Urls;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
@@ -24,7 +26,7 @@ import java.util.Map;
  */
 public class DBHelper extends OrmLiteSqliteOpenHelper {
     public static final String DB_NAME = Urls.DATABASE_BASE;//完整路径
-    public static final int DB_VERSION = 6;
+    public static final int DB_VERSION = 8;
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -83,6 +85,8 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             //老测试版没有这个表，就创建它
             TableUtils.createTableIfNotExists(connectionSource, LocalUser.class);
             TableUtils.createTableIfNotExists(connectionSource, Dictionary.class);
+            TableUtils.createTableIfNotExists(connectionSource, Template.class);
+            TableUtils.createTableIfNotExists(connectionSource, TemplateDetail.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -166,7 +170,8 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             "  `companyID` char(32)," +
             "  `level` char(1) ," +
             "  `checkUser` char(32)," +
-            "  `checkTime` datetime" +
+            "  `checkTime` datetime," +
+            "  `userID` varchar(50)" +
             ")";
     private String ADD_TEMPLATE_DETAIL = "CREATE TABLE `compile_template_detail` (" +
             "  `ids` char(32) PRIMARY KEY NOT NULL," +
@@ -175,6 +180,21 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             "  `fieldValue` varchar(100)," +
             "  `sort` tinyint(2)" +
             ") ";
+    private String ADD_DICTIONARY1 = "insert into dictionary (name,sort,sortNo) values ('冲填土','填土','05')";
+    private String ADD_DICTIONARY2 = "insert into dictionary (name,sort,sortNo) values ('圆砾','填土_主要成分','4'),('泥岩','填土_主要成分','5')";
+    private String ADD_DICTIONARY3 = "insert into dictionary (name,sort,sortNo) values ('冲填','土的成因类型','20'),('其他成因','土的成因类型','21')";
+    private String ADD_DICTIONARY4 = "insert into dictionary (name,sort,sortNo) values ('黄色','黏性土_颜色','5'),('红色','黏性土_颜色','6'),('红褐色','黏性土_颜色','7'),('黄红色','黏性土_颜色','8'),('红黄色','黏性土_颜色','9')";
+    private String ADD_DICTIONARY5 = "insert into dictionary (name,sort,sortNo) values ('石英','黏性土_包含物','4'),('铁锰结核','黏性土_包含物','5'),('岩石碎块','黏性土_包含物','6'),('砾石','黏性土_包含物','7')";
+    private String ADD_DICTIONARY6 = "insert into dictionary (name,sort,sortNo) values ('黄色','粉土_颜色','5'),('灰色','粉土_颜色','6'),('灰黑色','粉土_颜色','7'),('灰黄色','粉土_颜色','8')";
+    private String ADD_DICTIONARY7 = "insert into dictionary (name,sort,sortNo) values ('白色','砂土_颜色','5'),('黄色','砂土_颜色','6'),('灰色','砂土_颜色','7'),('黄白色','砂土_颜色','8'),('灰白色','砂土_颜色','9')";
+    private String ADD_DICTIONARY8 = "insert into dictionary (name,sort,sortNo) values ('白色','碎石土_颜色','4'),('黄色','碎石土_颜色','5'),('灰色','碎石土_颜色','6'),('黄白色','碎石土_颜色','7'),('灰白色','碎石土_颜色','8'),('灰黄色','碎石土_颜色','9')";
+    private String ADD_DICTIONARY9 = "insert into dictionary (name,sort,sortNo) values ('饱和','碎石土_湿度','5')";
+    private String ADD_DICTIONARY10 = "insert into dictionary (name,sort,sortNo) values ('黏土质泥岩','岩石','33'),('粉砂质泥岩','岩石','34'),('泥质粉砂岩','岩石','35'),('石灰岩','岩石','36'),('花岗岩','岩石','37'),('溶洞','岩石','38')";
+    //7
+    private String ADD_DOWNLOADID = "ALTER TABLE `hole` ADD COLUMN downloadID VARCHARD(45) default ''";
+    //8
+    private String ADD_DOWNLOADID_R = "ALTER TABLE `record` ADD COLUMN downloadID VARCHARD(45) default ''";
+    private String ADD_DOWNLOADID_G = "ALTER TABLE `gps` ADD COLUMN downloadID VARCHARD(45) default ''";
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int oldVersion, int newVersion) {
@@ -243,6 +263,23 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             sqLiteDatabase.execSQL(SECONDSUB_LAYER_CODE);
             sqLiteDatabase.execSQL(ADD_TEMPLATE);
             sqLiteDatabase.execSQL(ADD_TEMPLATE_DETAIL);
+            sqLiteDatabase.execSQL(ADD_DICTIONARY1);
+            sqLiteDatabase.execSQL(ADD_DICTIONARY2);
+            sqLiteDatabase.execSQL(ADD_DICTIONARY3);
+            sqLiteDatabase.execSQL(ADD_DICTIONARY4);
+            sqLiteDatabase.execSQL(ADD_DICTIONARY5);
+            sqLiteDatabase.execSQL(ADD_DICTIONARY6);
+            sqLiteDatabase.execSQL(ADD_DICTIONARY7);
+            sqLiteDatabase.execSQL(ADD_DICTIONARY8);
+            sqLiteDatabase.execSQL(ADD_DICTIONARY9);
+            sqLiteDatabase.execSQL(ADD_DICTIONARY10);
+        }
+        if (oldVersion < 7) {
+            sqLiteDatabase.execSQL(ADD_DOWNLOADID);
+        }
+        if (oldVersion < 8) {
+            sqLiteDatabase.execSQL(ADD_DOWNLOADID_R);
+            sqLiteDatabase.execSQL(ADD_DOWNLOADID_G);
         }
     }
 
