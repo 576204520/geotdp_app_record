@@ -12,11 +12,11 @@ public class Urls {
 //    public static final String SERVER_PATH = "http://test.geotdp.com/";//测试
 //    public static final String SERVER_PATH = "http://192.168.11.220/";//内部测试
 
-    public static final String SERVER_PATH = "http://gx.geotdp.com:8083/";//广西
+//    public static final String SERVER_PATH = "http://gx.geotdp.com:8083/";//广西
 //    public static final String SERVER_PATH = "http://jx.geotdp.com:8083/";//江西
 //    public static final String SERVER_PATH = "http://xj.geotdp.com/";//新疆
 //    public static final String SERVER_PATH = "http://ln.geotdp.com:8081/";//辽宁
-//    public static final String SERVER_PATH = "http://bj.geotdp.com:8081/";//北京
+    public static final String SERVER_PATH = "http://bj.geotdp.com:8081/";//北京
     // 登录请求
     public static final String LOGIN_POST = SERVER_PATH + "geotdp/compileUser/login";
     //获取版本信息
