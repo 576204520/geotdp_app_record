@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.cj.record.R;
@@ -20,16 +19,25 @@ import com.cj.record.views.MaterialBetterSpinner;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * 地层分类(粉黏互层) 的片段.
  */
 public class LayerDescFnhcFragment extends RecordBaseFragment {
 
-    private MaterialBetterSpinner sprYs;            //颜色
-    private MaterialBetterSpinner sprBhw;           //包含物
-    private MaterialBetterSpinner sprZt;            //状态
-    private MaterialBetterSpinner sprFtfchd;        //粉土分层厚度
-    private MaterialBetterSpinner sprFzntfchd;      //粉质黏土分层厚度
+    @BindView(R.id.sprYs)
+    MaterialBetterSpinner sprYs;
+    @BindView(R.id.sprZt)
+    MaterialBetterSpinner sprZt;
+    @BindView(R.id.sprBhw)
+    MaterialBetterSpinner sprBhw;
+    @BindView(R.id.sprFtfchd)
+    MaterialBetterSpinner sprFtfchd;
+    @BindView(R.id.sprFzntfchd)
+    MaterialBetterSpinner sprFzntfchd;
 
     private List<DropItemVo> sprYsList;
     private List<DropItemVo> sprBhwList;
