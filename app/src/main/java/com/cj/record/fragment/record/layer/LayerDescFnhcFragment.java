@@ -47,7 +47,7 @@ public class LayerDescFnhcFragment extends RecordBaseFragment {
 
     @Override
     public int getLayoutId() {
-        return super.getLayoutId();
+        return R.layout.frt_dcms_fnhc;
     }
 
     @Override
