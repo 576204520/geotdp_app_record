@@ -479,7 +479,6 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
                                 }
                             }
                         })
-                .setCancelable(false)
                 .show();
     }
 
