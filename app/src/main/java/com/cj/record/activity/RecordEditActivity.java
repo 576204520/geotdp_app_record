@@ -368,8 +368,8 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         //起始值和终止值都不能重叠
         if (recordType.equals(Record.TYPE_FREQUENCY) || recordType.equals(Record.TYPE_LAYER)) {
             RecordDao recordDao = new RecordDao(this);
-            if (recordDao.validatorBeginDepth(record, recordType, recordEndDepth.getText().toString())) {
-                recordEndDepth.setError("与其他记录重叠");
+            if (recordDao.validatorBeginDepth(record, recordType, recordBeginDepth.getText().toString())) {
+                recordBeginDepth.setError("与其他记录重叠");
                 return false;
             }
 
