@@ -8,8 +8,8 @@ android {
         applicationId "com.cj.record"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 21
-        versionName "3.0.1"
+        versionCode 22
+        versionName "3.0.2"
         multiDexEnabled true
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
         ndk {
@@ -20,13 +20,9 @@ android {
     buildTypes {
         debug {
             //启用代码混淆
-            minifyEnabled true
+            minifyEnabled false
             //混淆规则配置文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            //去掉无用资源
-            shrinkResources true
-            //Zip代码压缩优化
-            zipAlignEnabled true
         }
         release {
             //启用代码混淆

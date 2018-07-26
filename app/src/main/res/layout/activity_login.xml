@@ -22,7 +22,6 @@
             android:background="@mipmap/logo" />
 
         <TextView
-            android:id="@+id/logo_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/logo"
