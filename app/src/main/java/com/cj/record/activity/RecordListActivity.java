@@ -135,23 +135,25 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                 dataList = new ArrayList<>();
                 recordDao = new RecordDao(this);
                 recordInfoDialog = new RecordInfoDialog();
-                getLayerTypeList();
-                getModeList();
                 break;
             case 2:
                 getLayerTypeList();
-                sprSort.setTag(divSort.getId());
-                //排序这里都是固定值，不需要重新获取
-                sprSequence.setTag(divSequence.getId());
+                getModeList();
+                if (null == divSort) {
+                    divSort = listSort.get(0);
+                }
+                if (null == divSequence) {
+                    divSequence = listSequence.get(0);
+                }
                 //获取分页数据
                 page = 0;
                 total = recordDao.getSortCountMap(hole.getId()).get(1);
-                dataList = recordDao.getRecordList(hole.getId(), size, page, sprSort.getTag().toString(), sprSequence.getTag().toString());
+                dataList = recordDao.getRecordList(hole.getId(), size, page, divSort.getId().toString(), divSequence.getId().toString());
                 break;
             case 3:
                 page++;
                 newList.clear();
-                newList = recordDao.getRecordList(hole.getId(), size, page, sprSort.getTag().toString(), sprSequence.getTag().toString());
+                newList = recordDao.getRecordList(hole.getId(), size, page, divSort.getId().toString(), divSequence.getId().toString());
                 break;
         }
     }
@@ -160,29 +162,23 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
     public void onComplete(int type) {
         switch (type) {
             case 1:
-                //记录分类显示
-                divSort = listSort.get(0);
-                sprSort.setAdapter(this, listSort);
-                sprSort.setOnItemClickListener(sortListener);
-                //记录排序
-                divSequence = listSequence.get(0);
-                sprSequence.setAdapter(this, listSequence);
-                sprSequence.setOnItemClickListener(sequenceListener);
                 //初始化列表布局
                 initRecycleView();
                 //调用刷新方法
                 onRefresh();
                 break;
             case 2:
+                //刷新记录分类
+                sprSort.setText(getsortValue(divSort.getId()));
+                sprSort.setAdapter(this, listSort);
+                sprSort.setOnItemClickListener(sortListener);
+                sprSequence.setText(divSequence.getValue());
+                sprSequence.setAdapter(this, listSequence);
+                sprSequence.setOnItemClickListener(sequenceListener);
                 //刷新列表
                 recordAdapter.refresh(dataList);
                 recordAdapter.openFrist();
                 refresh.setRefreshing(false);
-                //刷新记录分类
-                sprSort.refresh(listSort);
-                sprSort.setText(getsortValue(divSort.getId()));
-                //刷新记录排序
-                sprSequence.setText(divSequence.getValue());
                 break;
             case 3:
                 recordAdapter.loadMore(newList);
