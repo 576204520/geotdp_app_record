@@ -271,9 +271,9 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
             recordEditNoteTv.setText(R.string.record_layer);
         }
         //模板是否显示 回次 岩土 取土 取水 动探
-        if (recordType.equals(Record.TYPE_FREQUENCY) || recordType.equals(Record.TYPE_LAYER) || recordType.equals(Record.TYPE_GET_EARTH) || recordType.equals(Record.TYPE_GET_WATER) || recordType.equals(Record.TYPE_DPT)) {
-            recordTemplateLl.setVisibility(View.VISIBLE);
-        }
+//        if (recordType.equals(Record.TYPE_FREQUENCY) || recordType.equals(Record.TYPE_LAYER) || recordType.equals(Record.TYPE_GET_EARTH) || recordType.equals(Record.TYPE_GET_WATER) || recordType.equals(Record.TYPE_DPT)) {
+//            recordTemplateLl.setVisibility(View.VISIBLE);
+//        }
     }
 
     private void setRecordEditBaseFragment(RecordBaseFragment recordBaseFragment) {

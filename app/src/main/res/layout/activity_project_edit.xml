@@ -41,6 +41,7 @@
                     android:layout_height="30dp"
                     android:layout_marginRight="100dp"
                     android:layout_marginTop="10dp"
+                    android:visibility="gone"
                     android:background="@drawable/textview_stroke_btn"
                     android:text="二维码扫描"
                     android:textColor="@color/colorPrimary"

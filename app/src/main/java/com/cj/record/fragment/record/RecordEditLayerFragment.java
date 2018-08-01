@@ -103,9 +103,9 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
         sprType.setOnItemClickListener(typeListener);
         sprName.setOnItemClickListener(nameListener);
         //分层编号
-        mainLayerCode.setText(record.getMainLayerCode());
-        subLayerCode.setText(record.getSubLayerCode());
-        secondSubLayerCode.setText(record.getSecondSubLayerCode());
+//        mainLayerCode.setText(record.getMainLayerCode());
+//        subLayerCode.setText(record.getSubLayerCode());
+//        secondSubLayerCode.setText(record.getSecondSubLayerCode());
     }
 
     MaterialBetterSpinner.OnItemClickListener nameListener = new MaterialBetterSpinner.OnItemClickListener() {
@@ -318,21 +318,21 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
         record.setLayerName(sprName.getText().toString());
         record.setCauses(edtCauses.getText().toString());
         record.setEra(edtEra.getText().toString());
-        String main = mainLayerCode.getText().toString();
-        String sub = subLayerCode.getText().toString();
-        String secondSub = secondSubLayerCode.getText().toString();
-        if (TextUtils.isEmpty(main)) {
-            main = "0";
-        }
-        if (TextUtils.isEmpty(sub)) {
-            sub = "0";
-        }
-        if (TextUtils.isEmpty(secondSub)) {
-            secondSub = "0";
-        }
-        record.setMainLayerCode(main);
-        record.setSubLayerCode(sub);
-        record.setSecondSubLayerCode(secondSub);
+//        String main = mainLayerCode.getText().toString();
+//        String sub = subLayerCode.getText().toString();
+//        String secondSub = secondSubLayerCode.getText().toString();
+//        if (TextUtils.isEmpty(main)) {
+//            main = "0";
+//        }
+//        if (TextUtils.isEmpty(sub)) {
+//            sub = "0";
+//        }
+//        if (TextUtils.isEmpty(secondSub)) {
+//            secondSub = "0";
+//        }
+//        record.setMainLayerCode(main);
+//        record.setSubLayerCode(sub);
+//        record.setSecondSubLayerCode(secondSub);
         return record;
     }
 

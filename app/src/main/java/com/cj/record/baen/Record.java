@@ -979,15 +979,15 @@ public class Record implements Serializable, Cloneable {
             if (!TextUtils.isEmpty(record.getStillTime())) {
                 map.put("record[" + i + "].stillTime", record.getStillTime());
             }
-            if (!TextUtils.isEmpty(record.getMainLayerCode())) {
-                map.put("record[" + i + "].mainLayerCode", record.getMainLayerCode());
-            }
-            if (!TextUtils.isEmpty(record.getSubLayerCode())) {
-                map.put("record[" + i + "].subLayerCode", record.getSubLayerCode());
-            }
-            if (!TextUtils.isEmpty(record.getSecondSubLayerCode())) {
-                map.put("record[" + i + "].secondSubLayerCode", record.getSecondSubLayerCode());
-            }
+//            if (!TextUtils.isEmpty(record.getMainLayerCode())) {
+//                map.put("record[" + i + "].mainLayerCode", record.getMainLayerCode());
+//            }
+//            if (!TextUtils.isEmpty(record.getSubLayerCode())) {
+//                map.put("record[" + i + "].subLayerCode", record.getSubLayerCode());
+//            }
+//            if (!TextUtils.isEmpty(record.getSecondSubLayerCode())) {
+//                map.put("record[" + i + "].secondSubLayerCode", record.getSecondSubLayerCode());
+//            }
         }
         return map;
     }
