@@ -98,9 +98,11 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MyHolder> {
             switch (mediaType) {
                 case ITEM_MEDIA_TYPE_PHOTO:
                     myHolder.mediaPhotoIcon.setImageResource(R.mipmap.ai_icon_havephoto);
+                    myHolder.mediaDelete.setVisibility(View.VISIBLE);
                     break;
                 case ITEM_MEDIA_TYPE_VIDEO:
                     myHolder.mediaPhotoIcon.setImageResource(R.mipmap.ai_icon_video);
+                    myHolder.mediaDelete.setVisibility(View.GONE);
                     break;
             }
             myHolder.mediaCard.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +120,6 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MyHolder> {
                     }
                 }
             });
-            myHolder.mediaDelete.setVisibility(View.VISIBLE);
             myHolder.mediaDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
