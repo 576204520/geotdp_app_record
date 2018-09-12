@@ -107,6 +107,10 @@ public class RelateHoleActivity extends BaseActivity {
     }
 
     private void getRelateList() {
+        //检查网络
+        if(!haveNet()){
+            return;
+        }
         showPPW();
         Map<String, String> map = new HashMap<>();
         map.put("serialNumber", serialNumber);

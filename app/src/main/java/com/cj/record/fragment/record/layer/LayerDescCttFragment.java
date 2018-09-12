@@ -128,7 +128,7 @@ public class LayerDescCttFragment extends RecordBaseFragment {
             @Override
             public void onShow() {
                 if (ysDialog == null) {
-                    ysDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_wzcf).items(ysList)
+                    ysDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_ys).items(ysList)
 
                             .itemsCallbackMultiChoice(new Integer[]{}, new MaterialDialog.ListCallbackMultiChoice() {
                                 @Override

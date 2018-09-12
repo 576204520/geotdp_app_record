@@ -241,7 +241,12 @@ public class ReleteLocationActivity extends BaseActivity implements AMapLocation
     @Override
     public void onClick(int position) {
         if (list.get(position).getLatitude() != null && list.get(position).getLongitude() != null) {
-            aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(list.get(position).getLatitude()), Double.parseDouble(list.get(position).getLongitude())), 19));
+            Intent intent = new Intent(this, RouteNaviActivity.class);
+            intent.putExtra("gps", false);
+            intent.putExtra("start", new NaviLatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude()));
+            intent.putExtra("end", new NaviLatLng(Double.parseDouble(list.get(position).getLatitude()), Double.parseDouble(list.get(position).getLongitude())));
+            startActivity(intent);
+//            aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(list.get(position).getLatitude()), Double.parseDouble(list.get(position).getLongitude())), 19));
         } else {
             ToastUtil.showToastS(ReleteLocationActivity.this, "该勘探点没有位置信息(发布坐标),需要导航请联系项目负责人");
         }

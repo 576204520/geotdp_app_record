@@ -40,8 +40,7 @@
                     android:hint="起始深度*"
                     android:phoneNumber="true"
                     app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="起始深度*"
-                    app:met_iconLeft="@mipmap/ai_icon_shendu" />
+                    app:met_floatingLabelText="起始深度*" />
 
                 <com.cj.record.views.MaterialEditTextElevation
                     android:id="@+id/record_endDepth"
@@ -52,8 +51,7 @@
                     android:phoneNumber="true"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelAlwaysShown="true"
-                    app:met_floatingLabelText="终止深度*"
-                    app:met_iconLeft="@mipmap/ic_to_grey600_24dp" />
+                    app:met_floatingLabelText="终止深度*" />
             </LinearLayout>
 
             <FrameLayout
@@ -70,8 +68,7 @@
                 app:met_clearButton="true"
                 app:met_floatingLabel="highlight"
                 app:met_floatingLabelAlwaysShown="true"
-                app:met_floatingLabelText="记录编号*"
-                app:met_iconLeft="@mipmap/ai_icon_ktnumber" />
+                app:met_floatingLabelText="记录编号*" />
 
             <com.cj.record.views.MaterialEditTextNoEmoji
                 android:id="@+id/record_description"
@@ -81,8 +78,7 @@
                 android:singleLine="true"
                 app:met_clearButton="true"
                 app:met_floatingLabel="highlight"
-                app:met_floatingLabelText="其他描述"
-                app:met_iconLeft="@mipmap/ai_icon_otherdes" />
+                app:met_floatingLabelText="其他描述" />
 
             <net.qiujuer.genius.ui.widget.Button
                 android:id="@+id/record_dptup_btn"

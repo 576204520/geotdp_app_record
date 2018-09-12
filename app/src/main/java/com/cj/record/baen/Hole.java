@@ -119,7 +119,7 @@ public class Hole implements Serializable {
     List<LocalUser> userList; //关联勘察点获取的已关联用户
     List<Record> recordList; //下载hole时，封装数据
     @DatabaseField
-    String uploaded = ""; //0没上传过、1已经上传过
+    String uploaded = "0"; //0没上传过、1已经上传过
     int userCount;//relateHoleDialog 中对list进行排序
     @DatabaseField
     String downloadID = "";         //下载数据的id

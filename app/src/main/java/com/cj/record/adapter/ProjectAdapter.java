@@ -12,7 +12,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cj.record.R;
+import com.cj.record.baen.Hole;
 import com.cj.record.baen.Project;
+import com.cj.record.db.HoleDao;
 import com.cj.record.slide.AbstractSlideExpandableListAdapter;
 import com.cj.record.utils.L;
 
@@ -34,6 +36,7 @@ public class ProjectAdapter extends AbstractSlideExpandableListAdapter<ProjectAd
     private Context mContext;
     private LayoutInflater inflater;
     private List<MyHolder> holderList;
+    private HoleDao holeDao;
     public View view;
 
     public ProjectAdapter(Context context, List<Project> list) {
@@ -42,6 +45,7 @@ public class ProjectAdapter extends AbstractSlideExpandableListAdapter<ProjectAd
         inflater = LayoutInflater.from(mContext);
         holderList = new ArrayList<>();
         setItemExpandCollapseListener(this);
+        holeDao = new HoleDao(context);
     }
 
     @Override
@@ -58,7 +62,8 @@ public class ProjectAdapter extends AbstractSlideExpandableListAdapter<ProjectAd
         holderList.add(myHolder);
         myHolder.projectFullName.setText(project.getFullName());
         myHolder.projectUpdateTime.setText("项目时间:" + project.getCreateTime());
-        myHolder.projectHoleNumber.setText("钻孔数:" + project.getHoleCount());
+        List<Hole> holes = holeDao.getHoleListByProjectID(project.getId());
+        myHolder.projectHoleNumber.setText("钻孔数:" + holes.size());
         //钻孔编号
         if (TextUtils.isEmpty(project.getCode())) {
             myHolder.projectCode.setText("");

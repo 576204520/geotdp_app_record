@@ -10,8 +10,7 @@
         android:id="@+id/technician_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="工程师"
+        android:hint="项目工程师"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="工程师"
-        app:met_iconLeft="@mipmap/ic_fullscreen_grey600_24dp" />
+        app:met_floatingLabelText="项目工程师"/>
 </LinearLayout>

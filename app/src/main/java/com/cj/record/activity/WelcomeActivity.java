@@ -76,17 +76,17 @@ public class WelcomeActivity extends BaseActivity {
                         switch (permission.name) {
                             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                                 if (permission.granted) {
-                                    // 检查userid是否存在
-                                    String userID = (String) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_ID, "");
-                                    String email = (String) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_EMAIL, "");
-                                    String realName = (String) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_REALNAME, "");
-                                    //添加到base里，全局用
-                                    if (TextUtils.isEmpty(userID) || TextUtils.isEmpty(email) || TextUtils.isEmpty(realName)) {
-                                        startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
-                                    } else {
+                                    //检查是否是自动登陆
+                                    boolean isAuto = (boolean) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_AUTO,false);
+                                    if(isAuto){
+                                        // 检查userid是否存在
+                                        String userID = (String) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_ID, "");
                                         BaseActivity.userID = userID;
                                         startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+                                    }else{
+                                        startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
                                     }
+
                                     finish();
                                 } else if (permission.shouldShowRequestPermissionRationale) {
                                     ToastUtil.showToastS(mContext, "取消存储授权,不能存储图片文件");

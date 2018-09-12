@@ -114,7 +114,7 @@
                 style="@style/changjing_item_title"
                 android:layout_gravity="start|center_vertical"
                 android:layout_marginStart="14dp"
-                android:text="负责人" />
+                android:text="项目负责人" />
 
             <TextView
                 android:id="@+id/scene_fuze"
@@ -133,7 +133,7 @@
                 style="@style/changjing_item_title"
                 android:layout_gravity="start|center_vertical"
                 android:layout_marginStart="14dp"
-                android:text="工程师" />
+                android:text="项目工程师" />
 
             <TextView
                 android:id="@+id/scene_gongcheng"

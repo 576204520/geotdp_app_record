@@ -12,8 +12,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/hint_record_layer_kwzc"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="@string/label_record_layer_kwzc"
-        app:met_iconLeft="@mipmap/ai_icon_kwzucheng" />
+        app:met_floatingLabelText="@string/label_record_layer_kwzc"/>
 
     <com.cj.record.views.MaterialBetterSpinner
         android:id="@+id/sprYs"
@@ -21,8 +20,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/hint_record_layer_ys"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="@string/label_record_layer_ys"
-        app:met_iconLeft="@mipmap/ai_icon_color" />
+        app:met_floatingLabelText="@string/label_record_layer_ys" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,8 +34,7 @@
             android:layout_weight="0.5"
             android:hint="@string/hint_record_layer_kljp"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="@string/label_record_layer_kljp"
-            app:met_iconLeft="@mipmap/ai_icon_kljipei" />
+            app:met_floatingLabelText="@string/label_record_layer_kljp" />
 
         <com.cj.record.views.MaterialBetterSpinner
             android:id="@+id/sprMsd"
@@ -46,8 +43,7 @@
             android:layout_weight="0.5"
             android:hint="@string/hint_record_layer_msd"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="@string/label_record_layer_msd"
-            app:met_iconLeft="@mipmap/ai_icon_mishidu" />
+            app:met_floatingLabelText="@string/label_record_layer_msd" />
 
     </LinearLayout>
 
@@ -57,8 +53,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/hint_record_layer_klxz"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="@string/label_record_layer_klxz"
-        app:met_iconLeft="@mipmap/ai_icon_klxingzhuang" />
+        app:met_floatingLabelText="@string/label_record_layer_klxz" />
 
     <com.cj.record.views.MaterialBetterSpinner
         android:id="@+id/sprSd"
@@ -66,8 +61,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/hint_record_layer_sd"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="@string/label_record_layer_sd"
-        app:met_iconLeft="@mipmap/ai_icon_shidu" />
+        app:met_floatingLabelText="@string/label_record_layer_sd" />
 
     <com.cj.record.views.MaterialBetterSpinner
         android:id="@+id/sprJc"
@@ -75,8 +69,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/hint_record_layer_jc"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="@string/label_record_layer_jc"
-        app:met_iconLeft="@mipmap/ai_icon_jiaceng" />
+        app:met_floatingLabelText="@string/label_record_layer_jc" />
 
 
 </LinearLayout>

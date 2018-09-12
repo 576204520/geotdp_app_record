@@ -18,8 +18,7 @@
             android:hint="@string/hint_record_layer_type"
             app:met_baseColor="@android:color/holo_red_light"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="@string/label_record_layer_type"
-            app:met_iconLeft="@mipmap/ai_icon_yantufenlei" />
+            app:met_floatingLabelText="@string/label_record_layer_type"/>
 
         <com.cj.record.views.MaterialBetterSpinner
             android:id="@+id/sprName"
@@ -29,8 +28,7 @@
             android:hint="@string/hint_record_layer_name"
             app:met_baseColor="@android:color/holo_red_light"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="@string/label_record_layer_name"
-            app:met_iconLeft="@mipmap/ai_icon_yantufenlei" />
+            app:met_floatingLabelText="@string/label_record_layer_name" />
     </LinearLayout>
 
     <LinearLayout
@@ -51,8 +49,7 @@
             android:maxLength="3"
             app:met_clearButton="false"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="主层"
-            app:met_iconLeft="@mipmap/ai_icon_ktnumber" />
+            app:met_floatingLabelText="主层" />
 
         <com.cj.record.views.MaterialEditTextNoEmoji
             android:id="@+id/subLayerCode"
@@ -65,8 +62,7 @@
             android:lines="1"
             android:maxLength="3"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="亚层"
-            app:met_iconLeft="@mipmap/ai_icon_ktnumber" />
+            app:met_floatingLabelText="亚层" />
 
         <com.cj.record.views.MaterialEditTextNoEmoji
             android:id="@+id/secondSubLayerCode"
@@ -80,8 +76,7 @@
             android:maxLength="3"
             app:met_clearButton="false"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="次压层"
-            app:met_iconLeft="@mipmap/ai_icon_ktnumber" />
+            app:met_floatingLabelText="次压层" />
     </LinearLayout>
 
     <FrameLayout
@@ -97,8 +92,7 @@
         android:hint="@string/hint_record_layer_causes"
         android:phoneNumber="true"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="@string/hint_record_layer_causes"
-        app:met_iconLeft="@mipmap/ai_icon_dizhichengyin" />
+        app:met_floatingLabelText="@string/hint_record_layer_causes" />
 
     <com.cj.record.views.MaterialBetterSpinner
         android:id="@+id/edtEra"
@@ -107,6 +101,5 @@
         android:layout_weight="0.5"
         android:hint="@string/hint_record_layer_era"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="@string/label_record_layer_era"
-        app:met_iconLeft="@mipmap/ai_icon_dizhiyears" />
+        app:met_floatingLabelText="@string/label_record_layer_era"/>
 </LinearLayout>

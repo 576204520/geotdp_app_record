@@ -13,8 +13,7 @@
         android:phoneNumber="true"
         app:met_floatingLabel="highlight"
         app:met_baseColor="@android:color/holo_red_light"
-        app:met_floatingLabelText="钻杆长度"
-        app:met_iconLeft="@mipmap/ai_icon_zuanchang" />
+        app:met_floatingLabelText="钻杆长度" />
 
 
     <LinearLayout
@@ -30,8 +29,7 @@
             android:layout_weight="1"
             android:hint="预打起始"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="预打起始"
-            app:met_iconLeft="@mipmap/ai_icon_shendu" />
+            app:met_floatingLabelText="预打起始" />
 
 
         <com.cj.record.views.MaterialEditTextElevation
@@ -42,8 +40,7 @@
             android:hint="预打终止"
             android:phoneNumber="true"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="预打终止"
-            app:met_iconLeft="@mipmap/ic_to_grey600_24dp" />
+            app:met_floatingLabelText="预打终止" />
 
 
     </LinearLayout>
@@ -57,8 +54,7 @@
         android:hint="预打击数"
         android:phoneNumber="true"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="预打击数"
-        app:met_iconLeft="@mipmap/ai_icon_jishu" />
+        app:met_floatingLabelText="预打击数" />
 
 
     <LinearLayout
@@ -75,8 +71,7 @@
             android:enabled="false"
             android:hint="一起始"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="一起始"
-            app:met_iconLeft="@mipmap/ai_icon_shendu" />
+            app:met_floatingLabelText="一起始" />
 
 
         <com.cj.record.views.MaterialEditTextElevation
@@ -87,8 +82,7 @@
             android:hint="一终止"
             android:phoneNumber="true"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="一终止"
-            app:met_iconLeft="@mipmap/ic_to_grey600_24dp" />
+            app:met_floatingLabelText="一终止" />
         <!--
             app:met_iconLeft="@drawable/ic_fullscreen_grey600_24dp"  -->
 
@@ -103,8 +97,7 @@
         android:hint="一击数"
         android:phoneNumber="true"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="一击数"
-        app:met_iconLeft="@mipmap/ai_icon_jishu" />
+        app:met_floatingLabelText="一击数" />
 
     <LinearLayout
         android:id="@+id/lltRow3"
@@ -122,8 +115,7 @@
             android:enabled="false"
             android:hint="二起始"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="二起始"
-            app:met_iconLeft="@mipmap/ai_icon_shendu" />
+            app:met_floatingLabelText="二起始" />
 
         <com.cj.record.views.MaterialEditTextElevation
             android:id="@+id/edtEnd3"
@@ -133,8 +125,7 @@
             android:hint="二终止"
             android:phoneNumber="true"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="二终止"
-            app:met_iconLeft="@mipmap/ic_to_grey600_24dp" />
+            app:met_floatingLabelText="二终止" />
 
 
     </LinearLayout>
@@ -148,8 +139,7 @@
         android:hint="二击数"
         android:phoneNumber="true"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="二击数"
-        app:met_iconLeft="@mipmap/ai_icon_jishu" />
+        app:met_floatingLabelText="二击数"/>
 
     <LinearLayout
         android:id="@+id/lltRow4"
@@ -167,8 +157,7 @@
             android:enabled="false"
             android:hint="三起始"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="三起始"
-            app:met_iconLeft="@mipmap/ai_icon_shendu" />
+            app:met_floatingLabelText="三起始" />
 
         <com.cj.record.views.MaterialEditTextElevation
             android:id="@+id/edtEnd4"
@@ -178,8 +167,7 @@
             android:hint="三终止"
             android:phoneNumber="true"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="三终止"
-            app:met_iconLeft="@mipmap/ic_to_grey600_24dp" />
+            app:met_floatingLabelText="三终止" />
 
 
     </LinearLayout>
@@ -193,8 +181,7 @@
         android:hint="三击数"
         android:phoneNumber="true"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="三击数"
-        app:met_iconLeft="@mipmap/ai_icon_jishu" />
+        app:met_floatingLabelText="三击数"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -211,8 +198,7 @@
             android:hint="进尺和"
             android:phoneNumber="true"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="进尺和"
-            app:met_iconLeft="@mipmap/ai_icon_zonghe" />
+            app:met_floatingLabelText="进尺和" />
 
         <com.cj.record.views.MaterialEditTextInt
             android:id="@+id/edtBlowCount"
@@ -221,7 +207,6 @@
             android:layout_marginLeft="4dp"
             android:layout_weight="1"
             android:enabled="false"
-            app:met_iconLeft="@mipmap/ai_icon_zonghe"
             android:hint="击数和"
             android:phoneNumber="true"
             app:met_floatingLabel="highlight"

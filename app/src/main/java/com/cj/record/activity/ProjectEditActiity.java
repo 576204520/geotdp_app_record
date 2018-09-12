@@ -20,6 +20,7 @@ import com.cj.record.db.HoleDao;
 import com.cj.record.db.MediaDao;
 import com.cj.record.db.ProjectDao;
 import com.cj.record.db.RecordDao;
+import com.cj.record.utils.Common;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
@@ -75,6 +76,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
     private Project project;
     private String userID;
     private ObsUtils obsUtils;
+    private String oldNumber;
 
     @Override
     public int getLayoutId() {
@@ -104,7 +106,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
         projecEditNumber.setText(project.getSerialNumber());
         projecEditName.setText(project.getFullName());
         projecEditCode.setText(project.getCode());
-        projecEditLeader.setText(project.getRealName());
+        projecEditLeader.setText(project.getLeaderName());
         projecEditCompany.setText(project.getCompanyName());
         projecEditOwner.setText(project.getOwner());
         projecEditAddress.setText(project.getAddress());
@@ -128,7 +130,10 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
      * 关联获取项目信息
      */
     public void doRelevance() {
-
+        //检查网络
+        if(!haveNet()){
+            return;
+        }
         String number = projecEditNumber.getText().toString().trim();
         if (TextUtils.isEmpty(number)) {
             ToastUtil.showToastS(mContext, "请输入项目序列号");
@@ -137,7 +142,6 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
         boolean isHave = projectDao.checkNumber(userID, number, project.getId());
         if (isHave) {
             ToastUtil.showToastS(mContext, "该序列号本地已经存在");
-            dismissPPW();
             return;
         }
         Map<String, String> map = new HashMap<>();
@@ -157,9 +161,9 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                             String result = jsonResult.getResult();
                             Project mProject = gson.fromJson(result.toString(), Project.class);
                             project.setSerialNumber(mProject.getSerialNumber());
-                            project.setFullName(mProject.getFullName());
+                            project.setFullName(Common.replaceAll(mProject.getFullName()));
                             project.setCode(mProject.getCode());
-                            project.setRealName(mProject.getRealName());
+                            project.setLeaderName(mProject.getRealName());
                             project.setCompanyName(mProject.getCompanyName());
                             project.setOwner(mProject.getOwner());
                             project.setAddress(mProject.getProName() + mProject.getCityName() + "" + mProject.getDisName() + mProject.getAddress());
@@ -202,6 +206,8 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                     ToastUtil.showToastS(mContext, "请输入项目名称");
                     return true;
                 }
+                project.setFullName(projecEditName.getText().toString());
+                projectDao.update(project);
                 setResult(RESULT_OK);
                 finish();
                 return true;
@@ -232,6 +238,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                 if (isEdit) {
                     //true编辑
                     project = (Project) getIntent().getSerializableExtra(MainActivity.PROJECT);
+                    oldNumber = project.getSerialNumber();
                 } else {
                     //false添加
                     project = new Project(mContext);
@@ -241,11 +248,13 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                 break;
             case 2:
                 if (isEdit) {
-                    project.setState("1");
+                    if (!TextUtils.isEmpty(oldNumber) && !oldNumber.equals(project.getSerialNumber())) {
+                        project.setState("1");
+                        holeDao.updateState(project.getId());
+                        recordDao.updateState(project.getId());
+                        mediaDao.updateState(project.getId());
+                    }
                     projectDao.update(project);
-                    holeDao.updateState(project.getId());
-                    recordDao.updateState(project.getId());
-                    mediaDao.updateState(project.getId());
                 } else {
                     projectDao.add(project);
                 }

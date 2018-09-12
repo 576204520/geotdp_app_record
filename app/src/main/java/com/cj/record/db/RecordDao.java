@@ -180,6 +180,21 @@ public class RecordDao {
         return null;
     }
 
+    /**
+     * 根据holeiID和类别查询record
+     */
+    public List<Record> getRecordListByType(String holeID, String type) {
+        try {
+            return recordDao.queryBuilder()
+                    .where().eq("holeID", holeID)
+                    .and().eq("type", type)
+                    .and().eq("updateID", "")
+                    .query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /**
      * 查询scene下record
@@ -456,5 +471,39 @@ public class RecordDao {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public int checkZK(String holeID) {
+        int complate = 0;
+        List<Record> jz = getRecordListByType(holeID, "机长");
+        List<Record> zj = getRecordListByType(holeID, "钻机");
+        List<Record> msy = getRecordListByType(holeID, "描述员");
+        List<Record> cj = getRecordListByType(holeID, "场景");
+        if (jz != null && jz.size() > 0) {
+            complate++;
+        }
+        if (zj != null && zj.size() > 0) {
+            complate++;
+        }
+        if (msy != null && msy.size() > 0) {
+            complate++;
+        }
+        if (cj != null && cj.size() > 0) {
+            complate++;
+        }
+        return complate;
+    }
+
+    public int checkTJ(String holeID) {
+        int complate = 0;
+        List<Record> msy = getRecordListByType(holeID, "描述员");
+        List<Record> cj = getRecordListByType(holeID, "场景");
+        if (msy != null && msy.size() > 0) {
+            complate++;
+        }
+        if (cj != null && cj.size() > 0) {
+            complate++;
+        }
+        return complate;
     }
 }

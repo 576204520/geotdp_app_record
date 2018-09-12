@@ -13,8 +13,7 @@
         android:layout_weight="0.5"
         android:hint="@string/hint_record_layer_zycf"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="@string/label_record_layer_zycf"
-        app:met_iconLeft="@mipmap/ai_icon_zhuyao" />
+        app:met_floatingLabelText="@string/label_record_layer_zycf"/>
 
     <com.cj.record.views.MaterialBetterSpinner
         android:id="@+id/sprCycf"
@@ -23,8 +22,7 @@
         android:layout_weight="0.5"
         android:hint="@string/hint_record_layer_cycf"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="@string/label_record_layer_cycf"
-        app:met_iconLeft="@mipmap/ai_icon_ciyao" />
+        app:met_floatingLabelText="@string/label_record_layer_cycf" />
 
     <com.cj.record.views.MaterialBetterSpinner
         android:id="@+id/sprYs"
@@ -32,8 +30,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/hint_record_layer_ys"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="@string/label_record_layer_ys"
-        app:met_iconLeft="@mipmap/ai_icon_color" />
+        app:met_floatingLabelText="@string/label_record_layer_ys"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,8 +44,7 @@
             android:layout_weight="0.5"
             android:hint="@string/hint_record_layer_djnd"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="@string/label_record_layer_djnd"
-            app:met_iconLeft="@mipmap/ai_icon_duijiyears" />
+            app:met_floatingLabelText="@string/label_record_layer_djnd"/>
 
         <com.cj.record.views.MaterialBetterSpinner
             android:id="@+id/sprMsd"
@@ -57,8 +53,7 @@
             android:layout_weight="0.5"
             android:hint="@string/hint_record_layer_msd"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="@string/label_record_layer_msd"
-            app:met_iconLeft="@mipmap/ai_icon_mishidu" />
+            app:met_floatingLabelText="@string/label_record_layer_msd" />
     </LinearLayout>
 
     <LinearLayout
@@ -72,8 +67,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_record_layer_jyx"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="@string/label_record_layer_jyx"
-            app:met_iconLeft="@mipmap/ai_icon_junyun" />
+            app:met_floatingLabelText="@string/label_record_layer_jyx" />
 
     </LinearLayout>
 </LinearLayout>

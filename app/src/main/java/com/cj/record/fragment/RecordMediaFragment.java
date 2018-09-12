@@ -78,7 +78,7 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
     RecyclerView recyclerVideo;
 
     private MediaAdapter mediaAdapter, mediaAdapter2;
-    private List<Media> photoList;
+    public List<Media> photoList;
     private List<Media> videoList;
     private ObsUtils obsUtils;
     private Record record;
@@ -192,13 +192,12 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
 
     @Override
     public void goVideo(int position) {
+        if (!Common.haveGps(mActivity)) {
+            return;
+        }
         amapLocation = locationFragment.aMapLocation;
         if (null == amapLocation) {
             ToastUtil.showToastS(mActivity, "未获取定位信息");
-            return;
-        }
-        if (!Common.gPSIsOPen(mActivity)) {
-            ToastUtil.showToastS(mActivity, "GPS未开启，请开启以提高精度");
             return;
         }
         openVideo();
@@ -207,13 +206,12 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
 
     @Override
     public void goCamera(int position) {
+        if (!Common.haveGps(mActivity)) {
+            return;
+        }
         amapLocation = locationFragment.aMapLocation;
         if (null == amapLocation) {
             ToastUtil.showToastS(mActivity, "未获取定位信息");
-            return;
-        }
-        if (!Common.gPSIsOPen(mActivity)) {
-            ToastUtil.showToastS(mActivity, "GPS未开启，请开启以提高精度");
             return;
         }
         openCamera();

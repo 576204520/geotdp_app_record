@@ -1,9 +1,11 @@
 package com.cj.record.activity;
 
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -16,6 +18,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cj.record.db.RecordDao;
+import com.cj.record.utils.L;
 import com.cj.record.R;
 import com.cj.record.activity.base.BaseActivity;
 import com.cj.record.baen.DropItemVo;
@@ -102,6 +106,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     private boolean isEdit;//true编辑、false添加
     private Hole hole;
     private HoleDao holeDao;
+    private RecordDao recordDao;
     private Project project;
     private ProjectDao projectDao;
     private List<DropItemVo> sprTypeList;
@@ -127,6 +132,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                 isEdit = getIntent().getBooleanExtra(MainActivity.FROMTYPE, false);
                 project = (Project) getIntent().getSerializableExtra(MainActivity.PROJECT);
                 holeDao = new HoleDao(this);
+                recordDao = new RecordDao(this);
                 projectDao = new ProjectDao(this);
                 if (isEdit) {
                     //true编辑
@@ -135,8 +141,6 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                     //false添加
                     hole = new Hole(mContext, project.getId());
                     holeDao.add(hole);
-                    project.setHoleCount2Int(project.getHoleCount2Int() + 1);
-                    projectDao.update(project);
                 }
                 break;
         }
@@ -239,29 +243,92 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     @Override
     public void onBackPressed() {
         //添加模式，为定位并且未关联，退出要删除该孔
-        if (!isEdit && TextUtils.isEmpty(hole.getRelateID()) && hole.getLocationState().equals("0")) {
+        if (!isEdit && TextUtils.isEmpty(hole.getRelateID()) && TextUtils.isEmpty(hole.getRelateCode()) && hole.getLocationState().equals("0")) {
             holeDao.delete(hole);
+        }
+        //未关联并且已经定位的情况，退出时，判断记录数据是否完善
+        if (TextUtils.isEmpty(hole.getRelateID()) && TextUtils.isEmpty(hole.getRelateCode()) && "1".equals(hole.getLocationState())) {
+            int complete;
+            if ("探井".equals(hole.getType())) {
+                complete = recordDao.checkTJ(hole.getId());
+                if (complete < 2) {
+                    finishDialog("勘探点数据不完整，请完善（描述员、场景）记录");
+                    return;
+                }
+            } else {
+                complete = recordDao.checkZK(hole.getId());
+                if (complete < 4) {
+                    finishDialog("勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录");
+                    return;
+                }
+            }
         }
         setResult(RESULT_OK);
         //该方法自动调用finish()
         super.onBackPressed();
     }
 
+    /**
+     * 退出提示
+     */
+    private void finishDialog(String msg) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.hint)
+                .setMessage(msg)
+                .setNegativeButton("继续编辑", null)
+                .setPositiveButton("删除勘探点并退出",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                holeDao.delete(hole);
+                                setResult(RESULT_OK);
+                                finish();
+                            }
+                        })
+                .show();
+    }
+
     private void save() {
-            String code = holeCode.getText().toString().trim();
-            if (TextUtils.isEmpty(code)) {
-                ToastUtil.showToastS(HoleEditActivity.this, "请输入钻孔编号");
-                return;
+        String code = holeCode.getText().toString().trim();
+        if (TextUtils.isEmpty(code)) {
+            ToastUtil.showToastS(HoleEditActivity.this, "请输入钻孔编号");
+            return;
+        }
+        //判断hole完整性，钻孔（描述员、司钻员、钻机、场景）、探井（描述员、场景）
+        if ("1".equals(hole.getLocationState())) {
+            int complete;
+            if ("探井".equals(hole.getType())) {
+                complete = recordDao.checkTJ(hole.getId());
+                if (complete < 2) {
+                    showComplateDialog("勘探点数据不完整，请完善（描述员、场景）记录");
+                    return;
+                }
+            } else {
+                complete = recordDao.checkZK(hole.getId());
+                if (complete < 4) {
+                    showComplateDialog("勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录");
+                    return;
+                }
             }
-            hole.setCode(holeCode.getText().toString().trim());
-            hole.setType(holeType.getText().toString());
-            hole.setElevation(holeElevation.getText().toString());
-            hole.setDepth(holeDepth.getText().toString());
-            hole.setUpdateTime(DateUtil.date2Str(new Date()));
-            hole.setRadius(holeRadius.getText().toString());
-            holeDao.add(hole);
-            setResult(RESULT_OK);
-            finish();
+        }
+        hole.setCode(holeCode.getText().toString().trim());
+        hole.setType(holeType.getText().toString());
+        hole.setElevation(holeElevation.getText().toString());
+        hole.setDepth(holeDepth.getText().toString());
+        hole.setUpdateTime(DateUtil.date2Str(new Date()));
+        hole.setRadius(holeRadius.getText().toString());
+        holeDao.add(hole);
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    public void showComplateDialog(String msg) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.hint)
+                .setMessage(msg)
+                .setNegativeButton(R.string.record_camera_cancel_dialog_yes, null)
+                .setCancelable(false)
+                .show();
     }
 
     @OnClick({R.id.hole_doRelate, R.id.hole_doLocation})
@@ -271,8 +338,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                 doRelete();
                 break;
             case R.id.hole_doLocation:
-                if (!Common.gPSIsOPen(HoleEditActivity.this)) {
-                    ToastUtil.showToastS(HoleEditActivity.this, "GPS未开启，请开启以提高精度");
+                if (!Common.haveGps(this)) {
                     return;
                 }
                 //判断定位信息是否为空
@@ -414,6 +480,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     MaterialBetterSpinner.OnItemClickListener sprTypeListener = new MaterialBetterSpinner.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            hole.setType(sprTypeList.get(i).getName());
             initSenceFragment(sprTypeList.get(i).getName());
         }
     };

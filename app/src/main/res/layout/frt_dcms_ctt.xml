@@ -16,8 +16,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_record_layer_wzcf"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="@string/label_record_layer_wzcf"
-            app:met_iconLeft="@mipmap/ai_icon_zhuangtai" />
+            app:met_floatingLabelText="@string/label_record_layer_wzcf"/>
 
     </LinearLayout>
 
@@ -27,8 +26,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/hint_record_layer_ys"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="@string/label_record_layer_ys"
-        app:met_iconLeft="@mipmap/ai_icon_color" />
+        app:met_floatingLabelText="@string/label_record_layer_ys"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,8 +40,7 @@
             android:layout_weight="0.5"
             android:hint="@string/hint_record_layer_djnd"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="@string/label_record_layer_djnd"
-            app:met_iconLeft="@mipmap/ai_icon_duijiyears" />
+            app:met_floatingLabelText="@string/label_record_layer_djnd" />
 
         <com.cj.record.views.MaterialBetterSpinner
             android:id="@+id/sprMsd"
@@ -52,8 +49,7 @@
             android:layout_weight="0.5"
             android:hint="@string/hint_record_layer_msd"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="@string/label_record_layer_msd"
-            app:met_iconLeft="@mipmap/ai_icon_mishidu" />
+            app:met_floatingLabelText="@string/label_record_layer_msd" />
     </LinearLayout>
 
     <LinearLayout
@@ -67,8 +63,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_record_layer_jyx"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="@string/label_record_layer_jyx"
-            app:met_iconLeft="@mipmap/ai_icon_junyun" />
+            app:met_floatingLabelText="@string/label_record_layer_jyx"/>
 
     </LinearLayout>
 </LinearLayout>

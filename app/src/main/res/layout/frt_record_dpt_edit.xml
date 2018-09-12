@@ -14,8 +14,7 @@
         android:phoneNumber="true"
         app:met_baseColor="@android:color/holo_red_light"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="钻杆长度"
-        app:met_iconLeft="@mipmap/ai_icon_zuanchang" />
+        app:met_floatingLabelText="钻杆长度" />
 
     <com.cj.record.views.MaterialBetterSpinner
         android:id="@+id/sprPowerType"
@@ -24,8 +23,7 @@
         android:layout_margin="4dp"
         android:hint="动探类型"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="动探类型"
-        app:met_iconLeft="@mipmap/ai_icon_kttype" />
+        app:met_floatingLabelText="动探类型" />
 
 
     <LinearLayout
@@ -44,8 +42,7 @@
             android:inputType="number"
             android:maxLength="6"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="起始"
-            app:met_iconLeft="@mipmap/ai_icon_shendu" />
+            app:met_floatingLabelText="起始" />
 
         <com.cj.record.views.MaterialEditTextElevation
             android:id="@+id/edtEnd"
@@ -57,8 +54,7 @@
             android:inputType="number"
             android:maxLength="6"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="终止"
-            app:met_iconLeft="@mipmap/ic_to_grey600_24dp" />
+            app:met_floatingLabelText="终止" />
 
 
     </LinearLayout>
@@ -75,7 +71,6 @@
         android:maxLength="3"
         app:met_baseColor="@android:color/holo_red_light"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="击数"
-        app:met_iconLeft="@mipmap/ai_icon_jishu" />
+        app:met_floatingLabelText="击数" />
 
 </LinearLayout>

@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/hole_title"
-        layout="@layout/incule_toolbar" />
+     layout="@layout/incule_toolbar" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -32,8 +32,7 @@
                 app:met_baseColor="@android:color/holo_red_light"
                 app:met_clearButton="true"
                 app:met_floatingLabel="highlight"
-                app:met_floatingLabelText="勘探点编号(本地)"
-                app:met_iconLeft="@mipmap/ai_icon_ktxl" />
+                app:met_floatingLabelText="勘探点编号(本地)" />
 
             <com.cj.record.views.MaterialEditTextNoEmoji
                 android:id="@+id/hole_code_relate"
@@ -44,8 +43,7 @@
                 android:textSize="14sp"
                 app:met_clearButton="true"
                 app:met_floatingLabel="highlight"
-                app:met_floatingLabelText="关联勘探点编号(平台)"
-                app:met_iconLeft="@mipmap/ai_icon_ktxl" />
+                app:met_floatingLabelText="关联勘探点编号(平台)"/>
 
             <net.qiujuer.genius.ui.widget.Button
                 android:id="@+id/hole_doRelate"
@@ -64,8 +62,7 @@
                 android:hint="勘探点类型"
                 android:textSize="14sp"
                 app:met_floatingLabel="highlight"
-                app:met_floatingLabelText="勘探点类型"
-                app:met_iconLeft="@mipmap/ai_icon_kttype" />
+                app:met_floatingLabelText="勘探点类型" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -80,8 +77,7 @@
                     android:hint="高程"
                     android:textSize="14sp"
                     app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="高程"
-                    app:met_iconLeft="@mipmap/ai_icon_ktheight" />
+                    app:met_floatingLabelText="高程" />
 
                 <com.cj.record.views.MaterialEditTextElevation
                     android:id="@+id/hole_depth"
@@ -91,8 +87,7 @@
                     android:hint="设计孔高"
                     android:textSize="14sp"
                     app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="设计孔高"
-                    app:met_iconLeft="@mipmap/ai_icon_ktkongshen" />
+                    app:met_floatingLabelText="设计孔高" />
 
             </LinearLayout>
 
@@ -161,8 +156,7 @@
                     android:hint="未定位"
                     android:textSize="14sp"
                     app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="基准纬度"
-                    app:met_iconLeft="@mipmap/ai_icon_jzlatitude" />
+                    app:met_floatingLabelText="基准纬度" />
 
 
                 <com.cj.record.views.MaterialEditTextNoEmoji
@@ -173,8 +167,7 @@
                     android:hint="未定位"
                     android:textSize="14sp"
                     app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="基准经度"
-                    app:met_iconLeft="@mipmap/ai_icon_jzlongitude" />
+                    app:met_floatingLabelText="基准经度" />
 
 
                 <com.cj.record.views.MaterialEditTextNoEmoji
@@ -186,8 +179,7 @@
                     android:textColor="@color/colorBlack"
                     android:textSize="14sp"
                     app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="基准时间"
-                    app:met_iconLeft="@mipmap/ai_icon_jztime" />
+                    app:met_floatingLabelText="基准时间" />
 
                 <com.cj.record.views.MaterialEditTextNoEmoji
                     android:id="@+id/hole_radius"
@@ -197,8 +189,7 @@
                     android:hint="未定位"
                     android:textSize="14sp"
                     app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="警示范围(m)"
-                    app:met_iconLeft="@mipmap/ai_icon_jsscope" />
+                    app:met_floatingLabelText="警示范围(m)" />
             </LinearLayout>
 
             <FrameLayout

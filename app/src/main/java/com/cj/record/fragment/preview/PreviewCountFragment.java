@@ -156,23 +156,23 @@ public class PreviewCountFragment extends Fragment {
                 GpsDao gpsDao = new GpsDao(context);
                 //找出所有的gps的偏移，并计算个数和所占比例
                 List<Gps> gpsList = gpsDao.getGpsListByHoleID(hole.getId());
-                double p1 = 0;
-                double p2 = 0;
-                double p3 = 0;
-                double p4 = 0;
+                int p1 = 0;
+                int p2 = 0;
+                int p3 = 0;
+                int p4 = 0;
                 if (null != gpsList) {
                     for (Gps gps : gpsList) {
                         double l = Double.valueOf(gps.getDistance());
-                        if (l <= 5) {
+                        if (l <= 100) {
                             p1++;
                         }
-                        if (5 < l && l <= 15) {
+                        if (100 < l && l <= 200) {
                             p2++;
                         }
-                        if (15 < l && l <= 25) {
+                        if (200 < l && l <= 300) {
                             p3++;
                         }
-                        if (25 < l) {
+                        if (300 < l) {
                             p4++;
                         }
                     }

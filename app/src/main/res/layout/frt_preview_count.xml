@@ -12,6 +12,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="10dp"
             android:orientation="vertical">
 
 
@@ -29,8 +30,7 @@
                     android:hint="描述员"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="描述员"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_describeuser" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary"/>
 
                 <com.cj.record.views.MaterialEditTextNoEmoji
                     android:id="@+id/preview_count_person_num"
@@ -44,8 +44,7 @@
                     android:hint="照片"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="照片数"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_picture" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary"/>
 
 
             </LinearLayout>
@@ -65,8 +64,7 @@
                     android:hint="机长"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="机长"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_commander" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary" />
 
                 <com.cj.record.views.MaterialEditTextNoEmoji
                     android:id="@+id/preview_count_op_num"
@@ -80,8 +78,7 @@
                     android:hint="照片"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="照片数"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_picture" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary" />
             </LinearLayout>
 
             <LinearLayout
@@ -99,8 +96,7 @@
                     android:hint="钻机"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="钻机"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_machine" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary" />
 
                 <com.cj.record.views.MaterialEditTextNoEmoji
                     android:id="@+id/preview_count_oc_num"
@@ -114,8 +110,7 @@
                     android:hint="照片"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="照片数"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_picture" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary" />
 
 
             </LinearLayout>
@@ -134,8 +129,7 @@
                     android:hint="场景"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="场景"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_scene" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary" />
 
                 <com.cj.record.views.MaterialEditTextNoEmoji
                     android:id="@+id/preview_count_scene_num"
@@ -149,8 +143,7 @@
                     android:hint="照片"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="照片数"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_picture" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary"/>
             </LinearLayout>
 
             <LinearLayout
@@ -168,8 +161,7 @@
                     android:hint="回次"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="回次个数"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_huici" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary"/>
 
 
                 <com.cj.record.views.MaterialEditTextNoEmoji
@@ -181,8 +173,7 @@
                     android:hint="岩土"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="岩土个数"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_yantu" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary"/>
 
 
             </LinearLayout>
@@ -202,8 +193,7 @@
                     android:hint="水位"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="水位个数"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_shuiwei" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary"/>
 
 
                 <com.cj.record.views.MaterialEditTextNoEmoji
@@ -215,8 +205,7 @@
                     android:hint="取土"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="取土个数"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_qutu" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary"/>
             </LinearLayout>
 
 
@@ -235,8 +224,7 @@
                     android:hint="取水"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="取水个数"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_qushui" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary" />
 
 
                 <com.cj.record.views.MaterialEditTextNoEmoji
@@ -248,8 +236,7 @@
                     android:hint="动探"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="动探个数"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_dongtan" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary" />
 
 
             </LinearLayout>
@@ -268,8 +255,7 @@
                     android:hint="标贯"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="标贯个数"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_biaoguan" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary" />
 
 
                 <com.cj.record.views.MaterialEditTextNoEmoji
@@ -281,8 +267,7 @@
                     android:hint="照片"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="照片总个数"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_picture" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary" />
             </LinearLayout>
 
             <com.cj.record.views.MaterialEditTextNoEmoji
@@ -293,8 +278,7 @@
                 android:hint="作业起至时间"
                 app:met_floatingLabel="highlight"
                 app:met_floatingLabelText="作业起至时间"
-                app:met_floatingLabelTextColor="@color/colorPrimary"
-                app:met_iconLeft="@mipmap/ai_icon_wordtime" />
+                app:met_floatingLabelTextColor="@color/colorPrimary"/>
 
             <com.cj.record.views.MaterialEditTextNoEmoji
                 android:id="@+id/preview_count_worktime"
@@ -304,8 +288,7 @@
                 android:hint="作业用时"
                 app:met_floatingLabel="highlight"
                 app:met_floatingLabelText="作业用时"
-                app:met_floatingLabelTextColor="@color/colorPrimary"
-                app:met_iconLeft="@mipmap/ai_icon_wordyongshi" />
+                app:met_floatingLabelTextColor="@color/colorPrimary"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -318,11 +301,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:enabled="false"
-                    android:hint="0m~5m"
+                    android:hint="0m~100m"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="偏移基准点0m~5m"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_pianyi" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary"/>
 
 
                 <com.cj.record.views.MaterialEditTextNoEmoji
@@ -331,11 +313,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:enabled="false"
-                    android:hint="5m~15m"
+                    android:hint="100m~200m"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="偏移基准点5m~15m"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_pianyi" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary"/>
 
 
             </LinearLayout>
@@ -351,11 +332,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:enabled="false"
-                    android:hint="15m~25m"
+                    android:hint="200m~300m"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="偏移基准点15m~25m"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_pianyi" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary"/>
 
 
                 <com.cj.record.views.MaterialEditTextNoEmoji
@@ -364,11 +344,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:enabled="false"
-                    android:hint="25m~"
+                    android:hint="300m~"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelText="偏移基准点25m~"
-                    app:met_floatingLabelTextColor="@color/colorPrimary"
-                    app:met_iconLeft="@mipmap/ai_icon_pianyi" />
+                    app:met_floatingLabelTextColor="@color/colorPrimary" />
 
             </LinearLayout>
 

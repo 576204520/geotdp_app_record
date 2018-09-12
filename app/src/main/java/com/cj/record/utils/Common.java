@@ -2,10 +2,14 @@ package com.cj.record.utils;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -95,5 +99,37 @@ public class Common {
             return true;
         }
         return false;
+    }
+    /**
+     * 检查gps
+     */
+    public static boolean haveGps( Context context){
+        if (!Common.gPSIsOPen(context)) {
+            new AlertDialog.Builder(context)
+                    .setTitle("定位服务提示")
+                    .setMessage("GPS未开启,是否进行设置？")
+                    .setNegativeButton("去设置",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                                }
+                            })
+                    .setPositiveButton("取消", null)
+                    .setCancelable(false)
+                    .show();
+            return false;
+        }else{
+            return true;
+        }
+    }
+    public static String replaceAll(String str){
+        return str.replaceAll("&mdash;", "—")
+                .replaceAll("&ldquo;", "“")
+                .replaceAll("&rdquo;", "”")
+                .replaceAll("&lsquo;", "‘")
+                .replaceAll("&rsquo;", "’")
+                .replaceAll("&amp;", "&")
+                .replaceAll("&hellip;", "…");
     }
 }

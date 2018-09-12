@@ -12,64 +12,69 @@
         android:layout_height="wrap_content"
         android:hint="地下水类型"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="地下水类型"
-        app:met_iconLeft="@mipmap/ic_unfold_less_grey600_24dp" />
+        app:met_floatingLabelText="地下水类型" />
 
+    <com.cj.record.views.MaterialEditTextElevation
+        android:id="@+id/edtWaterShow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:hint="初见水位"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="初见水位" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.cj.record.views.MaterialEditTextElevation
-            android:id="@+id/edtWaterShow"
-            android:layout_width="0.0dp"
+        <com.cj.record.views.MaterialEditTextNoEmoji
+            android:id="@+id/edtWaterShowTime"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="初见水位"
+            android:enabled="false"
+            android:hint="初见水位时间"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="初见水位"
-            app:met_iconLeft="@mipmap/ai_icon_chushui" />
-
+            app:met_floatingLabelText="初见水位时间" />
 
         <net.qiujuer.genius.ui.widget.Button
             android:id="@+id/btnAddWaterShow"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:layout_gravity="bottom"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="8dp"
             android:background="@color/colorPrimary"
             android:text="记录时间"
+            android:layout_gravity="bottom"
             android:textColor="#ffffff"
             app:gTouchEffect="ease" />
     </LinearLayout>
 
-    <com.cj.record.views.MaterialEditTextNoEmoji
-        android:id="@+id/edtWaterShowTime"
+
+    <com.cj.record.views.MaterialEditTextElevation
+        android:id="@+id/edtWaterStable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:hint="初见水位时间"
+        android:layout_weight="1"
+        android:hint="稳定水位"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="初见水位时间"
-        app:met_iconLeft="@mipmap/ai_icon_watertime" />
+        app:met_floatingLabelText="稳定水位" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.cj.record.views.MaterialEditTextElevation
-            android:id="@+id/edtWaterStable"
-            android:layout_width="0.0dp"
+        <com.cj.record.views.MaterialEditTextNoEmoji
+            android:id="@+id/edtWaterStableTime"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="稳定水位"
+            android:enabled="false"
+            android:hint="稳定水位时间"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="稳定水位"
-            app:met_iconLeft="@mipmap/ai_icon_wenshui" />
-
+            app:met_floatingLabelText="稳定水位时间" />
 
         <net.qiujuer.genius.ui.widget.Button
             android:id="@+id/btnAddWaterStable"
@@ -84,13 +89,5 @@
             app:gTouchEffect="ease" />
     </LinearLayout>
 
-    <com.cj.record.views.MaterialEditTextNoEmoji
-        android:id="@+id/edtWaterStableTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:hint="稳定水位时间"
-        app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="稳定水位时间"
-        app:met_iconLeft="@mipmap/ai_icon_watertime" />
+
 </LinearLayout>

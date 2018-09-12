@@ -83,13 +83,15 @@ public class UpdateUtil {
                             if (localCode < code) {
                                 if ("2".equals(type)) {
                                     showViesionDialog(content, true, activity);
+
                                 } else {
                                     showViesionDialog(content, false, activity);
                                 }
-                            }
-                            //即使已经是最新，设置页面也要提示出来
-                            if (isSetting) {
-                                ToastUtil.showToastS(activity, jsonResult.getMessage());
+                            }else {
+                                //即使已经是最新，设置页面也要提示出来
+                                if (isSetting) {
+                                    ToastUtil.showToastS(activity, "已是最新版本");
+                                }
                             }
                         } else {
                             ToastUtil.showToastS(activity, jsonResult.getMessage());

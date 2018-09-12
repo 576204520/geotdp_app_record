@@ -77,12 +77,12 @@ public class RecordAdapter extends AbstractSlideExpandableListAdapter<RecordAdap
             myHolder.recordEb.setText("~");
         }
         //岩土顯示分層編號
-        if (record.getType().equals(Record.TYPE_LAYER)) {
-            myHolder.recordLayerCode.setVisibility(View.VISIBLE);
-            myHolder.recordLayerCode.setText("土层编号:" + record.getMainLayerCode() + "-" + record.getSubLayerCode() + "-" + record.getSecondSubLayerCode());
-        } else {
-            myHolder.recordLayerCode.setVisibility(View.GONE);
-        }
+//        if (record.getType().equals(Record.TYPE_LAYER)) {
+//            myHolder.recordLayerCode.setVisibility(View.VISIBLE);
+//            myHolder.recordLayerCode.setText("土层编号:" + record.getMainLayerCode() + "-" + record.getSubLayerCode() + "-" + record.getSecondSubLayerCode());
+//        } else {
+//            myHolder.recordLayerCode.setVisibility(View.GONE);
+//        }
         myHolder.recordDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -109,8 +109,7 @@ public class RecordEditWaterFragment extends RecordBaseFragment {
     }
 
     private boolean isLocation() {
-        if (!Common.gPSIsOPen(mActivity)) {
-            ToastUtil.showToastS(mActivity, "GPS未开启，请开启以提高精度");
+        if (!Common.haveGps(mActivity)) {
             return false;
         }
         amapLocation = locationFragment.aMapLocation;

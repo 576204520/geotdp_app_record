@@ -240,17 +240,12 @@ public class HoleDao {
     }
 
     public boolean checkRelated(String relateID, String projectID) {
-        String userID = (String) SPUtils.get(context, Urls.SPKey.USER_ID, "");
         try {
             List<Hole> list = holeDao.queryBuilder().where().eq("relateID", relateID).and().eq("projectID", projectID).query();
             if (list == null || list.size() == 0) {
                 return false;
             } else {
-                for (Hole hole : list) {
-                    if ("".equals(hole.getUserID()) || hole.getUserID() == null || userID.equals(hole.getUserID())) {
-                        return true;
-                    }
-                }
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -292,4 +287,13 @@ public class HoleDao {
         }
         return null;
     }
+    public Hole getIDByRelate(String relateID, String projectID) {
+        try {
+            return holeDao.queryBuilder().where().eq("relateID", relateID).and().eq("projectID", projectID).queryForFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

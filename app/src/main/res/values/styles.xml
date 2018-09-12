@@ -40,7 +40,6 @@
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:layout_marginTop">10dip</item>
         <item name="android:keyBackground">@drawable/keyboard_key</item>
         <item name="android:keyTextColor">@color/colorWhite</item>
         <item name="android:labelTextSize">24sp</item>

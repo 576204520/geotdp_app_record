@@ -12,6 +12,5 @@
         android:enabled="false"
         android:hint="输入描述员姓名"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="描述员姓名"
-        app:met_iconLeft="@mipmap/ai_icon_commander" />
+        app:met_floatingLabelText="描述员姓名" />
 </LinearLayout>

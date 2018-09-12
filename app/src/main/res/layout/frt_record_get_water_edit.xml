@@ -13,8 +13,7 @@
         android:hint="取水深度"
         android:phoneNumber="true"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="取水深度"
-        app:met_iconLeft="@mipmap/ai_icon_shendu" />
+        app:met_floatingLabelText="取水深度" />
 
     <com.cj.record.views.MaterialBetterSpinner
         android:id="@+id/sprMode"
@@ -22,8 +21,7 @@
         android:layout_height="wrap_content"
         android:hint="取水方式"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="取水方式"
-        app:met_iconLeft="@mipmap/ai_icon_qushui" />
+        app:met_floatingLabelText="取水方式" />
 
 
 </LinearLayout>

@@ -138,7 +138,7 @@ public class LayerDescSstFragment extends RecordBaseFragment {
             @Override
             public void onShow() {
                 if (mycfDialog == null) {
-                    mycfDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_wzcf).items(mycfList)
+                    mycfDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_mycf).items(mycfList)
 
                             .itemsCallbackMultiChoice(new Integer[]{}, new MaterialDialog.ListCallbackMultiChoice() {
                                 @Override
@@ -197,7 +197,7 @@ public class LayerDescSstFragment extends RecordBaseFragment {
             @Override
             public void onShow() {
                 if (jcDialog == null) {
-                    jcDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_wzcf).items(jcList)
+                    jcDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_jc).items(jcList)
 
                             .itemsCallbackMultiChoice(new Integer[]{}, new MaterialDialog.ListCallbackMultiChoice() {
                                 @Override

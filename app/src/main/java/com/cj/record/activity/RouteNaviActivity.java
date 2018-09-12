@@ -3,6 +3,7 @@ package com.cj.record.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.alibaba.idst.nls.internal.utils.L;
 import com.amap.api.navi.AMapNavi;
 import com.amap.api.navi.AMapNaviListener;
 import com.amap.api.navi.AMapNaviView;
@@ -131,42 +132,42 @@ public class RouteNaviActivity extends BaseActivity implements AMapNaviListener,
 
     @Override
     public void onInitNaviSuccess() {
-
+        L.e("onInitNaviSuccess");
     }
 
     @Override
     public void onStartNavi(int i) {
-
+        L.e("onStartNavi");
     }
 
     @Override
     public void onTrafficStatusUpdate() {
-
+        L.e("onTrafficStatusUpdate");
     }
 
     @Override
     public void onLocationChange(AMapNaviLocation aMapNaviLocation) {
-
+        L.e("onLocationChange");
     }
 
     @Override
     public void onGetNavigationText(int i, String s) {
-
+        L.e("onGetNavigationText");
     }
 
     @Override
     public void onGetNavigationText(String s) {
-
+        L.e("onGetNavigationText");
     }
 
     @Override
     public void onEndEmulatorNavi() {
-
+        L.e("onEndEmulatorNavi");
     }
 
     @Override
     public void onArriveDestination() {
-
+        L.e("onPlayRing");
     }
 
 
@@ -177,72 +178,72 @@ public class RouteNaviActivity extends BaseActivity implements AMapNaviListener,
 
     @Override
     public void onReCalculateRouteForYaw() {
-
+        L.e("onReCalculateRouteForYaw");
     }
 
     @Override
     public void onReCalculateRouteForTrafficJam() {
-
+        L.e("onReCalculateRouteForTrafficJam");
     }
 
     @Override
     public void onArrivedWayPoint(int i) {
-
+        L.e("onArrivedWayPoint");
     }
 
     @Override
     public void onGpsOpenStatus(boolean b) {
-
+        L.e("onGpsOpenStatus");
     }
 
     @Override
     public void onNaviInfoUpdate(NaviInfo naviInfo) {
-
+        L.e("onNaviInfoUpdate");
     }
 
     @Override
     public void onNaviInfoUpdated(AMapNaviInfo aMapNaviInfo) {
-
+        L.e("onNaviInfoUpdated");
     }
 
     @Override
     public void updateCameraInfo(AMapNaviCameraInfo[] aMapNaviCameraInfos) {
-
+        L.e("updateCameraInfo");
     }
 
     @Override
     public void onServiceAreaUpdate(AMapServiceAreaInfo[] aMapServiceAreaInfos) {
-
+        L.e("onServiceAreaUpdate");
     }
 
     @Override
     public void showCross(AMapNaviCross aMapNaviCross) {
-
+        L.e("showCross");
     }
 
     @Override
     public void hideCross() {
-
+        L.e("hideCross");
     }
 
     @Override
     public void showModeCross(AMapModelCross aMapModelCross) {
-
+        L.e("showModeCross");
     }
 
     @Override
     public void hideModeCross() {
-
+        L.e("hideModeCross");
     }
 
     @Override
     public void showLaneInfo(AMapLaneInfo[] aMapLaneInfos, byte[] bytes, byte[] bytes1) {
-
+        L.e("showLaneInfo");
     }
 
     @Override
     public void hideLaneInfo() {
-
+        L.e("hideLaneInfo");
     }
 
     @Override
@@ -252,81 +253,82 @@ public class RouteNaviActivity extends BaseActivity implements AMapNaviListener,
 
     @Override
     public void notifyParallelRoad(int i) {
-
+        L.e("notifyParallelRoad");
     }
 
     @Override
     public void OnUpdateTrafficFacility(AMapNaviTrafficFacilityInfo aMapNaviTrafficFacilityInfo) {
-
+        L.e("OnUpdateTrafficFacility");
     }
 
     @Override
     public void OnUpdateTrafficFacility(AMapNaviTrafficFacilityInfo[] aMapNaviTrafficFacilityInfos) {
-
+        L.e("OnUpdateTrafficFacility");
     }
 
     @Override
     public void OnUpdateTrafficFacility(TrafficFacilityInfo trafficFacilityInfo) {
-
+        L.e("OnUpdateTrafficFacility");
     }
 
     @Override
     public void updateAimlessModeStatistics(AimLessModeStat aimLessModeStat) {
-
+        L.e("updateAimlessModeStatistics");
     }
 
     @Override
     public void updateAimlessModeCongestionInfo(AimLessModeCongestionInfo aimLessModeCongestionInfo) {
-
+        L.e("updateAimlessModeCongestionInfo");
     }
 
     @Override
     public void onPlayRing(int i) {
-
+        L.e("onPlayRing");
     }
 
     @Override
     public void onNaviSetting() {
-
+        L.e("onNaviSetting");
     }
 
     @Override
     public void onNaviCancel() {
-
+        finish();
     }
 
     @Override
     public boolean onNaviBackClick() {
+        L.e("onNaviBackClick");
         return false;
     }
 
     @Override
     public void onNaviMapMode(int i) {
-
+        L.e("onNaviMapMode");
     }
 
     @Override
     public void onNaviTurnClick() {
-
+        L.e("onNaviTurnClick");
     }
 
     @Override
     public void onNextRoadClick() {
-
+        L.e("onNextRoadClick");
     }
 
     @Override
     public void onScanViewButtonClick() {
-
+        L.e("onScanViewButtonClick");
     }
 
     @Override
     public void onLockMap(boolean b) {
-
+        L.e("onLockMap");
     }
 
     @Override
     public void onNaviViewLoaded() {
-
+        L.e("onNaviViewLoaded");
     }
 }

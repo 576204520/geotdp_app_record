@@ -11,8 +11,7 @@
         android:layout_height="wrap_content"
         android:hint="护壁方法"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="护壁方法"
-        app:met_iconLeft="@mipmap/ai_icon_hubi" />
+        app:met_floatingLabelText="护壁方法" />
 
     <com.cj.record.views.MaterialBetterSpinner
         android:id="@+id/sprType"
@@ -20,8 +19,7 @@
         android:layout_height="wrap_content"
         android:hint="钻进方法"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="钻进方法"
-        app:met_iconLeft="@mipmap/ai_icon_zuanjin" />
+        app:met_floatingLabelText="钻进方法" />
 
 
     <com.cj.record.views.MaterialEditTextMillimeter
@@ -31,8 +29,7 @@
         android:hint="钻孔孔径"
         android:phoneNumber="true"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="钻孔孔径"
-        app:met_iconLeft="@mipmap/ai_icon_kongjing" />
+        app:met_floatingLabelText="钻孔孔径" />
 
 
 </LinearLayout>

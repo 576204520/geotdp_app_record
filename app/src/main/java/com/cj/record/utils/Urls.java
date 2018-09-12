@@ -10,8 +10,8 @@ import java.io.File;
 public class Urls {
 //    public static final String SERVER_PATH = "http://192.168.11.247:8089/";//广西测试
 //    public static final String SERVER_PATH = "http://test.geotdp.com/";//测试
-//    public static final String SERVER_PATH = "http://192.168.11.220/";//内部测试
-    public static final String SERVER_PATH = "http://192.168.1.100:8087/";
+    public static final String SERVER_PATH = "http://192.168.11.220/";//内部测试
+//    public static final String SERVER_PATH = "http://192.168.1.100/";
 
 //    public static final String SERVER_PATH = "http://gx.geotdp.com:8083/";//广西
 //    public static final String SERVER_PATH = "http://jx.geotdp.com:8083/";//江西
@@ -45,12 +45,19 @@ public class Urls {
     //模板上传
     public static final String TEMPLATE_UPLOAD = SERVER_PATH + "geotdp/template/upload";
 
-    public static final String APP_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "com.geotdb.compile" + File.separator + "files";
-    public static final String APP_PATH_CACHE = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "com.geotdb.compile" + File.separator + "chche";
+    //老版本地址
+    public static final String APP_PATH_OLD = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "com.geotdb.compile" + File.separator + "files";
+    public static final String APP_PATH_CACHE = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "com.geotdbj.compile" + File.separator + "chche";
+    //新版本3.+地址
+    public static final String APP_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "com.geotdbj.compile" + File.separator + "files";
+    // 存放数据库的路径
+    public static final String DATABASE_PATH_OLD = APP_PATH_OLD + File.separator + "database";
     // 存放数据库的路径
     public static final String DATABASE_PATH = APP_PATH + File.separator + "database";
     // 本地orm框架控制的数据库名
     public static final String DATABASE_NAME = "gcdz.db";
+    // 本地orm框架控制的数据库完整的地址old
+    public static final String DATABASE_BASE_OLD = DATABASE_PATH_OLD + File.separator + DATABASE_NAME;
     // 本地orm框架控制的数据库完整的地址
     public static final String DATABASE_BASE = DATABASE_PATH + File.separator + DATABASE_NAME;
     // 存放图片的路径
@@ -62,5 +69,8 @@ public class Urls {
         public static final String USER_ID = "userId";
         public static final String USER_EMAIL = "userEmail";
         public static final String USER_REALNAME = "userRealName";
+        public static final String USER_PWD = "userPassword";
+        public static final String USER_AUTO = "userAuto";
+
     }
 }

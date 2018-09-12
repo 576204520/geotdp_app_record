@@ -13,8 +13,7 @@
         android:hint="选择司钻员姓名"
         app:met_baseColor="@android:color/holo_red_light"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="司钻员"
-        app:met_iconLeft="@mipmap/ic_unfold_less_grey600_24dp" />
+        app:met_floatingLabelText="司钻员" />
 
     <com.cj.record.views.MaterialEditTextNoEmoji
         android:id="@+id/operateperson_code"
@@ -24,6 +23,5 @@
         app:met_baseColor="@android:color/holo_red_light"
         app:met_clearButton="true"
         app:met_floatingLabel="highlight"
-        app:met_floatingLabelText="司钻员证件号"
-        app:met_iconLeft="@mipmap/ic_fullscreen_grey600_24dp" />
+        app:met_floatingLabelText="司钻员证件号" />
 </LinearLayout>

@@ -85,7 +85,7 @@ public class LayerDescHtznxtFragment extends RecordBaseFragment {
             @Override
             public void onShow() {
                 if (bhwDialog == null) {
-                    bhwDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_wzcf).items(bhwList)
+                    bhwDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_bhw).items(bhwList)
 
                             .itemsCallbackMultiChoice(new Integer[]{}, new MaterialDialog.ListCallbackMultiChoice() {
                                 @Override

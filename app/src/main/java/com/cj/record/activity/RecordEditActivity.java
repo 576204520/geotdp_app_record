@@ -33,6 +33,7 @@ import com.cj.record.baen.Template;
 import com.cj.record.db.DBHelper;
 import com.cj.record.db.GpsDao;
 import com.cj.record.db.HoleDao;
+import com.cj.record.db.MediaDao;
 import com.cj.record.db.RecordDao;
 import com.cj.record.db.TemplateDao;
 import com.cj.record.fragment.RecordLocationFragment;
@@ -114,6 +115,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
     private HoleDao holeDao;
     private boolean isEdit;
     private RecordDao recordDao;
+    private MediaDao mediaDao;
     private GpsDao gpsDao;
     private Record record;
     private String recordType;
@@ -142,6 +144,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
                 hole = (Hole) getIntent().getSerializableExtra(MainActivity.HOLE);
                 holeDao = new HoleDao(this);
                 recordDao = new RecordDao(this);
+                mediaDao = new MediaDao(this);
                 gpsDao = new GpsDao(this);
                 if (isEdit) {
                     //true编辑
@@ -180,14 +183,6 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         initLocationFragment(hole);
         //加载媒体的模块
         initMediaFragment(record);
-        //岩土是描述，其他都是编辑，title不一樣
-        String t = "";
-        if (recordType.equals(record.TYPE_LAYER)) {
-            t = "描述";
-        } else {
-            t = "记录";
-        }
-        toolbar.setTitle(recordType + t + "编辑");
         if (null != record.getCode()) {
             recordCode.setText(record.getCode());
         }
@@ -228,7 +223,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         }
 
         //短视频 负责人 工程师 机长、钻机、场景、描述
-        if (recordType.equals(Record.TYPE_SCENE_VIDEO) || recordType.equals(Record.TYPE_SCENE_PRINCIPAL) || recordType.equals(Record.TYPE_SCENE_TECHNICIAN) || recordType.equals(Record.TYPE_SCENE_OPERATEPERSON) || recordType.equals(Record.TYPE_SCENE_OPERATECODE) || recordType.equals(Record.TYPE_SCENE_RECORDPERSON) || recordType.equals(Record.TYPE_SCENE_SCENE)) {
+        if        (recordType.equals(Record.TYPE_SCENE_VIDEO) || recordType.equals(Record.TYPE_SCENE_PRINCIPAL) || recordType.equals(Record.TYPE_SCENE_TECHNICIAN) || recordType.equals(Record.TYPE_SCENE_OPERATEPERSON) || recordType.equals(Record.TYPE_SCENE_OPERATECODE) || recordType.equals(Record.TYPE_SCENE_RECORDPERSON) || recordType.equals(Record.TYPE_SCENE_SCENE)) {
             recordBeginDepth.setVisibility(View.GONE);
             recordEndDepth.setVisibility(View.GONE);
             recordCode.setVisibility(View.GONE);
@@ -309,6 +304,15 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
     @Override
     public void initView() {
         toolbar.setTitle("编辑" + recordType);
+        if (recordType.equals(Record.TYPE_SCENE_OPERATEPERSON)) {
+            toolbar.setTitle("编辑司钻员");
+        }
+        if (recordType.equals(Record.TYPE_SCENE_PRINCIPAL)) {
+            toolbar.setTitle("编辑项目负责人");
+        }
+        if (recordType.equals(Record.TYPE_SCENE_TECHNICIAN)) {
+            toolbar.setTitle("编辑项目工程师");
+        }
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.mipmap.ic_clear_white_24dp);
@@ -343,8 +347,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
 
     //验证，并完善record信息
     private boolean verify() {
-        if (!Common.gPSIsOPen(RecordEditActivity.this)) {
-            ToastUtil.showToastS(this, "GPS未开启，请开启以提高精度");
+        if (!Common.haveGps(this)) {
             return false;
         }
         amapLocation = locationFragment.aMapLocation;
@@ -387,8 +390,37 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         if (!recordBaseFragment.validator()) {
             return false;
         }
+        //每条记录的第一条至少有一张照片
+        //先查询本身这条记录是否添加了照片 添加不包括项目负责人，工程师，提钻录像、备注
+        if(!recordType.equals(Record.TYPE_SCENE_PRINCIPAL)&&!recordType.equals(Record.TYPE_SCENE_TECHNICIAN)&&!recordType.equals(Record.TYPE_SCENE_VIDEO)&&!recordType.equals(Record.TYPE_SCENE)){
+            if (mediaFragment.photoList == null || mediaFragment.photoList.size() == 0) {
+                //当前记录没有，在查询当前类别下是否存在有照片的记录，不包括历史记录
+                List<Record> recordList = recordDao.getRecordListByType(hole.getId(), recordType);
+                if (recordList != null && recordList.size() > 0) {
+                    int photoSize = 0;
+                    for (Record record : recordList) {
+                        List<Media> list = mediaDao.getMediaListByRecordID2(record.getId());
+                        if (list != null && list.size() > 0) {
+                            for (Media media : list) {
+                                if (media.getLocalPath().endsWith("jpg")) {
+                                    photoSize++;
+                                }
+                            }
+                        }
+                    }
+                    if (photoSize == 0) {
+                        ToastUtil.showToastS(this, "请添加至少一张照片");
+                        return false;
+                    }
+                } else {
+                    ToastUtil.showToastS(this, "请添加至少一张照片");
+                    return false;
+                }
+            }
+        }
         //获取不同fragment中record参数
         record = recordBaseFragment.getRecord();
+        //保存记录本身的相关参数
         if (recordType.equals(Record.TYPE_GET_WATER) || recordType.equals(Record.TYPE_DPT) || recordType.equals(Record.TYPE_SPT) || recordType.equals(Record.TYPE_WATER)) {
             record.setBeginDepth(recordBaseFragment.getBegin());
             record.setEndDepth(recordBaseFragment.getEnd());
@@ -398,7 +430,6 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         }
         record.setType(recordBaseFragment.getTypeName());
         record.setTitle(recordBaseFragment.getTitle());
-        //保存记录本身的相关参数
         record.setCode(recordCode.getText().toString());
         record.setDescription(recordDescription.getText().toString());
         record.setState("1");

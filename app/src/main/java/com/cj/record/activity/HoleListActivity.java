@@ -161,8 +161,6 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 Hole hole = dataList.get(deletePosition);
                 if (hole.delete(HoleListActivity.this)) {
                     ToastUtil.showToastL(HoleListActivity.this, "删除勘探点成功");
-                    project.setHoleCount2Int(project.getHoleCount2Int() - 1);
-                    projectDao.update(project);
                 } else {
                     ToastUtil.showToastL(HoleListActivity.this, "删除勘探点失败");
                 }
@@ -249,6 +247,8 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         listSort.add(new DropItemVo("3", "按上传进度排序"));
 //        listSort.add(new DropItemVo("4", "按定位时间优先显示"));
         listSort.add(new DropItemVo("5", "已关联优先显示"));
+        listSort.add(new DropItemVo("6", "按关联钻孔编号优先显示"));
+
         return listSort;
     }
 
@@ -333,6 +333,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
     }
 
     private void relate(final Hole relateHole) {
+        //检查网络
+        if(!haveNet()){
+            return;
+        }
         showPPW();
         //遍历数据库，查找是否关联
         if (holeDao.checkRelated(relateHole.getId(), project.getId())) {
@@ -394,6 +398,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
     }
 
     private void relateMore(List<Hole> checkList) {
+        //检查网络
+        if(!haveNet()){
+            return;
+        }
         for (Hole relateHole : checkList) {
             //遍历数据库，查找是否关联
             if (holeDao.checkRelated(relateHole.getId(), project.getId())) {
@@ -419,8 +427,6 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     public void onSuccess(Response<String> response) {
                         String data = response.body();//这个就是返回来的结果
                         if (JsonUtils.isGoodJson(data)) {
-                            project.setHoleCount2Int(project.getHoleCount2Int() + 1);
-                            projectDao.update(project);
                             onRefresh();
                         } else {
                             holeDao.delete(newHole);
@@ -433,8 +439,6 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     public void onError(Response<String> response) {
                         super.onError(response);
                         holeDao.delete(newHole);
-                        project.setHoleCount2Int(project.getHoleCount2Int() - 1);
-                        projectDao.update(project);
                         dismissPPW();
                         ToastUtil.showToastS(HoleListActivity.this, "网络连接错误");
                     }
@@ -444,6 +448,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
     }
 
     private void getData(List<LocalUser> localUserList) {
+        //检查网络
+        if(!haveNet()){
+            return;
+        }
         for (LocalUser localUser : localUserList) {
             showPPW();
             Map<String, String> params = new HashMap<>();
@@ -455,101 +463,97 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     if (JsonUtils.isGoodJson(data)) {
                         Gson gson = new Gson();
                         Hole hole = gson.fromJson(data, Hole.class);
-                        /**
-                         * 判断该项目下hole的id是否存在，
-                         *    存在就覆盖她，（存在说明是本人的，并且本地有已有）
-                         *    不存在，再判断downloadID跟获取的hole的id是否存在
-                         *               存在说明这条数据获取过，覆盖这条hole，覆盖就是把查出来的holeId给获取的holeID
-                         *               不存在，新建hole的id，获取的holeID赋值给downloadID
-                         * 获取数据判断是否是本人的数据，是本人的，就用原数据，不是则新建id
-                         */
-                        if (!localUser.getDeptID().equals(userID)) {
-                            hole.setId(Common.getUUID());
-                        }
-                        L.e("--" + localUser.getDeptID());
-                        L.e("--" + userID);
-//                        if (!holeDao.checkByID(hole.getId(), project.getId())) {
-//                            Hole downloadHole = holeDao.checkByDownloadID(hole.getId(), project.getId());
-//                            //记录获取的holeID，保存到downloadID
-//                            hole.setDownloadID(hole.getId());
-//                            hole.setRelateID("");
-//                            hole.setRelateCode("");
-//                            if (null != downloadHole) {
-//                                hole.setId(downloadHole.getId());
-//                            } else {
-//                                hole.setId(Common.getUUID());
-//                            }
-//                        }
-                        hole.setProjectID(project.getId());
-                        //下载的勘探点都是未关联、已经定位的不需要重新定位、
-                        if (hole.getMapLatitude() != null && hole.getMapLongitude() != null) {
-                            hole.setLocationState("1");
+                        //查询userid是否相同，查询项目下钻孔的relateID是否存在
+                        L.e(hole.getRelateID());
+                        L.e(project.getId());
+                        //判断该项目下是否存在关联的勘探点 projectID、relateID
+                        if (holeDao.checkRelated(hole.getRelateID(), project.getId())) {
+//                            new AlertDialog.Builder(HoleListActivity.this)
+//                                    .setTitle(R.string.hint)
+//                                    .setMessage(hole.getRelateCode() + "(" + hole.getCode() + ")关联孔本地已经存在，是否合并到本地")
+//                                    .setNegativeButton("合并到本地",
+//                                            new DialogInterface.OnClickListener() {
+//                                                @Override
+//                                                public void onClick(DialogInterface dialog, int which) {
+//                                                    //根据relateID和项目id找到hole的id
+//                                                    hole.setId(holeDao.getIDByRelate(hole.getRelateID(), project.getId()).getId());
+//                                                    addOrUpdate(hole, localUser);
+//                                                    onRefresh();
+//                                                }
+//                                            })
+//                                    .setPositiveButton("放弃获取",
+//                                            new DialogInterface.OnClickListener() {
+//                                                @Override
+//                                                public void onClick(DialogInterface dialog, int which) {
+//                                                    onRefresh();
+//                                                }
+//                                            })
+//                                    .setCancelable(false)
+//                                    .show();
+                            ToastUtil.showToastS(HoleListActivity.this, hole.getRelateCode() + "(" + hole.getCode() + ")关联孔本地已经存在");
+                            return;
                         } else {
-                            hole.setLocationState("0");//可能获取没有定位信息的钻孔需要定位
+                            hole.setId(Common.getUUID());
+                            addOrUpdate(hole, localUser);
+                            onRefresh();
                         }
-                        hole.setIsDelete("0");
-                        holeDao.add(hole);
-                        project.setHoleCount2Int(project.getHoleCount2Int() + 1);
-                        projectDao.update(project);
-                        List<Record> recordList = hole.getRecordList();
-                        if (recordList != null && recordList.size() > 0) {
-                            for (Record record : recordList) {
-                                //同勘探点，要判断是否存在
-                                if (!localUser.getDeptID().equals(userID)) {
-                                    record.setId(Common.getUUID());
-                                }
-//                                if (!recordDao.checkByID(record.getId(), hole.getId(), project.getId())) {
-//                                    Record downloadRecord = recordDao.checkByDownloadID(record.getId(), hole.getId(), project.getId());
-//                                    record.setDownloadID(record.getId());
-//                                    if (null != downloadRecord) {
-//                                        record.setId(downloadRecord.getId());
-//                                    } else {
-//                                        record.setId(Common.getUUID());
-//                                    }
-//                                }
-                                record.setProjectID(project.getId());
-                                record.setHoleID(hole.getId());
-                                record.setState("1");
-                                record.setIsDelete("0");
-                                record.setUpdateId(record.getUpdateId() == null ? "" : record.getUpdateId());//这里有历史记录，不能情况updateID
-                                recordDao.add(record);
-                                List<Gps> gpsList = record.getGpsList();
-                                if (gpsList != null && gpsList.size() > 0) {
-                                    for (Gps gps : gpsList) {
-                                        if (!localUser.getDeptID().equals(userID)) {
-                                            gps.setId(Common.getUUID());
-                                        }
-//                                        if (!gpsDao.checkByID(gps.getId(), record.getId(), hole.getId(), project.getId())) {
-//                                            Gps downloadGps = gpsDao.checkByDownloadID(gps.getId(), record.getId(), hole.getId(), project.getId());
-//                                            gps.setDownloadID(gps.getId());
-//                                            if (null != downloadGps) {
-//                                                gps.setId(downloadGps.getId());
-//                                            } else {
-//                                                gps.setId(Common.getUUID());
-//                                            }
-//                                        }
-                                        gps.setProjectID(project.getId());
-                                        gps.setHoleID(hole.getId());
-                                        gps.setRecordID(record.getId());
-                                        gpsDao.add(gps);
-                                    }
-                                }
-                            }
-                        }
-                        dismissPPW();
-                        onRefresh();
+
                     } else {
                         ToastUtil.showToastS(HoleListActivity.this, "服务器异常，请联系客服");
                     }
                 }
 
                 @Override
+                public void onFinish() {
+                    super.onFinish();
+                    dismissPPW();
+                }
+
+                @Override
                 public void onError(Response<String> response) {
                     super.onError(response);
-                    dismissPPW();
                     ToastUtil.showToastS(HoleListActivity.this, "网络连接错误");
                 }
             });
+        }
+    }
+
+    public void addOrUpdate(Hole hole, LocalUser localUser) {
+        hole.setProjectID(project.getId());
+        //下载的勘探点都是未关联、已经定位的不需要重新定位、
+        if (hole.getMapLatitude() != null && hole.getMapLongitude() != null) {
+            hole.setLocationState("1");
+        } else {
+            hole.setLocationState("0");//可能获取没有定位信息的钻孔需要定位
+        }
+        hole.setIsDelete("0");
+        holeDao.add(hole);
+        List<Record> recordList = hole.getRecordList();
+        if (recordList != null && recordList.size() > 0) {
+            for (Record record : recordList) {
+                //同勘探点，要判断是否存在
+                if (!localUser.getDeptID().equals(userID)) {
+                    record.setId(Common.getUUID());
+                }
+                record.setProjectID(project.getId());
+                record.setHoleID(hole.getId());
+                record.setState("1");
+                record.setIsDelete("0");
+                record.setUpdateId(record.getUpdateId() == null ? "" : record.getUpdateId());//这里有历史记录，不能情况updateID
+                recordDao.add(record);
+                List<Gps> gpsList = record.getGpsList();
+                if (gpsList != null && gpsList.size() > 0) {
+                    for (Gps gps : gpsList) {
+                        if (!localUser.getDeptID().equals(userID)) {
+                            gps.setId(Common.getUUID());
+                        }
+                        gps.setProjectID(project.getId());
+                        gps.setHoleID(hole.getId());
+                        gps.setRecordID(record.getId());
+                        gpsDao.add(gps);
+                    }
+                }
+            }
         }
     }
 
@@ -614,7 +618,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         uploadHole = dataList.get(position);
         //判断项目是否关联
         if (TextUtils.isEmpty(project.getSerialNumber())) {
-            ToastUtil.showToastS(this, "该项目没有序列号");
+            ToastUtil.showToastS(this, "该项目还没有序列号，请返回项目列表，关联该项目");
             return;
         }
         //判断是否是自己的项目
@@ -659,11 +663,17 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     .show();
             return;
         }
+        //检查网络
+        if(!haveNet()){
+            return;
+        }
         if (uploadHole.getNotUploadCount() > 0) {
             //上传操作
             obsUtils.execute(5);
         }
     }
+
+
 
     private void getUploadData() {
         showPPW();
@@ -743,7 +753,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         }
         final ProgressDialog pdialog = new ProgressDialog(HoleListActivity.this, 0);
         // 设置对话框是否可以取消
-        pdialog.setCancelable(false);
+        pdialog.setCancelable(true);
         pdialog.setMax(100);
         pdialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         pdialog.show();
@@ -789,6 +799,12 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             public void onFinish() {
                 super.onFinish();
                 pdialog.dismiss();
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                ToastUtil.showToastS(mContext, "网络连接错误");
             }
         });
     }
@@ -852,6 +868,8 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 sequence = "h.mapTime desc,h.updateTime desc ";
             } else if ("5".equals(sprSort.getTag())) {//关联
                 sequence = "h.relateID desc,h.updateTime desc ";
+            } else if ("6".equals(sprSort.getTag())) {
+                sequence = "length(h.relateCode) asc,h.relateCode asc ";
             }
             //用于分页加载的sql 这里的index-1 第二页的时候是跳过一个size  --
             String pageSql = String.format("limit (" + size + ") offset " + size * (page - 1));//size:每页显示条数，index页码
@@ -860,7 +878,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     "(" + uploadCountNew + ") as uploadedCount," +
                     "(" + notUploadCountNew + ") as notUploadCount,h.projectID ," +
                     "(" + currentDepth + ")  as currentDepth," +
-                    "h.locationState,h.relateID,h.userID,h.relateCode,h.mapTime,h.createTime,h.radius " +
+                    "h.locationState,h.relateID,h.userID,h.relateCode,h.mapTime,h.createTime,h.radius,h.elevation,h.depth " +
                     "from hole h " +
                     "where h.projectID='" + projectID + "' " + like + " order by " + sequence + pageSql;
 
@@ -888,6 +906,8 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     hole.setMapTime(resultColumns[17]);
                     hole.setCreateTime(resultColumns[18]);
                     hole.setRadius(resultColumns[19]);
+                    hole.setElevation(resultColumns[20]);
+                    hole.setDepth(resultColumns[21]);
                     return hole;
                 }
             });

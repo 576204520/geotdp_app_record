@@ -9,10 +9,12 @@ import com.cj.record.utils.DateUtil;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.Urls;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -486,21 +488,21 @@ public class Project implements Serializable {
         this.disName = disName;
     }
 
-    public String getHoleCount() {
-        return holeCount;
-    }
-
-    public void setHoleCount(String holeCount) {
-        this.holeCount = holeCount;
-    }
-
-    public int getHoleCount2Int() {
-        return Integer.valueOf(holeCount);
-    }
-
-    public void setHoleCount2Int(int holeCount) {
-        this.holeCount = String.valueOf(holeCount);
-    }
+//    public String getHoleCount() {
+//        return holeCount;
+//    }
+//
+//    public void setHoleCount(String holeCount) {
+//        this.holeCount = holeCount;
+//    }
+//
+//    public int getHoleCount2Int() {
+//        return Integer.valueOf(holeCount);
+//    }
+//
+//    public void setHoleCount2Int(int holeCount) {
+//        this.holeCount = String.valueOf(holeCount);
+//    }
 
     public String getRealName() {
         return realName;

@@ -44,7 +44,9 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import junit.runner.Version;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import butterknife.BindView;
@@ -91,6 +93,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public static final String SN = "serialNumber";
     public static final int EDIT_GO_TEMPLATE = 501;
     public static final String TEMPLATE = "template";
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;
@@ -219,6 +222,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                                 SPUtils.put(mContext, Urls.SPKey.USER_ID, "");
                                 SPUtils.put(mContext, Urls.SPKey.USER_EMAIL, "");
                                 SPUtils.put(mContext, Urls.SPKey.USER_REALNAME, "");
+                                SPUtils.put(mContext, Urls.SPKey.USER_PWD, "");
+                                SPUtils.put(mContext, Urls.SPKey.USER_AUTO, false);
+
                                 finish();
                                 startActivity(LoginActivity.class);
                             }
@@ -262,28 +268,58 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
      * 检查数据库文件是否存在
      */
     public void initDB() {
-        File dbFile = new File(Urls.DATABASE_BASE);
-        if (!dbFile.exists()) {
-            copyDB();
+        File newFile = new File(Urls.DATABASE_BASE);
+        if (!newFile.exists()) {
+            try {
+                //在指定的文件夹中创建文件
+                FileUtil.CreateText(Urls.DATABASE_PATH);
+                //查看老版数据库是否存在
+                File oldFile = new File(Urls.DATABASE_BASE_OLD);
+                if (!oldFile.exists()) {
+                    copyDB(Urls.DATABASE_BASE);
+                } else {
+                    copyDBForOld(Urls.DATABASE_BASE_OLD, Urls.DATABASE_BASE);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
     /**
-     * 复制db到sd卡中
+     * 从资源文件里复制
      */
-    public void copyDB() {
+    public void copyDB(String path) {
         try {
-            //在指定的文件夹中创建文件
-            FileUtil.CreateText();
             InputStream is = getResources().openRawResource(R.raw.gcdz);
-            FileOutputStream fos = new FileOutputStream(Urls.DATABASE_BASE);
+            FileOutputStream fos = new FileOutputStream(path);
             byte[] buffer = new byte[8192];
-            int count = 0;
+            int count;
             while ((count = is.read(buffer)) >= 0) {
                 fos.write(buffer, 0, count);
             }
             fos.close();
             is.close();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    /**
+     * 从老地址中复制
+     */
+    public void copyDBForOld(String oldPath, String path) {
+        try {
+            FileInputStream fis = new FileInputStream(oldPath);
+            FileOutputStream fos = new FileOutputStream(path);
+            byte[] buffer = new byte[8192];
+            int count;
+            while ((count = fis.read(buffer)) >= 0) {
+                fos.write(buffer, 0, count);
+            }
+            fis.close();
+            fos.close();
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -303,7 +339,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                                 MainActivity.this.finish();
                             }
                         })
-                .setPositiveButton(R.string.disagree,null)
+                .setPositiveButton(R.string.disagree, null)
                 .setCancelable(false)
                 .show();
     }

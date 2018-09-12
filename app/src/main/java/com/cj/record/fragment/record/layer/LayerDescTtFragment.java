@@ -83,7 +83,7 @@ public class LayerDescTtFragment extends RecordBaseFragment {
             @Override
             public void onShow() {
                 if (zycfDialog == null) {
-                    zycfDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_wzcf).items(zycyList)
+                    zycfDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_zycf).items(zycyList)
 
                             .itemsCallbackMultiChoice(new Integer[]{}, new MaterialDialog.ListCallbackMultiChoice() {
                                 @Override
@@ -138,7 +138,7 @@ public class LayerDescTtFragment extends RecordBaseFragment {
             @Override
             public void onShow() {
                 if (cycfDialog == null) {
-                    cycfDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_wzcf).items(cycfList)
+                    cycfDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_cycf).items(cycfList)
 
                             .itemsCallbackMultiChoice(new Integer[]{}, new MaterialDialog.ListCallbackMultiChoice() {
                                 @Override
@@ -195,7 +195,7 @@ public class LayerDescTtFragment extends RecordBaseFragment {
             @Override
             public void onShow() {
                 if (ysDialog == null) {
-                    ysDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_wzcf).items(ysList)
+                    ysDialog = new MaterialDialog.Builder(getActivity()).title(R.string.hint_record_layer_ys).items(ysList)
 
                             .itemsCallbackMultiChoice(new Integer[]{}, new MaterialDialog.ListCallbackMultiChoice() {
                                 @Override

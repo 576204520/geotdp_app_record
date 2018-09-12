@@ -24,8 +24,8 @@ public abstract class FileUtil {
     /**
      * loading创建文件夹及文件
      */
-    public static void CreateText() throws IOException {
-        File file = new File(Urls.DATABASE_PATH);
+    public static void CreateText(String path) throws IOException {
+        File file = new File(path);
         if (!file.exists()) {
             try {
                 file.mkdirs();
@@ -33,7 +33,7 @@ public abstract class FileUtil {
                 // TODO: handle exception
             }
         }
-        File dir = new File(Urls.DATABASE_BASE);
+        File dir = new File(path);
         if (!dir.exists()) {
             try {
                 dir.createNewFile();
