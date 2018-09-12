@@ -10,7 +10,7 @@ import java.io.File;
 public class Urls {
 //    public static final String SERVER_PATH = "http://192.168.11.247:8089/";//广西测试
 //    public static final String SERVER_PATH = "http://test.geotdp.com/";//测试
-    public static final String SERVER_PATH = "http://192.168.11.220/";//内部测试
+//    public static final String SERVER_PATH = "http://192.168.11.220/";//内部测试
 //    public static final String SERVER_PATH = "http://192.168.1.100/";
 
 //    public static final String SERVER_PATH = "http://gx.geotdp.com:8083/";//广西
