@@ -246,19 +246,19 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
         if (!isEdit && TextUtils.isEmpty(hole.getRelateID()) && TextUtils.isEmpty(hole.getRelateCode()) && hole.getLocationState().equals("0")) {
             holeDao.delete(hole);
         }
-        //未关联并且已经定位的情况，退出时，判断记录数据是否完善
-        if (TextUtils.isEmpty(hole.getRelateID()) && TextUtils.isEmpty(hole.getRelateCode()) && "1".equals(hole.getLocationState())) {
+        //不管是否关联，只要定位了就判断信息是否完善
+        if ("1".equals(hole.getLocationState())) {
             int complete;
             if ("探井".equals(hole.getType())) {
                 complete = recordDao.checkTJ(hole.getId());
                 if (complete < 2) {
-                    finishDialog("勘探点数据不完整，请完善（描述员、场景）记录");
+                    finishDialog("勘探点数据不完整，请完善（描述员、场景）记录，否则不保留定位信息");
                     return;
                 }
             } else {
                 complete = recordDao.checkZK(hole.getId());
                 if (complete < 4) {
-                    finishDialog("勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录");
+                    finishDialog("勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录,否则不保留定位信息");
                     return;
                 }
             }
@@ -276,11 +276,14 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                 .setTitle(R.string.hint)
                 .setMessage(msg)
                 .setNegativeButton("继续编辑", null)
-                .setPositiveButton("删除勘探点并退出",
+                .setPositiveButton("取消定位并退出",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                holeDao.delete(hole);
+                                hole.setLocationState("0");
+                                hole.setMapLatitude("");
+                                hole.setMapLongitude("");
+                                holeDao.update(hole);
                                 setResult(RESULT_OK);
                                 finish();
                             }
