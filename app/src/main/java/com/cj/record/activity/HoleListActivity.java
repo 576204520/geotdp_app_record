@@ -144,13 +144,14 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         switch (type) {
             case 1:
                 total = holeDao.getHoleListByProjectIDUserDelete(project.getId()).size();
-                dataList = getList(project.getId(), page, search);
+                dataList.addAll(getList(project.getId(), page, search));
                 break;
             case 2:
                 search = holeSearchEt.getText().toString().trim();
                 page = 1;
                 total = holeDao.getHoleListByProjectIDUserDelete(project.getId()).size();
-                dataList = getList(project.getId(), page, search);
+                dataList.clear();
+                dataList.addAll(getList(project.getId(), page, search));
                 break;
             case 3:
                 page++;
@@ -178,12 +179,13 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 initRecycleView();
                 break;
             case 2:
-                holeAdapter.refresh(dataList);
+                holeAdapter.notifyDataSetChanged();
                 holeAdapter.openFrist();
                 refresh.setRefreshing(false);
                 break;
             case 3:
-                holeAdapter.loadMore(newList);
+                dataList.addAll(newList);
+                holeAdapter.notifyDataSetChanged();
                 break;
             case 4:
                 onRefresh();
@@ -334,7 +336,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
 
     private void relate(final Hole relateHole) {
         //检查网络
-        if(!haveNet()){
+        if (!haveNet()) {
             return;
         }
         showPPW();
@@ -399,7 +401,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
 
     private void relateMore(List<Hole> checkList) {
         //检查网络
-        if(!haveNet()){
+        if (!haveNet()) {
             return;
         }
         for (Hole relateHole : checkList) {
@@ -449,7 +451,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
 
     private void getData(List<LocalUser> localUserList) {
         //检查网络
-        if(!haveNet()){
+        if (!haveNet()) {
             return;
         }
         for (LocalUser localUser : localUserList) {
@@ -664,7 +666,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             return;
         }
         //检查网络
-        if(!haveNet()){
+        if (!haveNet()) {
             return;
         }
         if (uploadHole.getNotUploadCount() > 0) {
@@ -672,7 +674,6 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             obsUtils.execute(5);
         }
     }
-
 
 
     private void getUploadData() {

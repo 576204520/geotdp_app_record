@@ -154,17 +154,6 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
         void deleteClick(int position);
     }
 
-    public void refresh(List<Hole> newList) {
-        list.clear();
-        list.addAll(newList);
-        notifyDataSetChanged();
-    }
-
-    public void loadMore(List<Hole> newList) {
-        list.addAll(newList);
-        notifyDataSetChanged();
-    }
-
     public void delete(int position) {
         list.remove(position);
         notifyDataSetChanged();

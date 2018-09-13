@@ -133,17 +133,6 @@ public class RecordAdapter extends AbstractSlideExpandableListAdapter<RecordAdap
         void deleteClick(int position);
     }
 
-    public void refresh(List<Record> newList) {
-        list.clear();
-        list.addAll(newList);
-        notifyDataSetChanged();
-    }
-
-    public void loadMore(List<Record> newList) {
-        list.addAll(newList);
-        notifyDataSetChanged();
-    }
-
     public void delete(int position) {
         list.remove(position);
         notifyDataSetChanged();

@@ -133,13 +133,13 @@ public class RelateHoleAdapter extends RecyclerView.Adapter<RelateHoleAdapter.My
             }
         });
         //hole列表checkBox点击事件
-        holder.relate_hole_check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                L.e("hole列表checkBox点击事件");
-                mOnItemListener.checkBoxClick(position);
-            }
-        });
+//        holder.relate_hole_check.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                L.e("hole列表checkBox点击事件");
+//                mOnItemListener.checkBoxClick(position);
+//            }
+//        });
 
     }
 

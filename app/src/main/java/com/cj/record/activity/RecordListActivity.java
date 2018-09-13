@@ -133,6 +133,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
             case 1:
                 hole = (Hole) getIntent().getSerializableExtra(MainActivity.HOLE);
                 dataList = new ArrayList<>();
+                newList = new ArrayList<>();
                 recordDao = new RecordDao(this);
                 recordInfoDialog = new RecordInfoDialog();
                 break;
@@ -148,7 +149,8 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                 //获取分页数据
                 page = 0;
                 total = recordDao.getSortCountMap(hole.getId()).get(1);
-                dataList = recordDao.getRecordList(hole.getId(), size, page, divSort.getId().toString(), divSequence.getId().toString());
+                dataList.clear();
+                dataList.addAll(recordDao.getRecordList(hole.getId(), size, page, divSort.getId().toString(), divSequence.getId().toString()));
                 break;
             case 3:
                 page++;
@@ -176,12 +178,13 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                 sprSequence.setAdapter(this, listSequence);
                 sprSequence.setOnItemClickListener(sequenceListener);
                 //刷新列表
-                recordAdapter.refresh(dataList);
+                recordAdapter.notifyDataSetChanged();
                 recordAdapter.openFrist();
                 refresh.setRefreshing(false);
                 break;
             case 3:
-                recordAdapter.loadMore(newList);
+                dataList.addAll(newList);
+                recordAdapter.notifyDataSetChanged();
                 break;
         }
     }

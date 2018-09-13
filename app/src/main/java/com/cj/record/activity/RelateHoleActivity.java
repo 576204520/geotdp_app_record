@@ -78,6 +78,7 @@ public class RelateHoleActivity extends BaseActivity {
         serialNumber = (String) getIntent().getExtras().get(MainActivity.SERIALNUMBER);
         relateType = (int) getIntent().getExtras().get(MainActivity.RELATE_TYPE);
         checkList = new ArrayList<>();
+        relateList = new ArrayList<>();
         localUserList = new ArrayList<>();
         holeList = new ArrayList<>();
     }
@@ -124,8 +125,7 @@ public class RelateHoleActivity extends BaseActivity {
                         Gson gson = new Gson();
                         JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
                         if (jsonResult.getStatus()) {
-                            relateList = gson.fromJson(jsonResult.getResult(), new TypeToken<List<Hole>>() {
-                            }.getType());
+                            relateList.addAll(gson.fromJson(jsonResult.getResult(), new TypeToken<List<Hole>>() {}.getType()));
                             if (relateList != null && relateList.size() > 0) {
                                 sort();
                                 initRecycleView();

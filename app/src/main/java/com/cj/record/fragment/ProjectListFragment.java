@@ -141,13 +141,14 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
         switch (type) {
             case 1:
                 total = projectDao.getAllCount(userID);
-                dataList = projectDao.getAll(userID, page, size, search);
+                dataList.addAll(projectDao.getAll(userID, page, size, search));
                 break;
             case 2:
                 search = projectSearchEt.getText().toString().trim();
                 page = 0;
                 total = projectDao.getAllCount(userID);
-                dataList = projectDao.getAll(userID, page, size, search);
+                dataList.clear();
+                dataList.addAll(projectDao.getAll(userID, page, size, search));
                 break;
             case 3:
                 page++;
@@ -168,12 +169,13 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
                 initRecycleView();
                 break;
             case 2:
-                projectAdapter.refresh(dataList);
+                projectAdapter.notifyDataSetChanged();
                 projectAdapter.openFrist();
                 refresh.setRefreshing(false);
                 break;
             case 3:
-                projectAdapter.loadMore(newList);
+                dataList.addAll(newList);
+                projectAdapter.notifyDataSetChanged();
                 break;
             case 4:
                 dismissPPW();
@@ -181,6 +183,7 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
                 break;
         }
     }
+
 
     @Override
     public void detailClick(int position) {

@@ -139,17 +139,6 @@ public class ProjectAdapter extends AbstractSlideExpandableListAdapter<ProjectAd
         void deleteClick(int position);
     }
 
-    public void refresh(List<Project> newList) {
-        list.clear();
-        list.addAll(newList);
-        notifyDataSetChanged();
-    }
-
-    public void loadMore(List<Project> newList) {
-        list.addAll(newList);
-        notifyDataSetChanged();
-    }
-
     public void delete(int position) {
         list.remove(position);
         notifyDataSetChanged();
@@ -167,7 +156,7 @@ public class ProjectAdapter extends AbstractSlideExpandableListAdapter<ProjectAd
 
     @Override
     public int getItemCount() {
-        return list.size() == 0 ? 0 : list.size();
+        return list.size();
     }
 
     @Override
