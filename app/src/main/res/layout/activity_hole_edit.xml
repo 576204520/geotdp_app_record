@@ -84,10 +84,10 @@
                     android:layout_width="0.0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:hint="设计孔高"
+                    android:hint="设计孔深"
                     android:textSize="14sp"
                     app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="设计孔高" />
+                    app:met_floatingLabelText="设计孔深" />
 
             </LinearLayout>
 
