@@ -3,11 +3,13 @@ package com.cj.record.adapter;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,7 +21,9 @@ import com.cj.record.baen.Project;
 import com.cj.record.utils.L;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RelateHoleAdapter extends RecyclerView.Adapter<RelateHoleAdapter.MyViewHolder> {
     private List<Hole> list;
@@ -31,7 +35,7 @@ public class RelateHoleAdapter extends RecyclerView.Adapter<RelateHoleAdapter.My
     public static final int HAVE_SOME = 2;//勘察点有 關聯勘察點
     public static final int HAVE_ALL = 3;//人物有 獲取數據
     private int have;
-
+    private SparseBooleanArray mCheckStates = new SparseBooleanArray();
     public List<LocalUser> getLocalUserList() {
         return localUserList;
     }
@@ -122,16 +126,18 @@ public class RelateHoleAdapter extends RecyclerView.Adapter<RelateHoleAdapter.My
             public void onClick(View v) {
                 L.e("hole列表relativeLayout点击事件");
                 if (have == HAVE_SOME || have == HAVE_NOALL) {
-                    if (holder.relate_hole_check.isChecked()) {
-                        holder.relate_hole_check.setChecked(false);
+                    if (!holder.relate_hole_check.isChecked()) {
+                        mCheckStates.put(position, true);
                     } else {
-                        holder.relate_hole_check.setChecked(true);
+                        mCheckStates.delete(position);
                     }
                     mOnItemListener.onItemClick(position);
+                    notifyDataSetChanged();
                 }
 
             }
         });
+        holder.relate_hole_check.setChecked(mCheckStates.get(position, false));
         //hole列表checkBox点击事件
 //        holder.relate_hole_check.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -140,7 +146,6 @@ public class RelateHoleAdapter extends RecyclerView.Adapter<RelateHoleAdapter.My
 //                mOnItemListener.checkBoxClick(position);
 //            }
 //        });
-
     }
 
     //添加或者删除userList中的项

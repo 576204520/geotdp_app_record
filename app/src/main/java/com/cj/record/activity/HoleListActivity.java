@@ -688,9 +688,9 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             map.putAll(Record.getMap(recordList, project.getSerialNumber()));
             //获取gps
             for (Record record : recordList) {
-                List<Gps> gpsList = gpsDao.getListGpsByRecord(record.getId());
-                if (gpsList != null && gpsList.size() > 0) {
-                    resultGpsList.addAll(gpsList);
+                Gps gps = gpsDao.getGpsByRecord(record.getId());
+                if (gps != null ) {
+                    resultGpsList.add(gps);
                 }
             }
         }
