@@ -75,7 +75,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="其他描述"
-                android:singleLine="true"
                 app:met_clearButton="true"
                 app:met_floatingLabel="highlight"
                 app:met_floatingLabelText="其他描述" />

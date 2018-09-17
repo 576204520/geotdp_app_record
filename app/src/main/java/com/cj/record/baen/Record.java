@@ -760,9 +760,10 @@ public class Record implements Serializable, Cloneable {
             if (!TextUtils.isEmpty(record.getType())) {
                 map.put("record[" + i + "].type", record.getType());
             }
-            if (!TextUtils.isEmpty(record.getTitle())) {
-                map.put("record[" + i + "].title", record.getTitle());
-            }
+            //titile没用，不上传
+//            if (!TextUtils.isEmpty(record.getTitle())) {
+//                map.put("record[" + i + "].title", record.getTitle());
+//            }
             if (!TextUtils.isEmpty(record.getBeginDepth())) {
                 map.put("record[" + i + "].beginDepth", record.getBeginDepth());
             }

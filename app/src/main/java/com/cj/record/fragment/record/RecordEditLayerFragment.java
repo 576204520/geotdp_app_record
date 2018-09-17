@@ -30,6 +30,7 @@ import com.cj.record.fragment.record.layer.LayerDescTtFragment;
 import com.cj.record.fragment.record.layer.LayerDescYnFragment;
 import com.cj.record.fragment.record.layer.LayerDescYsFragment;
 import com.cj.record.fragment.record.layer.LayerDescZdyFragment;
+import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
 import com.cj.record.views.MaterialEditTextNoEmoji;
 
@@ -194,8 +195,12 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
                                 }).callback(new MaterialDialog.ButtonCallback() {
                                     @Override
                                     public void onPositive(MaterialDialog dialog) {
-                                        edtCauses.setText(causesStr.toString());
-                                        dialog.dismiss();
+                                        if (causesStr.toString().length() > 150) {
+                                            ToastUtil.showToastS(mActivity,"该字段最大150字符，请重新选择");
+                                        }else{
+                                            edtCauses.setText(causesStr.toString());
+                                            dialog.dismiss();
+                                        }
                                     }
 
                                     @Override

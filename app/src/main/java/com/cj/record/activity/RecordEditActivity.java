@@ -355,6 +355,13 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
             ToastUtil.showToastS(this, "无法获取定位信息");
             return false;
         }
+        //记录编号和其他描述长度限制
+        if(recordCode.getText().toString().length()>20){
+            recordCode.setError("编号长度不能超过20");
+        }
+        if(recordDescription.getText().toString().length()>50){
+            recordDescription.setError("描述长度不能超过50");
+        }
         if ("".equals(recordBeginDepth.getText().toString())) {
             recordBeginDepth.setText(recordBeginDepth.getHint());
         }

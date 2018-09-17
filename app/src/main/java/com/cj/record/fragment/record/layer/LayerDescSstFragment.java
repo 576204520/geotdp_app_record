@@ -14,6 +14,7 @@ import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
 import com.cj.record.fragment.record.RecordBaseFragment;
+import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
 
 import java.util.ArrayList;
@@ -153,8 +154,12 @@ public class LayerDescSstFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    sprMycf.setText(mycfStr.toString());
-                                    dialog.dismiss();
+                                    if (mycfStr.toString().length() > 50) {
+                                        ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
+                                    }else{
+                                        sprMycf.setText(mycfStr.toString());
+                                        dialog.dismiss();
+                                    }
                                 }
 
                                 @Override
@@ -212,8 +217,12 @@ public class LayerDescSstFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    sprJc.setText(jcStr.toString());
-                                    dialog.dismiss();
+                                    if (jcStr.toString().length() > 50) {
+                                        ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
+                                    }else{
+                                        sprJc.setText(jcStr.toString());
+                                        dialog.dismiss();
+                                    }
                                 }
 
                                 @Override

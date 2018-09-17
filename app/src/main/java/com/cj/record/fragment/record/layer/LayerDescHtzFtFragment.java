@@ -14,6 +14,7 @@ import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
 import com.cj.record.fragment.record.RecordBaseFragment;
+import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
 
 import java.util.ArrayList;
@@ -94,8 +95,12 @@ public class LayerDescHtzFtFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    sprBhw.setText(bhwStr.toString());
-                                    dialog.dismiss();
+                                    if (bhwStr.toString().length() > 50) {
+                                        ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
+                                    }else{
+                                        sprBhw.setText(bhwStr.toString());
+                                        dialog.dismiss();
+                                    }
                                 }
 
                                 @Override

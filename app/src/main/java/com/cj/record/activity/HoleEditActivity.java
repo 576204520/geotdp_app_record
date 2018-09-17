@@ -294,7 +294,11 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     private void save() {
         String code = holeCode.getText().toString().trim();
         if (TextUtils.isEmpty(code)) {
-            ToastUtil.showToastS(HoleEditActivity.this, "请输入钻孔编号");
+            ToastUtil.showToastS(HoleEditActivity.this, "请输入勘探点编号");
+            return;
+        }
+        if (code.length() > 20) {
+            ToastUtil.showToastS(HoleEditActivity.this, "勘探点编号长度不能超过20");
             return;
         }
         //判断hole完整性，钻孔（描述员、司钻员、钻机、场景）、探井（描述员、场景）
@@ -506,6 +510,8 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
             String code = holeCode.getText().toString();
             if (TextUtils.isEmpty(code)) {
                 holeCode.setError("请输入勘察点编号");
+            } else if (code.length() > 20) {
+                holeCode.setError("勘探点编号长度不能超过20");
             } else {
                 //根据查询结果判断是否有一样的code
                 List<Hole> list = holeDao.getHoleByCode(HoleEditActivity.this, code, hole.getProjectID());

@@ -14,6 +14,7 @@ import com.cj.record.R;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
+import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
 
 import java.util.ArrayList;
@@ -76,8 +77,12 @@ public class RecordEditGetEarthFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    sprTestType.setText(testStr.toString());
-                                    dialog.dismiss();
+                                    if (testStr.toString().length() > 100) {
+                                        ToastUtil.showToastS(mActivity,"该字段最大100字符，请重新选择");
+                                    }else{
+                                        sprTestType.setText(testStr.toString());
+                                        dialog.dismiss();
+                                    }
                                 }
 
                                 @Override

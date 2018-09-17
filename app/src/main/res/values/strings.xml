@@ -69,7 +69,7 @@
 
     <string name="hint_record_layer_type">岩土分类</string>
     <string name="hint_record_layer_name">岩土定名</string>
-    <string name="hint_record_layer_wzcf">状态</string>
+    <string name="hint_record_layer_wzcf">物质成分</string>
     <string name="hint_record_layer_ys">颜色</string>
     <string name="hint_record_layer_klzc">颗粒组成</string>
     <string name="hint_record_layer_klxz">颗粒形状</string>

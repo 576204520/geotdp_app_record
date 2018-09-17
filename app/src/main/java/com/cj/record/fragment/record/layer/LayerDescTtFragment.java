@@ -14,6 +14,7 @@ import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
 import com.cj.record.fragment.record.RecordBaseFragment;
+import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
 
 import java.util.ArrayList;
@@ -98,8 +99,12 @@ public class LayerDescTtFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    sprZycf.setText(zycfStr.toString());
-                                    dialog.dismiss();
+                                    if (zycfStr.toString().length() > 50) {
+                                        ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
+                                    }else{
+                                        sprZycf.setText(zycfStr.toString());
+                                        dialog.dismiss();
+                                    }
                                 }
 
                                 @Override
@@ -153,8 +158,12 @@ public class LayerDescTtFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    sprCycf.setText(cycfStr.toString());
-                                    dialog.dismiss();
+                                    if (cycfStr.toString().length() > 50) {
+                                        ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
+                                    }else{
+                                        sprCycf.setText(cycfStr.toString());
+                                        dialog.dismiss();
+                                    }
                                 }
 
                                 @Override
@@ -210,8 +219,12 @@ public class LayerDescTtFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    sprYs.setText(ysStr.toString());
-                                    dialog.dismiss();
+                                    if (ysStr.toString().length() > 50) {
+                                        ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
+                                    }else{
+                                        sprYs.setText(ysStr.toString());
+                                        dialog.dismiss();
+                                    }
                                 }
 
                                 @Override
