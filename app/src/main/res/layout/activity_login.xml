@@ -66,7 +66,7 @@
             android:layout_marginRight="20dp"
             android:layout_toEndOf="@+id/imageView"
             android:enabled="true"
-            android:hint="编录员账号"
+            android:hint="描述员账号"
             android:textSize="16sp"
             app:met_baseColor="@android:color/white"
             app:met_floatingLabelText="编录员账号"
