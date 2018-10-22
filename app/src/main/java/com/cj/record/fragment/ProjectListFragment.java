@@ -8,7 +8,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,8 +95,24 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void initView() {
         obsUtils.execute(1);
+        projectSearchEt.addTextChangedListener(textWatcher);
     }
+    TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            onRefresh();
+        }
+    };
     private void initRecycleView() {
         projectAdapter = new ProjectAdapter(mActivity, dataList);
         projectAdapter.setOnItemListener(this);
@@ -304,10 +322,4 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
-    @OnClick(R.id.project_search_iv)
-    public void onViewClicked() {
-        if (!TextUtils.isEmpty(projectSearchEt.getText().toString().trim())) {
-            onRefresh();
-        }
-    }
 }

@@ -11,7 +11,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -208,7 +210,26 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         sprSort.setTag(listSort.get(0).getId());
         sprSort.setOnItemClickListener(sortListener);
         obsUtils.execute(1);
+        //搜索框添加监听
+        holeSearchEt.addTextChangedListener(textWatcher);
     }
+
+    TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            onRefresh();
+        }
+    };
 
     private void initRecycleView() {
         holeAdapter = new HoleAdapter(this, dataList);
@@ -458,6 +479,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             showPPW();
             Map<String, String> params = new HashMap<>();
             params.put("holeID", localUser.getId());
+            params.put("userID", userID);
             OkGo.<String>post(Urls.DOWNLOAD_RELATE_HOLE).params(params).execute(new StringCallback() {
                 @Override
                 public void onSuccess(Response<String> response) {
@@ -855,7 +877,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             //模糊查询
             String like = "";
             if (!TextUtils.isEmpty(code)) {
-                like = "and h.code LIKE'%" + code + "%' ";
+                like = "and (h.code LIKE'%" + code + "%' or h.relateCode LIKE'%" + code + "%')";
             }
             //排序
             String sequence = "h.updateTime desc ";
@@ -923,14 +945,6 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             e.printStackTrace();
         }
         return list;
-    }
-
-
-    @OnClick(R.id.hole_search_iv)
-    public void onViewClicked() {
-        if (!TextUtils.isEmpty(holeSearchEt.getText().toString().trim())) {
-            onRefresh();
-        }
     }
 
 

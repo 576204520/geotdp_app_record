@@ -107,7 +107,8 @@
             android:name=".activity.VideoPlayerActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.RelateHoleActivity" />
+        <activity android:name=".activity.RelateHoleActivity"
+                  android:screenOrientation="portrait"/>
         <!--更新app-->
         <service android:name=".service.DownloadService"></service>
 

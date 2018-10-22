@@ -146,6 +146,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
         }
         Map<String, String> map = new HashMap<>();
         map.put("project.serialNumber", number);
+        map.put("userID", BaseActivity.userID);
         showPPW();
         OkGo.<String>post(Urls.GET_PROJECT_INFO_BY_KEY_POST)
                 .params(map)

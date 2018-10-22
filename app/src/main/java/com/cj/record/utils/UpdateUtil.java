@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.cj.record.R;
 import com.cj.record.activity.MainActivity;
+import com.cj.record.activity.base.BaseActivity;
 import com.cj.record.baen.JsonResult;
 import com.cj.record.baen.VersionVo;
 import com.cj.record.service.DownloadService;
@@ -22,6 +23,8 @@ import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -63,7 +66,10 @@ public class UpdateUtil {
      * 检查app版本
      */
     public static void checkVersion(final Activity activity, final boolean isSetting) {
+        Map<String, String> params = new HashMap<>();
+        params.put("userID", BaseActivity.userID);
         OkGo.<String>post(Urls.GET_APP_CHECK_VERSION)
+                .params(params)
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(Response<String> response) {

@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.alibaba.idst.nls.internal.utils.L;
 import com.cj.record.R;
 import com.cj.record.activity.base.BaseActivity;
 import com.cj.record.adapter.RelateHoleAdapter;
@@ -115,6 +116,7 @@ public class RelateHoleActivity extends BaseActivity {
         showPPW();
         Map<String, String> map = new HashMap<>();
         map.put("serialNumber", serialNumber);
+        map.put("userID", BaseActivity.userID);
         OkGo.<String>post(path)
                 .params(map)
                 .execute(new StringCallback() {
@@ -128,6 +130,8 @@ public class RelateHoleActivity extends BaseActivity {
                             relateList.addAll(gson.fromJson(jsonResult.getResult(), new TypeToken<List<Hole>>() {}.getType()));
                             if (relateList != null && relateList.size() > 0) {
                                 sort();
+                                holeList.clear();
+                                holeList.addAll(relateList);
                                 initRecycleView();
                             } else {
                                 ToastUtil.showToastS(RelateHoleActivity.this, "服务端未创建勘察点，无法关联");
@@ -188,7 +192,7 @@ public class RelateHoleActivity extends BaseActivity {
         public void onItemClick(int position) {
             //hole编辑界面才需要这个动作
             if (relateType == RelateHoleAdapter.HAVE_NOALL) {
-                showDialog(relateList.get(position));
+                showDialog(holeList.get(position));
             } else {
                 addOrRemove(position);
             }
@@ -207,7 +211,7 @@ public class RelateHoleActivity extends BaseActivity {
         }
         new AlertDialog.Builder(this)
                 .setTitle(R.string.hint)
-                .setMessage("确定选择关联该勘探点吗？当前该点已有" + num + "人关联")
+                .setMessage("确定选择关联(" + hole.getCode() + ")勘探点吗？当前该点已有" + num + "人关联")
                 .setNegativeButton(R.string.agree,
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -312,10 +316,12 @@ public class RelateHoleActivity extends BaseActivity {
                     prompt.setVisibility(View.VISIBLE);
                 }
             } else {
+                holeList.clear();
+                holeList.addAll(relateList);
                 relateHoleRecycler.setVisibility(View.VISIBLE);
                 prompt.setVisibility(View.GONE);
                 relateHoleRecycler.setLayoutManager(new LinearLayoutManager(mContext));
-                relateHoleAdapter = new RelateHoleAdapter(mContext, relateList, relateType);
+                relateHoleAdapter = new RelateHoleAdapter(mContext, holeList, relateType);
                 relateHoleRecycler.setNestedScrollingEnabled(false);
                 relateHoleRecycler.setAdapter(relateHoleAdapter);
                 relateHoleAdapter.setOnItemListener(onItemListener);

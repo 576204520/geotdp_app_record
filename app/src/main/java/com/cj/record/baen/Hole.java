@@ -9,6 +9,8 @@ import com.cj.record.db.RecordDao;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
 import com.cj.record.utils.L;
+import com.cj.record.utils.SPUtils;
+import com.cj.record.utils.Urls;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;

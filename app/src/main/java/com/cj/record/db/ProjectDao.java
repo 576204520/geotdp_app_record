@@ -111,7 +111,7 @@ public class ProjectDao {
             QueryBuilder queryBuilder = projectDao.queryBuilder();
             queryBuilder.where().eq("recordPerson", "").or().eq("recordPerson", userID);
             if (!TextUtils.isEmpty(search)) {
-                queryBuilder.where().like("code", "%" + search + "%");
+                queryBuilder.where().like("code", "%" + search + "%").or().like("fullName","%" + search + "%");
             }
             queryBuilder.orderBy("createTime", false);
             queryBuilder.offset(page * size).limit(size);
