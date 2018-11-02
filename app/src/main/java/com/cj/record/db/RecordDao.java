@@ -3,6 +3,7 @@ package com.cj.record.db;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.cj.record.baen.Gps;
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.Record;
 import com.j256.ormlite.dao.Dao;

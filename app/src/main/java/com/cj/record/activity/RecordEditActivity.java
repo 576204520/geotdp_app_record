@@ -443,6 +443,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         record.setDescription(recordDescription.getText().toString());
         record.setState("1");
         record.setIsDelete("0");
+        record.setUpdateTime(DateUtil.date2Str(new Date()));
         record.setRecordPerson((String) SPUtils.get(this, Urls.SPKey.USER_REALNAME, ""));
         return true;
     }
@@ -562,10 +563,13 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
     }
 
     private void uploadTemplate(String templateName) {
+        if(TextUtils.isEmpty(userID)){
+            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+            return;
+        }
         Gson gson = new Gson();
         Template template = new Template(templateName, userID, record);
         String templateJson = gson.toJson(template).replace("detailList", "detailListStr");
-        L.e(templateJson);
         showPPW();
         OkGo.<String>post(Urls.TEMPLATE_UPLOAD).upJson(templateJson)
                 .execute(new StringCallback() {

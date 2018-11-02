@@ -87,9 +87,11 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
         String password = loginPassword.getText().toString().trim();
         if (TextUtils.isEmpty(email)) {
             ToastUtil.showToastS(mContext, "请输入邮箱账号");
+            return;
         }
         if (TextUtils.isEmpty(password)) {
             ToastUtil.showToastS(mContext, "请输入密码");
+            return;
         }
         //检查网络
         if(!haveNet()){

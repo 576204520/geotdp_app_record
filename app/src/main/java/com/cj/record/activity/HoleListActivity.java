@@ -475,6 +475,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         if (!haveNet()) {
             return;
         }
+        if(TextUtils.isEmpty(userID)){
+            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+            return;
+        }
         for (LocalUser localUser : localUserList) {
             showPPW();
             Map<String, String> params = new HashMap<>();

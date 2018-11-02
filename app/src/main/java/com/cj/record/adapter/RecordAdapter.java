@@ -10,14 +10,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cj.record.R;
+import com.cj.record.baen.Gps;
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.Record;
+import com.cj.record.db.GpsDao;
 import com.cj.record.slide.AbstractSlideExpandableListAdapter;
 import com.cj.record.utils.ToastUtil;
 
 import net.qiujuer.genius.ui.widget.Button;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import butterknife.BindView;
@@ -35,13 +38,14 @@ public class RecordAdapter extends AbstractSlideExpandableListAdapter<RecordAdap
     private Context mContext;
     private LayoutInflater inflater;
     private List<HoleAdapter.MyHolder> holderList;
-
+    private GpsDao gpsDao;
     public RecordAdapter(Context context, List<Record> list) {
         this.mContext = context;
         this.list = list;
         inflater = LayoutInflater.from(mContext);
         holderList = new ArrayList<>();
 //        setItemExpandCollapseListener(this);
+        gpsDao = new GpsDao(mContext);
     }
 
     @Override
@@ -58,7 +62,9 @@ public class RecordAdapter extends AbstractSlideExpandableListAdapter<RecordAdap
         myHolder.recordEndDepth.setText(record.getEndDepth() + "m");
         myHolder.recordType.setText(record.getType());
         myHolder.recordName.setText(record.getTitle());
-        myHolder.recordUpdateTime.setText("修改时间:" + record.getUpdateTime());
+        myHolder.recordCreateTime.setText("创建时间:" + record.getCreateTime());
+        Gps gps = gpsDao.getGpsByRecord(record.getId());
+        myHolder.recordMapTime.setText("定位时间:" + gps.getGpsTime());
         if (record.getType().equals(Record.TYPE_GET_WATER)) {
             myHolder.recordBeginDepth.setVisibility(View.VISIBLE);
             myHolder.recordEb.setVisibility(View.GONE);
@@ -161,8 +167,10 @@ public class RecordAdapter extends AbstractSlideExpandableListAdapter<RecordAdap
         TextView recordTn;
         @BindView(R.id.record_name)
         TextView recordName;
-        @BindView(R.id.record_updateTime)
-        TextView recordUpdateTime;
+        @BindView(R.id.record_createTime)
+        TextView recordCreateTime;
+        @BindView(R.id.record_mapTime)
+        TextView recordMapTime;
         @BindView(R.id.record_detail)
         Button recordDetail;
         @BindView(R.id.record_edit)

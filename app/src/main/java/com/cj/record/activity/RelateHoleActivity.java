@@ -113,10 +113,14 @@ public class RelateHoleActivity extends BaseActivity {
         if(!haveNet()){
             return;
         }
+        if(TextUtils.isEmpty(userID)){
+            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+            return;
+        }
         showPPW();
         Map<String, String> map = new HashMap<>();
         map.put("serialNumber", serialNumber);
-        map.put("userID", BaseActivity.userID);
+        map.put("userID", userID);
         OkGo.<String>post(path)
                 .params(map)
                 .execute(new StringCallback() {

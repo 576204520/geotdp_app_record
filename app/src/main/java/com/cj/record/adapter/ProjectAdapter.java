@@ -61,7 +61,7 @@ public class ProjectAdapter extends AbstractSlideExpandableListAdapter<ProjectAd
         MyHolder myHolder = (MyHolder) holder;
         holderList.add(myHolder);
         myHolder.projectFullName.setText(project.getFullName());
-        myHolder.projectUpdateTime.setText("项目时间:" + project.getCreateTime());
+        myHolder.projectUpdateTime.setText("创建时间:" + project.getCreateTime());
         List<Hole> holes = holeDao.getHoleListByProjectID(project.getId());
         myHolder.projectHoleNumber.setText("钻孔数:" + holes.size());
         //钻孔编号

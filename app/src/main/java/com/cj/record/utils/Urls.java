@@ -71,6 +71,7 @@ public class Urls {
         public static final String USER_REALNAME = "userRealName";
         public static final String USER_PWD = "userPassword";
         public static final String USER_AUTO = "userAuto";
-
+        //判断是否整理过数据
+        public static final String DATA_INIT = "initData";
     }
 }

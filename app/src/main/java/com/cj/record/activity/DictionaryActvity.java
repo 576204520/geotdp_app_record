@@ -212,6 +212,10 @@ public class DictionaryActvity extends BaseActivity {
             new MaterialDialog.Builder(this).content("下载关联词库，将删除本地词库，是否下载？").positiveText(R.string.agree).negativeText(R.string.disagree).callback(new MaterialDialog.ButtonCallback() {
                 @Override
                 public void onPositive(MaterialDialog dialog) {
+                    if(TextUtils.isEmpty(userID)){
+                        ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+                        return;
+                    }
                     downloadDictionary(userID);
                 }
             }).show();

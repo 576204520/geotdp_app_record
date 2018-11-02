@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -101,6 +102,10 @@ public class TemplateActivity extends BaseActivity implements TemplateAdapter.On
     }
 
     private void getDateByNet() {
+        if(TextUtils.isEmpty(userID)){
+            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+            return;
+        }
         showPPW();
         Map<String, String> map = new HashMap<>();
         map.put("userID", userID);

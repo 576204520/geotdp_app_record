@@ -111,7 +111,7 @@ public class ProjectDao {
             QueryBuilder queryBuilder = projectDao.queryBuilder();
             queryBuilder.where().eq("recordPerson", "").or().eq("recordPerson", userID);
             if (!TextUtils.isEmpty(search)) {
-                queryBuilder.where().like("code", "%" + search + "%").or().like("fullName","%" + search + "%");
+                queryBuilder.where().like("code", "%" + search + "%").or().like("fullName", "%" + search + "%");
             }
             queryBuilder.orderBy("createTime", false);
             queryBuilder.offset(page * size).limit(size);
@@ -202,4 +202,16 @@ public class ProjectDao {
         return hashmap;
     }
 
+    /**
+     * 初始化整理数据，查询所有该用户下的项目
+     */
+
+    public List<Project> getAll() {
+        try {
+            return projectDao.queryForAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

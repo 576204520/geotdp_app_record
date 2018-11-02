@@ -74,7 +74,6 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
     private RecordDao recordDao;
     private MediaDao mediaDao;
     private Project project;
-    private String userID;
     private ObsUtils obsUtils;
     private String oldNumber;
 
@@ -139,14 +138,19 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
             ToastUtil.showToastS(mContext, "请输入项目序列号");
             return;
         }
+        if(TextUtils.isEmpty(userID)){
+            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+            return;
+        }
         boolean isHave = projectDao.checkNumber(userID, number, project.getId());
         if (isHave) {
             ToastUtil.showToastS(mContext, "该序列号本地已经存在");
             return;
         }
+
         Map<String, String> map = new HashMap<>();
         map.put("project.serialNumber", number);
-        map.put("userID", BaseActivity.userID);
+        map.put("userID", userID);
         showPPW();
         OkGo.<String>post(Urls.GET_PROJECT_INFO_BY_KEY_POST)
                 .params(map)
@@ -230,7 +234,6 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
     public void onSubscribe(int type) {
         switch (type) {
             case 1:
-                userID = (String) SPUtils.get(mContext, Urls.SPKey.USER_ID, "");
                 isEdit = getIntent().getBooleanExtra(MainActivity.FROMTYPE, false);
                 projectDao = new ProjectDao(mContext);
                 holeDao = new HoleDao(this);

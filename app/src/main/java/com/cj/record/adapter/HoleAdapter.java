@@ -68,8 +68,11 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
         //判断是否定位
         if (TextUtils.isEmpty(hole.getMapLatitude()) || TextUtils.isEmpty(hole.getMapLongitude())) {
             myHolder.holeLocation.setVisibility(View.GONE);
+            myHolder.holeMapTime.setVisibility(View.GONE);
         } else {
             myHolder.holeLocation.setVisibility(View.VISIBLE);
+            myHolder.holeMapTime.setVisibility(View.VISIBLE);
+            myHolder.holeMapTime.setText("定位时间:" + hole.getMapTime());
         }
         //判断是否上传
         if ("2".equals(hole.getState())) {
@@ -85,6 +88,7 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
         }
         myHolder.holeType.setText("类型:" + hole.getType());
         myHolder.holeCreateTime.setText("开始时间:" + hole.getCreateTime());
+        myHolder.holeUpdateTime.setText("修改时间:" + hole.getUpdateTime());
         //判断是否是获取的数据
         if (TextUtils.isEmpty(hole.getUserID())) {
             myHolder.holeGetData.setVisibility(View.GONE);
@@ -203,6 +207,10 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
         TextView holeRelate;
         @BindView(R.id.hole_createTime)
         TextView holeCreateTime;
+        @BindView(R.id.hole_updateTime)
+        TextView holeUpdateTime;
+        @BindView(R.id.hole_mapTime)
+        TextView holeMapTime;
         @BindView(R.id.hole_detail)
         Button holeDetail;
         @BindView(R.id.hole_edit)
