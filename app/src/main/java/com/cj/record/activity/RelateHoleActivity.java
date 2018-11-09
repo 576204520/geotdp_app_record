@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -112,10 +113,10 @@ public class RelateHoleActivity extends BaseActivity {
 
     private void getRelateList() {
         //检查网络
-        if(!haveNet()){
+        if (!haveNet()) {
             return;
         }
-        if(TextUtils.isEmpty(userID)){
+        if (TextUtils.isEmpty(userID)) {
             ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
             return;
         }
@@ -134,7 +135,8 @@ public class RelateHoleActivity extends BaseActivity {
                         Gson gson = new Gson();
                         JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
                         if (jsonResult.getStatus()) {
-                            relateList.addAll(gson.fromJson(jsonResult.getResult(), new TypeToken<List<Hole>>() {}.getType()));
+                            relateList.addAll(gson.fromJson(jsonResult.getResult(), new TypeToken<List<Hole>>() {
+                            }.getType()));
                             if (relateList != null && relateList.size() > 0) {
                                 sort();
                                 holeList.clear();
@@ -183,6 +185,15 @@ public class RelateHoleActivity extends BaseActivity {
                 return i;
             }
         });
+        Iterator<Hole> it = relateList.iterator();
+        while (it.hasNext()) {
+            Hole hole = it.next();
+            if (!TextUtils.isEmpty(hole.getCheckStatus())) {
+                if (hole.getCheckStatus().equals("1") || hole.getCheckStatus().equals("3")) {
+                    it.remove();
+                }
+            }
+        }
     }
 
     private void initRecycleView() {

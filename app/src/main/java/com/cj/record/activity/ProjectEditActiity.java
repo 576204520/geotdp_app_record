@@ -1,8 +1,10 @@
 package com.cj.record.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -182,10 +184,12 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                             project.setUpload(mProject.isUpload());
                             project.setCompanyID(mProject.getCompanyID());
                             project.setLaborUnit(mProject.getLaborUnit());
-
                             obsUtils.execute(2);
+                            ToastUtil.showToastS(mContext, jsonResult.getMessage());
+                        }else{
+                            showMessage(jsonResult.getMessage());
                         }
-                        ToastUtil.showToastS(mContext, jsonResult.getMessage());
+
 
                     }
 
@@ -202,7 +206,20 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                     }
                 });
     }
-
+    private void showMessage(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.hint)
+                .setMessage(message)
+                .setNegativeButton(R.string.agree,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                .setCancelable(false)
+                .show();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_project_edit, menu);
