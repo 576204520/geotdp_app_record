@@ -8,10 +8,6 @@ import java.io.File;
  * Created by Administrator on 2017/8/25.
  */
 public class Urls {
-//    public static final String SERVER_PATH = "http://192.168.11.247:8089/";//广西测试
-//    public static final String SERVER_PATH = "http://test.geotdp.com/";//测试
-//    public static final String SERVER_PATH = "http://192.168.11.220/";//内部测试
-//    public static final String SERVER_PATH = "http://192.168.1.100/";
 
 //    public static final String SERVER_PATH = "http://gx.geotdp.com:8083/";//广西
 //    public static final String SERVER_PATH = "http://jx.geotdp.com:8083/";//江西
@@ -19,10 +15,13 @@ public class Urls {
 //    public static final String SERVER_PATH = "http://ln.geotdp.com:8081/";//辽宁
     public static final String SERVER_PATH = "http://bj.geotdp.com:8081/";//北京
     // 登录请求
+    //上传钻孔到规委
+    public static final String UPLOAD_GW = "http://bjgw.geotdp.com:8083/geotdp/hole/uploadHoleNew";
+    // 登录请求#
     public static final String LOGIN_POST = SERVER_PATH + "geotdp/compileUser/login";
     //获取版本信息
     public static final String GET_APP_CHECK_VERSION = SERVER_PATH + "geotdp/version/check";
-    //下载apk地址
+    //下载apk地址#
     public static final String Download_APK = SERVER_PATH + "gcdz.apk";
     // 关联项目 获取项目信息请求
     public static final String GET_PROJECT_INFO_BY_KEY_POST = SERVER_PATH + "geotdp/project/getProjectInfoByKey";
@@ -74,4 +73,8 @@ public class Urls {
         //判断是否整理过数据
         public static final String DATA_INIT = "initData";
     }
+
+    //各企业自己的key
+    public static final String C_KEY = "tZ4FzkhObZ";
+
 }

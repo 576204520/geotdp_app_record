@@ -22,10 +22,12 @@ import com.cj.record.baen.Template;
 import com.cj.record.baen.TemplateDetail;
 import com.cj.record.db.TemplateDao;
 import com.cj.record.db.TemplateDetialDao;
+import com.cj.record.utils.Common;
 import com.cj.record.utils.L;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.UpdateUtil;
 import com.cj.record.utils.Urls;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -109,6 +111,7 @@ public class TemplateActivity extends BaseActivity implements TemplateAdapter.On
         showPPW();
         Map<String, String> map = new HashMap<>();
         map.put("userID", userID);
+        map.put("verCode", UpdateUtil.getVerCode(this) + "");
         OkGo.<String>post(Urls.TEMPLATE_DOWNLOAD)
                 .params(map)
                 .execute(new StringCallback() {

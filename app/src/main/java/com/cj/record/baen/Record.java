@@ -289,6 +289,52 @@ public class Record implements Serializable, Cloneable {
     String downloadID = "";         //下载数据的id
     List<Gps> gpsList;//下载hole时，封装数据
 
+    String longitude;           // 上传到政府用
+    String latitude;           // 上传到政府用
+    String gpsTime;           // 上传到政府用
+    List<Media> mediaListStr; // 上传到政府用
+    String ids;
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getGpsTime() {
+        return gpsTime;
+    }
+
+    public void setGpsTime(String gpsTime) {
+        this.gpsTime = gpsTime;
+    }
+
+    public List<Media> getMediaListStr() {
+        return mediaListStr;
+    }
+
+    public void setMediaListStr(List<Media> mediaListStr) {
+        this.mediaListStr = mediaListStr;
+    }
+
+    public String getIds() {
+        return ids;
+    }
+
+    public void setIds(String ids) {
+        this.ids = ids;
+    }
+
     public List<Gps> getGpsList() {
         return gpsList;
     }
@@ -395,7 +441,7 @@ public class Record implements Serializable, Cloneable {
             this.updateTime = DateUtil.date2Str(new Date());       //更新时间
 
             this.type = recordType;
-            this.state = "0";
+            this.state = "1";
 
             this.updateID = "";
             this.mainLayerCode = "0";
@@ -651,7 +697,6 @@ public class Record implements Serializable, Cloneable {
             return "SV";
         } else {
             return "HC";
-
         }
     }
 

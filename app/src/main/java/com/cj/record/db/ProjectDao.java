@@ -203,12 +203,14 @@ public class ProjectDao {
     }
 
     /**
-     * 初始化整理数据，查询所有该用户下的项目
+     * 初始化整理数据
      */
 
-    public List<Project> getAll() {
+    public List<Project> getAll(String userID) {
         try {
-            return projectDao.queryForAll();
+            QueryBuilder queryBuilder = projectDao.queryBuilder();
+            queryBuilder.where().eq("recordPerson", "").or().eq("recordPerson", userID);
+            return queryBuilder.query();
         } catch (SQLException e) {
             e.printStackTrace();
         }

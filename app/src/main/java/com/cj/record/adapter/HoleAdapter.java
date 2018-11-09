@@ -36,12 +36,14 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
     private Context mContext;
     private LayoutInflater inflater;
     private List<MyHolder> holderList;
+    private Project project;
 
-    public HoleAdapter(Context context, List<Hole> list) {
+    public HoleAdapter(Context context, List<Hole> list, Project project) {
         this.mContext = context;
         this.list = list;
         inflater = LayoutInflater.from(mContext);
         holderList = new ArrayList<>();
+        this.project = project;
 //        setItemExpandCollapseListener(this);
     }
 
@@ -55,31 +57,50 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
         super.onBindViewHolder(holder, position);
         MyHolder myHolder = (MyHolder) holder;
         Hole hole = list.get(position);
+        boolean isRelate = false;
+        boolean isLocation = false;
         //判断是否关联
         if (TextUtils.isEmpty(hole.getRelateCode()) && TextUtils.isEmpty(hole.getRelateID())) {
             myHolder.holeCode.setText(hole.getCode());
             myHolder.holeCodeRelate.setText("");
             myHolder.holeRelate.setVisibility(View.GONE);
+            isRelate = false;
         } else {
             myHolder.holeCode.setText(hole.getRelateCode());
             myHolder.holeCodeRelate.setText("(" + hole.getCode() + ")");
             myHolder.holeRelate.setVisibility(View.VISIBLE);
+            isRelate = true;
         }
         //判断是否定位
         if (TextUtils.isEmpty(hole.getMapLatitude()) || TextUtils.isEmpty(hole.getMapLongitude())) {
             myHolder.holeLocation.setVisibility(View.GONE);
             myHolder.holeMapTime.setVisibility(View.GONE);
+            isRelate = false;
         } else {
             myHolder.holeLocation.setVisibility(View.VISIBLE);
             myHolder.holeMapTime.setVisibility(View.VISIBLE);
             myHolder.holeMapTime.setText("定位时间:" + hole.getMapTime());
+            isLocation = true;
         }
         //判断是否上传
-        if ("2".equals(hole.getState())) {
-            myHolder.holeRight.setVisibility(View.VISIBLE);
-        } else {
+        if(isRelate && isLocation){
+            if (project.isUpload()) {
+                if ("2".equals(hole.getState()) && "2".equals(hole.getStateGW())) {
+                    myHolder.holeRight.setVisibility(View.VISIBLE);
+                } else {
+                    myHolder.holeRight.setVisibility(View.GONE);
+                }
+            } else {
+                if ("2".equals(hole.getState())) {
+                    myHolder.holeRight.setVisibility(View.VISIBLE);
+                } else {
+                    myHolder.holeRight.setVisibility(View.GONE);
+                }
+            }
+        }else{
             myHolder.holeRight.setVisibility(View.GONE);
         }
+
         //获取到的深度
         if (null != hole.getCurrentDepth() && !"null".equals(hole.getCurrentDepth())) {
             myHolder.holeDepth.setText("深度:" + hole.getCurrentDepth() + "m");
@@ -95,7 +116,7 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
         } else {
             if (hole.getUserID().equals(SPUtils.get(mContext, Urls.SPKey.USER_ID, ""))) {
                 myHolder.holeGetData.setText("获取的本人数据，可以编辑");
-            }else{
+            } else {
                 myHolder.holeGetData.setText("获取的他人数据，不可以编辑，只能查看");
             }
             myHolder.holeGetData.setVisibility(View.VISIBLE);

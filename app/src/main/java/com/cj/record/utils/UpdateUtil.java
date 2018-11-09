@@ -68,6 +68,7 @@ public class UpdateUtil {
     public static void checkVersion(final Activity activity, final boolean isSetting) {
         Map<String, String> params = new HashMap<>();
         params.put("userID", BaseActivity.userID);
+        params.put("verCode", UpdateUtil.getVerCode(activity) + "");
         OkGo.<String>post(Urls.GET_APP_CHECK_VERSION)
                 .params(params)
                 .execute(new StringCallback() {
@@ -93,7 +94,7 @@ public class UpdateUtil {
                                 } else {
                                     showViesionDialog(content, false, activity);
                                 }
-                            }else {
+                            } else {
                                 //即使已经是最新，设置页面也要提示出来
                                 if (isSetting) {
                                     ToastUtil.showToastS(activity, "已是最新版本");

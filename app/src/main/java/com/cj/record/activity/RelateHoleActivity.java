@@ -24,8 +24,10 @@ import com.cj.record.adapter.RelateHoleAdapter;
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.JsonResult;
 import com.cj.record.baen.LocalUser;
+import com.cj.record.utils.Common;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.UpdateUtil;
 import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialEditTextNoEmoji;
 import com.google.gson.Gson;
@@ -121,6 +123,7 @@ public class RelateHoleActivity extends BaseActivity {
         Map<String, String> map = new HashMap<>();
         map.put("serialNumber", serialNumber);
         map.put("userID", userID);
+        map.put("verCode", UpdateUtil.getVerCode(this) + "");
         OkGo.<String>post(path)
                 .params(map)
                 .execute(new StringCallback() {

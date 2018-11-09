@@ -40,7 +40,7 @@
                 android:id="@+id/hole_code_relate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
+                android:focusable="false"
                 android:hint="关联勘探点编号(平台)"
                 android:textSize="14sp"
                 app:met_clearButton="true"

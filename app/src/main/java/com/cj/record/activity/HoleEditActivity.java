@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cj.record.baen.JsonResult;
 import com.cj.record.db.RecordDao;
 import com.cj.record.utils.L;
 import com.cj.record.R;
@@ -36,6 +37,7 @@ import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.UpdateUtil;
 import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialBetterSpinner;
 import com.cj.record.views.MaterialEditTextElevation;
@@ -425,6 +427,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
         map.put("userID", userID);
         map.put("relateID", relateHole.getId());
         map.put("holeID", hole.getId());
+        map.put("verCode", UpdateUtil.getVerCode(this) + "");
         OkGo.<String>post(Urls.DO_RELATE_HOLE)
                 .params(map)
                 .execute(new StringCallback() {
@@ -434,33 +437,42 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                         String data = response.body();//这个就是返回来的结果
                         if (JsonUtils.isGoodJson(data)) {
                             Gson gson = new Gson();
-                            Hole h = gson.fromJson(data.toString(), Hole.class);
-                            //修改界面,就该hole
-                            holeCodeRelate.setText(h.getCode());
-                            hole.setRelateCode(h.getCode());
-                            hole.setRelateID(h.getId());
-                            if (h.getDepth() != null) {
-                                holeDepth.setText(h.getDepth());
-                                hole.setDepth(h.getDepth());
+                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                            //如果登陆成功，保存用户名和密码到数据库,并保存到baen
+                            if (jsonResult.getStatus()) {
+                                String result = jsonResult.getResult();
+                                Hole h = gson.fromJson(result.toString(), Hole.class);
+                                //修改界面,就该hole
+                                holeCodeRelate.setText(h.getCode());
+                                hole.setRelateCode(h.getCode());
+                                hole.setRelateID(h.getId());
+                                if (h.getUploadID() != null) {
+                                    hole.setUploadID(h.getUploadID());
+                                }
+                                if (h.getDepth() != null) {
+                                    holeDepth.setText(h.getDepth());
+                                    hole.setDepth(h.getDepth());
+                                }
+                                if (h.getElevation() != null) {
+                                    holeElevation.setText(h.getElevation());
+                                    hole.setElevation(h.getElevation());
+                                }
+                                if (h.getDescription() != null) {
+                                    holeDescriptionLl.setVisibility(View.VISIBLE);
+                                    holeDescription.setText(h.getDescription());
+                                    hole.setDescription(h.getDescription());
+                                } else {
+                                    holeDescriptionLl.setVisibility(View.GONE);
+                                    holeDescription.setText("");
+                                    hole.setDescription("");
+                                }
+                                hole.setState("1");
+                                hole.setStateGW("1");
+                                holeDao.add(hole);
+                                project.setUpdateTime(DateUtil.date2Str(new Date()) + "");
+                                projectDao.update(project);
                             }
-                            if (h.getElevation() != null) {
-                                holeElevation.setText(h.getElevation());
-                                hole.setElevation(h.getElevation());
-                            }
-                            if (h.getDescription() != null) {
-                                holeDescriptionLl.setVisibility(View.VISIBLE);
-                                holeDescription.setText(h.getDescription());
-                                hole.setDescription(h.getDescription());
-                            } else {
-                                holeDescriptionLl.setVisibility(View.GONE);
-                                holeDescription.setText("");
-                                hole.setDescription("");
-                            }
-                            hole.setState("1");
-                            holeDao.add(hole);
-                            project.setUpdateTime(DateUtil.date2Str(new Date()) + "");
-                            projectDao.update(project);
-                            ToastUtil.showToastS(HoleEditActivity.this, "勘察点关联成功");
+                            ToastUtil.showToastS(mContext, jsonResult.getMessage());
                         } else {
                             ToastUtil.showToastS(HoleEditActivity.this, "服务器异常，请联系客服");
                         }

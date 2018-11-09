@@ -21,6 +21,7 @@ import com.cj.record.activity.RelateHoleActivity;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.NetUtil;
 import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.UpdateUtil;
 import com.cj.record.views.ProgressPopupWindow;
 
 import java.util.Timer;

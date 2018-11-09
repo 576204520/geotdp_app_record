@@ -118,6 +118,13 @@ public class Project implements Serializable {
     @DatabaseField
     String holeCount = "0";      //孔数
 
+    @DatabaseField
+    String projectID = "";          //关联获取的服务端projectID，上传到规委用
+    @DatabaseField
+    boolean isUpload;      //1政府+企业，2企业
+    @DatabaseField
+    String laborUnit = ""; //劳务单位
+    @DatabaseField
     String realName = "";         //负责人姓名
 
     int uploadedCount;          //已上传
@@ -599,5 +606,30 @@ public class Project implements Serializable {
 
     public void setNotUploadCount(int notUploadCount) {
         this.notUploadCount = notUploadCount;
+    }
+
+
+    public String getProjectID() {
+        return projectID;
+    }
+
+    public void setProjectID(String projectID) {
+        this.projectID = projectID;
+    }
+
+    public String getLaborUnit() {
+        return laborUnit;
+    }
+
+    public void setLaborUnit(String laborUnit) {
+        this.laborUnit = laborUnit;
+    }
+
+    public boolean isUpload() {
+        return isUpload;
+    }
+
+    public void setUpload(boolean upload) {
+        isUpload = upload;
     }
 }

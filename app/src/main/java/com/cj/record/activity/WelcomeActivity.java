@@ -19,7 +19,9 @@ import com.cj.record.baen.Record;
 import com.cj.record.db.HoleDao;
 import com.cj.record.db.ProjectDao;
 import com.cj.record.db.RecordDao;
+import com.cj.record.utils.FileUtil;
 import com.cj.record.utils.L;
+import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
@@ -27,6 +29,8 @@ import com.cj.record.utils.Urls;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -38,12 +42,8 @@ import io.reactivex.functions.Action;
  */
 
 public class WelcomeActivity extends BaseActivity {
-    private ProjectDao projectDao;
-    private HoleDao holeDao;
-    private RecordDao recordDao;
     @BindView(R.id.welcome_hint)
     TextView welcomeHint;
-
     @Override
     public int getLayoutId() {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
@@ -94,120 +94,6 @@ public class WelcomeActivity extends BaseActivity {
                         switch (permission.name) {
                             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                                 if (permission.granted) {
-                                    //遍历所有字段，检查长度
-                                    projectDao = new ProjectDao(WelcomeActivity.this);
-                                    holeDao = new HoleDao(WelcomeActivity.this);
-                                    recordDao = new RecordDao(WelcomeActivity.this);
-                                    boolean initData = (boolean) SPUtils.get(WelcomeActivity.this, Urls.SPKey.DATA_INIT, false);
-                                    if (!initData) {
-                                        welcomeHint.setVisibility(View.VISIBLE);
-                                        List<Project> projectList = projectDao.getAll();
-                                        if (projectList != null && projectList.size() > 0) {
-                                            for (Project project : projectList) {
-                                                //项目名称 200
-                                                if (project.getFullName().length() > 200) {
-                                                    project.setFullName(project.getFullName().substring(0, 200));
-                                                    projectDao.update(project);
-                                                }
-                                                List<Hole> holeList = holeDao.getHoleListByProjectID(project.getId());
-                                                if (holeList != null && holeList.size() > 0) {
-                                                    for (Hole hole : holeList) {
-                                                        //勘探点编号 20
-                                                        if (hole.getCode().length() > 20) {
-                                                            hole.setCode(hole.getCode().substring(0, 20));
-                                                            holeDao.update(hole);
-                                                        }
-                                                        List<Record> recordList = recordDao.getRecordListByHoleID(hole.getId());
-                                                        if (recordList != null && recordList.size() > 0) {
-                                                            for (Record record : recordList) {
-                                                                /**
-                                                                 记录：编号（code）20、其他描述（description）50、
-                                                                 取土：试验类型（testType）100
-                                                                 岩土：地质成因（causes）150、
-                                                                 填土：主要成分（zycf）50、次要成分（cycf）50、颜色（ys）50、
-                                                                 黏性土：包含物（bhw）50、夹层（jc）50
-                                                                 粉土：包含物、夹层
-                                                                 砂土：矿物组成（kwzc）50、颜色、颗粒形状（klxz）50、湿度（sd）50、夹层
-                                                                 碎石土：母岩成分（mycf）50、夹层
-                                                                 冲填土：物质成分（wzcf）50、颜色
-                                                                 粉黏互层：包含物
-                                                                 黄土状粘性土：包含物
-                                                                 黄土状粉土：包含物
-                                                                 淤泥：包含物、状态（zt）50
-                                                                 */
-                                                                int have = 0;
-                                                                if (record.getCode().length() > 20) {
-                                                                    record.setCode(record.getCode().substring(0, 20));
-                                                                    have++;
-                                                                }
-                                                                if (record.getDescription().length() > 50) {
-                                                                    record.setDescription(record.getDescription().substring(0, 50));
-                                                                    have++;
-                                                                }
-                                                                if (record.getTestType().length() > 100) {
-                                                                    record.setTestType(record.getTestType().substring(0, 100));
-                                                                    have++;
-                                                                }
-                                                                if (record.getCauses().length() > 150) {
-                                                                    record.setCauses(record.getCauses().substring(0, 150));
-                                                                    have++;
-                                                                }
-                                                                if (record.getZycf().length() > 50) {
-                                                                    record.setZycf(record.getZycf().substring(0, 50));
-                                                                    have++;
-                                                                }
-                                                                if (record.getCycf().length() > 50) {
-                                                                    record.setCycf(record.getCycf().substring(0, 50));
-                                                                    have++;
-                                                                }
-                                                                if (record.getYs().length() > 50) {
-                                                                    record.setYs(record.getYs().substring(0, 50));
-                                                                    have++;
-                                                                }
-                                                                if (record.getBhw().length() > 50) {
-                                                                    record.setBhw(record.getBhw().substring(0, 50));
-                                                                    have++;
-                                                                }
-                                                                if (record.getJc().length() > 50) {
-                                                                    record.setJc(record.getJc().substring(0, 50));
-                                                                    have++;
-                                                                }
-                                                                if (record.getKwzc().length() > 50) {
-                                                                    record.setKwzc(record.getKwzc().substring(0, 50));
-                                                                    have++;
-                                                                }
-                                                                if (record.getKlxz().length() > 50) {
-                                                                    record.setKlxz(record.getKlxz().substring(0, 50));
-                                                                    have++;
-                                                                }
-                                                                if (record.getSd().length() > 50) {
-                                                                    record.setSd(record.getSd().substring(0, 50));
-                                                                    have++;
-                                                                }
-                                                                if (record.getMycf().length() > 50) {
-                                                                    record.setMycf(record.getMycf().substring(0, 50));
-                                                                    have++;
-                                                                }
-                                                                if (record.getWzcf().length() > 50) {
-                                                                    record.setWzcf(record.getWzcf().substring(0, 50));
-                                                                    have++;
-                                                                }
-                                                                if (record.getZt().length() > 50) {
-                                                                    record.setZt(record.getZt().substring(0, 50));
-                                                                    have++;
-                                                                }
-                                                                if (have > 0) {
-                                                                    recordDao.update(record);
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                            }
-                                        }
-                                        SPUtils.put(WelcomeActivity.this, Urls.SPKey.DATA_INIT, true);
-                                    }
                                     //检查是否是自动登陆
                                     boolean isAuto = (boolean) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_AUTO, false);
                                     if (isAuto) {

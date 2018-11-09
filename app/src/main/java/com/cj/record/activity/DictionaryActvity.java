@@ -17,9 +17,11 @@ import com.cj.record.adapter.DictionaryAdapter;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.JsonResult;
 import com.cj.record.db.DictionaryDao;
+import com.cj.record.utils.Common;
 import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.UpdateUtil;
 import com.cj.record.utils.Urls;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -237,9 +239,14 @@ public class DictionaryActvity extends BaseActivity {
     }
 
 
-    public void downloadDictionary(final String relateID) {
+    public void downloadDictionary(final String userID) {
+        if(TextUtils.isEmpty(userID)){
+            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+            return;
+        }
         showPPW();
-        map.put("relateID", relateID);
+        map.put("relateID", userID);
+        map.put("verCode", UpdateUtil.getVerCode(this) + "");
         OkGo.<String>post(Urls.DICTIONARY_DOWNLOAD).params(map).execute(new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
@@ -280,7 +287,13 @@ public class DictionaryActvity extends BaseActivity {
     }
 
     public void uploadDictionary(List<Dictionary> list) {
+        if(TextUtils.isEmpty(userID)){
+            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+            return;
+        }
         map = getMap(list);
+        map.put("userID",userID);
+        map.put("verCode", UpdateUtil.getVerCode(this) + "");
         showPPW();
         OkGo.<String>post(Urls.DICTIONARY_UPLOAD).params(map).execute(new StringCallback() {
             @Override

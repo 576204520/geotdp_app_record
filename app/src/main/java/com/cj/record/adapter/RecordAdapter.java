@@ -64,7 +64,12 @@ public class RecordAdapter extends AbstractSlideExpandableListAdapter<RecordAdap
         myHolder.recordName.setText(record.getTitle());
         myHolder.recordCreateTime.setText("创建时间:" + record.getCreateTime());
         Gps gps = gpsDao.getGpsByRecord(record.getId());
-        myHolder.recordMapTime.setText("定位时间:" + gps.getGpsTime());
+        if (gps != null) {
+            myHolder.recordMapTime.setText("定位时间:" + gps.getGpsTime());
+            myHolder.recordMapTime.setVisibility(View.VISIBLE);
+        } else {
+            myHolder.recordMapTime.setVisibility(View.GONE);
+        }
         if (record.getType().equals(Record.TYPE_GET_WATER)) {
             myHolder.recordBeginDepth.setVisibility(View.VISIBLE);
             myHolder.recordEb.setVisibility(View.GONE);

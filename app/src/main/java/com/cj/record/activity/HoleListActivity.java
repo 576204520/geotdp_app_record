@@ -48,6 +48,7 @@ import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.L;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.UpdateUtil;
 import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialBetterSpinner;
 import com.cj.record.views.dialog.HoleInfoDialog;
@@ -169,7 +170,11 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 }
                 break;
             case 5:
-                getUploadData();
+                if("2".equals(uploadHole.getState()) && "1".equals(uploadHole.getStateGW())){
+                    getUploadDataToZF();
+                }else{
+                    getUploadData();
+                }
                 break;
         }
     }
@@ -232,7 +237,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
     };
 
     private void initRecycleView() {
-        holeAdapter = new HoleAdapter(this, dataList);
+        holeAdapter = new HoleAdapter(this, dataList,project);
         //默认打开第一条数据的按钮
         holeAdapter.openFrist();
         holeAdapter.setOnItemListener(this);
@@ -371,6 +376,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         map.put("userID", userID);
         map.put("relateID", relateHole.getId());
         map.put("holeID", uploadHole.getId());
+        map.put("verCode", UpdateUtil.getVerCode(this) + "");
         OkGo.<String>post(Urls.DO_RELATE_HOLE)
                 .params(map)
                 .execute(new StringCallback() {
@@ -380,27 +386,35 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                         String data = response.body();//这个就是返回来的结果
                         if (JsonUtils.isGoodJson(data)) {
                             Gson gson = new Gson();
-                            Hole h = gson.fromJson(data.toString(), Hole.class);
-                            //修改界面,就该hole
-                            uploadHole.setRelateCode(h.getCode());
-                            uploadHole.setRelateID(h.getId());
-                            if (h.getDepth() != null) {
-                                uploadHole.setDepth(h.getDepth());
+                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                            //如果登陆成功，保存用户名和密码到数据库,并保存到baen
+                            if (jsonResult.getStatus()) {
+                                String result = jsonResult.getResult();
+                                Hole h = gson.fromJson(result.toString(), Hole.class);
+                                //修改界面,就该hole
+                                uploadHole.setRelateCode(h.getCode());
+                                uploadHole.setRelateID(h.getId());
+                                if (h.getUploadID() != null) {
+                                    uploadHole.setUploadID(h.getUploadID());
+                                }
+                                if (h.getDepth() != null) {
+                                    uploadHole.setDepth(h.getDepth());
+                                }
+                                if (h.getElevation() != null) {
+                                    uploadHole.setElevation(h.getElevation());
+                                }
+                                if (h.getDescription() != null) {
+                                    uploadHole.setDescription(h.getDescription());
+                                } else {
+                                    uploadHole.setDescription("");
+                                }
+                                uploadHole.setState("1");
+                                holeDao.add(uploadHole);
+                                project.setUpdateTime(DateUtil.date2Str(new Date()) + "");
+                                projectDao.update(project);
+                                onRefresh();
                             }
-                            if (h.getElevation() != null) {
-                                uploadHole.setElevation(h.getElevation());
-                            }
-                            if (h.getDescription() != null) {
-                                uploadHole.setDescription(h.getDescription());
-                            } else {
-                                uploadHole.setDescription("");
-                            }
-                            uploadHole.setState("1");
-                            holeDao.add(uploadHole);
-                            project.setUpdateTime(DateUtil.date2Str(new Date()) + "");
-                            projectDao.update(project);
-                            ToastUtil.showToastS(HoleListActivity.this, "勘察点关联成功");
-                            onRefresh();
+                            ToastUtil.showToastS(HoleListActivity.this, jsonResult.getMessage());
                         } else {
                             ToastUtil.showToastS(HoleListActivity.this, "服务器异常，请联系客服");
                         }
@@ -435,22 +449,31 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 final Hole newHole = new Hole(this, project.getId());
                 newHole.setRelateCode(relateHole.getCode());
                 newHole.setRelateID(relateHole.getId());
+                newHole.setUploadID(relateHole.getUploadID());
                 newHole.setDepth(relateHole.getDepth());
                 newHole.setDescription(relateHole.getDescription());
                 newHole.setElevation(relateHole.getElevation());
                 newHole.setState("1");
-                holeDao.add(newHole);
                 //三个参数项
                 Map<String, String> params = new HashMap<>();
                 params.put("userID", userID);
                 params.put("relateID", relateHole.getId());
                 params.put("holeID", newHole.getId());
+                params.put("verCode", UpdateUtil.getVerCode(this) + "");
                 OkGo.<String>post(Urls.DO_RELATE_HOLE).params(params).execute(new StringCallback() {
                     @Override
                     public void onSuccess(Response<String> response) {
                         String data = response.body();//这个就是返回来的结果
                         if (JsonUtils.isGoodJson(data)) {
-                            onRefresh();
+                            Gson gson = new Gson();
+                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                            if (jsonResult.getStatus()) {
+                                //关联成功，再进行保存
+                                holeDao.add(newHole);
+                                onRefresh();
+                            }else{
+                                ToastUtil.showToastS(HoleListActivity.this, jsonResult.getMessage());
+                            }
                         } else {
                             holeDao.delete(newHole);
                             ToastUtil.showToastS(HoleListActivity.this, "服务器异常，请联系客服");
@@ -475,7 +498,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         if (!haveNet()) {
             return;
         }
-        if(TextUtils.isEmpty(userID)){
+        if (TextUtils.isEmpty(userID)) {
             ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
             return;
         }
@@ -484,48 +507,29 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             Map<String, String> params = new HashMap<>();
             params.put("holeID", localUser.getId());
             params.put("userID", userID);
+            params.put("verCode", UpdateUtil.getVerCode(this) + "");
             OkGo.<String>post(Urls.DOWNLOAD_RELATE_HOLE).params(params).execute(new StringCallback() {
                 @Override
                 public void onSuccess(Response<String> response) {
                     String data = response.body();//这个就是返回来的结果
                     if (JsonUtils.isGoodJson(data)) {
                         Gson gson = new Gson();
-                        Hole hole = gson.fromJson(data, Hole.class);
-                        //查询userid是否相同，查询项目下钻孔的relateID是否存在
-                        L.e(hole.getRelateID());
-                        L.e(project.getId());
-                        //判断该项目下是否存在关联的勘探点 projectID、relateID
-                        if (holeDao.checkRelated(hole.getRelateID(), project.getId())) {
-//                            new AlertDialog.Builder(HoleListActivity.this)
-//                                    .setTitle(R.string.hint)
-//                                    .setMessage(hole.getRelateCode() + "(" + hole.getCode() + ")关联孔本地已经存在，是否合并到本地")
-//                                    .setNegativeButton("合并到本地",
-//                                            new DialogInterface.OnClickListener() {
-//                                                @Override
-//                                                public void onClick(DialogInterface dialog, int which) {
-//                                                    //根据relateID和项目id找到hole的id
-//                                                    hole.setId(holeDao.getIDByRelate(hole.getRelateID(), project.getId()).getId());
-//                                                    addOrUpdate(hole, localUser);
-//                                                    onRefresh();
-//                                                }
-//                                            })
-//                                    .setPositiveButton("放弃获取",
-//                                            new DialogInterface.OnClickListener() {
-//                                                @Override
-//                                                public void onClick(DialogInterface dialog, int which) {
-//                                                    onRefresh();
-//                                                }
-//                                            })
-//                                    .setCancelable(false)
-//                                    .show();
-                            ToastUtil.showToastS(HoleListActivity.this, hole.getRelateCode() + "(" + hole.getCode() + ")关联孔本地已经存在");
-                            return;
-                        } else {
-                            hole.setId(Common.getUUID());
-                            addOrUpdate(hole, localUser);
-                            onRefresh();
+                        JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                        if (jsonResult.getStatus()) {
+                            String result = jsonResult.getResult();
+                            Hole hole = gson.fromJson(result.toString(), Hole.class);
+                            //查询userid是否相同，查询项目下钻孔的relateID是否存在
+                            //判断该项目下是否存在关联的勘探点 projectID、relateID
+                            if (holeDao.checkRelated(hole.getRelateID(), project.getId())) {
+                                ToastUtil.showToastS(HoleListActivity.this, hole.getRelateCode() + "(" + hole.getCode() + ")关联孔本地已经存在");
+                                return;
+                            } else {
+                                hole.setId(Common.getUUID());
+                                addOrUpdate(hole, localUser);
+                                onRefresh();
+                            }
                         }
-
+                        ToastUtil.showToastS(mContext, jsonResult.getMessage());
                     } else {
                         ToastUtil.showToastS(HoleListActivity.this, "服务器异常，请联系客服");
                     }
@@ -554,6 +558,8 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         } else {
             hole.setLocationState("0");//可能获取没有定位信息的钻孔需要定位
         }
+        hole.setRelateID("");
+        hole.setRelateCode("");
         hole.setIsDelete("0");
         holeDao.add(hole);
         List<Record> recordList = hole.getRecordList();
@@ -703,6 +709,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
 
 
     private void getUploadData() {
+        if (TextUtils.isEmpty(userID)) {
+            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+            return;
+        }
         showPPW();
         String strParams = "/" + project.getSerialNumber();
         final Map<String, String> map = new ConcurrentHashMap<>();
@@ -715,7 +725,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             //获取gps
             for (Record record : recordList) {
                 Gps gps = gpsDao.getGpsByRecord(record.getId());
-                if (gps != null ) {
+                if (gps != null) {
                     resultGpsList.add(gps);
                 }
             }
@@ -756,6 +766,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             map.putAll(Gps.getMap(resultGpsList, project.getSerialNumber()));
         }
         dismissPPW();
+        strParams += "?verCode=" + UpdateUtil.getVerCode(this) + "&userID=" + userID+"&relateID="+uploadHole.getRelateID();
         upload(map, recordList, realMediaList, strParams);
     }
 
@@ -792,22 +803,29 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     Gson gson = new Gson();
                     JsonResult jsonResult = gson.fromJson(data.toString(), JsonResult.class);
                     if (jsonResult.getStatus()) {
-                        //修改状态
-                        uploadHole.setState("2");
-                        holeDao.update(uploadHole);
-                        if (recordList != null && recordList.size() > 0) {
-                            for (Record record : recordList) {
-                                record.setState("2");
-                                recordDao.update(record);
+                        if (project.isUpload()) {
+                            //上传到监管平台
+                            uploadHole.setState("2");
+                            holeDao.update(uploadHole);
+                            getUploadDataToZF();
+                        } else {
+                            //修改状态
+                            uploadHole.setState("2");
+                            holeDao.update(uploadHole);
+                            if (recordList != null && recordList.size() > 0) {
+                                for (Record record : recordList) {
+                                    record.setState("2");
+                                    recordDao.update(record);
+                                }
                             }
-                        }
-                        if (realMediaList != null && realMediaList.size() > 0) {
-                            for (Media media : realMediaList) {
-                                media.setState("2");
-                                mediaDao.update(media);
+                            if (realMediaList != null && realMediaList.size() > 0) {
+                                for (Media media : realMediaList) {
+                                    media.setState("2");
+                                    mediaDao.update(media);
+                                }
                             }
+                            onRefresh();
                         }
-                        onRefresh();
                     } else {
                         ToastUtil.showToastS(HoleListActivity.this, jsonResult.getMessage());
                     }
@@ -831,7 +849,105 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             @Override
             public void onError(Response<String> response) {
                 super.onError(response);
-                ToastUtil.showToastS(mContext, "网络连接错误");
+                ToastUtil.showToastS(mContext, "上传企业平台，网络连接错误");
+            }
+        });
+    }
+
+    //上传到监管平台
+    private void getUploadDataToZF() {
+        showPPW();
+        //修改projectID为序列号
+        Hole uploadHoleZF = (Hole) uploadHole.clone();
+        uploadHoleZF.setProjectID(project.getSerialNumber());
+        uploadHoleZF.setSecretKey(Urls.C_KEY);
+        uploadHoleZF.setRelateID(uploadHole.getUploadID());
+        //获取record
+        List<Record> recordList = recordDao.getNotUploadListByHoleID(uploadHole.getId());
+        //用来保存的list
+        List<Media> saveMediaList = new ArrayList<>();
+        //获取gps,赋值给recordList
+        for (Record record : recordList) {
+            List<Gps> gpsList = gpsDao.getListGpsByRecord(record.getId());//
+            record.setIds(record.getId());
+            if (record.getUpdateId().equals("")) {
+                record.setUpdateId(null);
+            }
+            if (gpsList != null && gpsList.size() > 0) {
+                record.setLongitude(gpsList.get(0).getLongitude());
+                record.setLatitude(gpsList.get(0).getLatitude());
+                record.setGpsTime(gpsList.get(0).getGpsTime());
+            }
+            //查出记录下所有媒体数据
+            final List<Media> mediaList = mediaDao.getNotUploadListByHoleIDToZF(uploadHole.getId(), record.getId());
+            if (mediaList != null && mediaList.size() > 0) {
+                saveMediaList.addAll(mediaList);
+                for (Media media : mediaList) {
+                    Gps gps = gpsDao.getGpsByMedia(media.getId());
+                    if (null != gps) {
+                        media.setLongitude(gps.getLongitude());
+                        media.setLatitude(gps.getLatitude());
+                        media.setGpsTime(gps.getGpsTime());
+                        File file = new File(media.getLocalPath());
+                        String suffix;
+                        if (file.isDirectory()) {
+                            suffix = ".mp4";
+                        } else {
+                            suffix = ".jpg";
+                        }
+                        media.setInternetPath(Urls.SERVER_PATH + "upload/" + project.getCompanyID() + "/" + project.getProjectID() + "/db/" + media.getId() + suffix);
+                    }
+                }
+                record.setMediaListStr(mediaList);
+            }
+        }
+        uploadHoleZF.setRecordListStr(recordList);
+        Gson gson = new Gson();
+        String uploadHoleJson = gson.toJson(uploadHoleZF);
+        OkGo.<String>post(Urls.UPLOAD_GW).upJson(uploadHoleJson).execute(new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                String data = response.body();
+                if (JsonUtils.isGoodJson(data)) {
+                    JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                    if (jsonResult.getStatus()) {
+                        //修改状态
+                        uploadHole.setStateGW("2");
+                        holeDao.update(uploadHole);
+                        if (recordList != null && recordList.size() > 0) {
+                            for (Record record : recordList) {
+                                if (null == record.getUpdateId()) {
+                                    record.setUpdateId("");
+                                }
+                                record.setState("2");
+                                recordDao.update(record);
+                            }
+                        }
+                        if (saveMediaList != null && saveMediaList.size() > 0) {
+                            for (Media media : saveMediaList) {
+                                media.setState("2");
+                                mediaDao.update(media);
+                            }
+                        }
+                        onRefresh();
+                    } else {
+                        ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
+                    }
+                } else {
+                    ToastUtil.showToastS(HoleListActivity.this, "服务器异常，请联系客服");
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+                dismissPPW();
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                ToastUtil.showToastS(mContext, "上传监管平台，网络连接错误");
             }
         });
     }
@@ -905,7 +1021,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     "(" + uploadCountNew + ") as uploadedCount," +
                     "(" + notUploadCountNew + ") as notUploadCount,h.projectID ," +
                     "(" + currentDepth + ")  as currentDepth," +
-                    "h.locationState,h.relateID,h.userID,h.relateCode,h.mapTime,h.createTime,h.radius,h.elevation,h.depth " +
+                    "h.locationState,h.relateID,h.userID,h.relateCode,h.mapTime,h.createTime,h.radius,h.elevation,h.depth,h.uploadID,h.stateGW " +
                     "from hole h " +
                     "where h.projectID='" + projectID + "' " + like + " order by " + sequence + pageSql;
 
@@ -935,6 +1051,8 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     hole.setRadius(resultColumns[19]);
                     hole.setElevation(resultColumns[20]);
                     hole.setDepth(resultColumns[21]);
+                    hole.setUploadID(resultColumns[22]);
+                    hole.setStateGW(resultColumns[23]);
                     return hole;
                 }
             });

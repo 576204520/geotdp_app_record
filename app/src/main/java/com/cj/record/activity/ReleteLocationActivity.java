@@ -31,7 +31,9 @@ import com.cj.record.adapter.ReleteLocationAdapter;
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.JsonResult;
 import com.cj.record.baen.Record;
+import com.cj.record.utils.Common;
 import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.UpdateUtil;
 import com.cj.record.utils.Urls;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -159,8 +161,14 @@ public class ReleteLocationActivity extends BaseActivity implements AMapLocation
      * 获取勘探点列表
      */
     private void getReleteList() {
+        if (TextUtils.isEmpty(userID)) {
+            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+            return;
+        }
         showPPW();
         Map<String, String> map = new HashMap<>();
+        map.put("verCode", UpdateUtil.getVerCode(this) + "");
+        map.put("userID", userID);
         map.put("serialNumber", serialNumber);
         OkGo.<String>post(Urls.GET_RELATE_HOLE)
                 .params(map)
@@ -232,7 +240,7 @@ public class ReleteLocationActivity extends BaseActivity implements AMapLocation
      * 获取数据后创建列表
      */
     private void createListView() {
-        releteLocationAdapter = new ReleteLocationAdapter(this,list);
+        releteLocationAdapter = new ReleteLocationAdapter(this, list);
         locationRecycler.setLayoutManager(new LinearLayoutManager(this));
         locationRecycler.setAdapter(releteLocationAdapter);
         releteLocationAdapter.setOnItemListener(this);

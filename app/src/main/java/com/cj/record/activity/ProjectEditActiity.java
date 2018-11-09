@@ -24,6 +24,7 @@ import com.cj.record.utils.Common;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.UpdateUtil;
 import com.cj.record.utils.Urls;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
@@ -66,7 +67,8 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
     EditText projecEditAddress;
     @BindView(R.id.projec_edit_describe)
     EditText projecEditDescribe;
-
+    @BindView(R.id.projec_edit_laborUnit)
+    EditText projecEditLaborUnit;
 
     private boolean isEdit;//true编辑、false添加
     private ProjectDao projectDao;
@@ -110,6 +112,8 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
         projecEditOwner.setText(project.getOwner());
         projecEditAddress.setText(project.getAddress());
         projecEditDescribe.setText(project.getDescribe());
+        projecEditLaborUnit.setText(project.getLaborUnit());
+
     }
 
     @OnClick({R.id.projec_edit_relevance, R.id.project_zxing})
@@ -151,6 +155,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
         Map<String, String> map = new HashMap<>();
         map.put("project.serialNumber", number);
         map.put("userID", userID);
+        map.put("verCode", UpdateUtil.getVerCode(this) + "");
         showPPW();
         OkGo.<String>post(Urls.GET_PROJECT_INFO_BY_KEY_POST)
                 .params(map)
@@ -173,6 +178,11 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                             project.setOwner(mProject.getOwner());
                             project.setAddress(mProject.getProName() + mProject.getCityName() + "" + mProject.getDisName() + mProject.getAddress());
                             project.setDescribe(mProject.getDescribe());
+                            project.setProjectID(mProject.getProjectID());
+                            project.setUpload(mProject.isUpload());
+                            project.setCompanyID(mProject.getCompanyID());
+                            project.setLaborUnit(mProject.getLaborUnit());
+
                             obsUtils.execute(2);
                         }
                         ToastUtil.showToastS(mContext, jsonResult.getMessage());

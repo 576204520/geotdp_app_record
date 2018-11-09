@@ -90,6 +90,34 @@ public class Media implements Serializable {
 
     Gps gps;
 
+    String longitude;           // 上传到政府用
+    String latitude;           // 上传到政府用
+    String gpsTime;           // 上传到政府用
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getGpsTime() {
+        return gpsTime;
+    }
+
+    public void setGpsTime(String gpsTime) {
+        this.gpsTime = gpsTime;
+    }
+
     public Media() {
 
     }

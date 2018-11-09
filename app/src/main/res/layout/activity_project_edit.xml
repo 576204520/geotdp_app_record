@@ -121,7 +121,21 @@
                 android:drawableBottom="@drawable/editview_line"
                 android:enabled="false"
                 android:textColor="@color/colorBlack" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="劳务单位"
+                android:textColor="@color/colorPrimary" />
 
+            <EditText
+                android:id="@+id/projec_edit_laborUnit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:drawableBottom="@drawable/editview_line"
+                android:enabled="false"
+                android:textColor="@color/colorBlack" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

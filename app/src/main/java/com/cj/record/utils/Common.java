@@ -15,6 +15,8 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.UUID;
 
+import static com.cj.record.activity.base.BaseActivity.userID;
+
 /**
  * Created by Administrator on 2018/5/25.
  */
@@ -132,4 +134,5 @@ public class Common {
                 .replaceAll("&amp;", "&")
                 .replaceAll("&hellip;", "…");
     }
+
 }

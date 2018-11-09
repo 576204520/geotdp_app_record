@@ -3,6 +3,7 @@ package com.cj.record.adapter;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -87,6 +88,23 @@ public class RelateHoleAdapter extends RecyclerView.Adapter<RelateHoleAdapter.My
             userList = new ArrayList<>();
             holder.relate_hole_open.setVisibility(View.GONE);
         }
+        if(!TextUtils.isEmpty(list.get(position).getCheckStatus())){
+            String state="";
+            if("0".equals(list.get(position).getCheckStatus())){
+                state = "正常";
+            }
+            if("1".equals(list.get(position).getCheckStatus())){
+                state = "验收已通过";
+            }
+            if("2".equals(list.get(position).getCheckStatus())){
+                state = "验收未通过";
+            }
+            if("3".equals(list.get(position).getCheckStatus())){
+                state = "废孔";
+            }
+            holder.relate_state_tv.setText("状态:"+state);
+        }
+
         holder.relate_size_tv.setText("已关联人数:" + userList.size());
 
         ViewGroup.LayoutParams layoutParams = holder.recyclerView.getLayoutParams();
@@ -231,7 +249,7 @@ public class RelateHoleAdapter extends RecyclerView.Adapter<RelateHoleAdapter.My
         RecyclerView recyclerView;
         CheckBox relate_hole_open;
         CheckBox relate_hole_check;
-
+        TextView relate_state_tv;
         public MyViewHolder(View itemView) {
             super(itemView);
             relate_code_tv = (TextView) itemView.findViewById(R.id.relate_code_tv);
@@ -240,6 +258,7 @@ public class RelateHoleAdapter extends RecyclerView.Adapter<RelateHoleAdapter.My
             recyclerView = (RecyclerView) itemView.findViewById(R.id.relate_hole_userlist);
             relate_hole_open = (CheckBox) itemView.findViewById(R.id.relate_hole_open);
             relate_hole_check = (CheckBox) itemView.findViewById(R.id.relate_hole_check);
+            relate_state_tv = (TextView) itemView.findViewById(R.id.relate_state_tv);
         }
     }
 }

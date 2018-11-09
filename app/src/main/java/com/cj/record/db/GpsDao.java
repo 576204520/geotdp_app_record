@@ -5,6 +5,8 @@ import android.content.Context;
 import com.cj.record.baen.Gps;
 import com.cj.record.baen.Record;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -66,7 +68,7 @@ public class GpsDao {
      */
     public Gps getGpsByRecord(String recordID) {
         try {
-            return gpsDao.queryBuilder().orderBy("gpsTime", false).where().eq("recordID", recordID).and().eq("mediaID", "").queryForFirst();
+            return gpsDao.queryBuilder().orderBy("gpsTime", false).where().eq("recordID", recordID).and().eq("mediaID", "").or().isNull("mediaID").queryForFirst();
         } catch (Exception e) {
             e.printStackTrace();
         }

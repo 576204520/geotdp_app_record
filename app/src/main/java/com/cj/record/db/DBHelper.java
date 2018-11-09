@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class DBHelper extends OrmLiteSqliteOpenHelper {
     public static final String DB_NAME = Urls.DATABASE_BASE;//完整路径
-    public static final int DB_VERSION = 8;
+    public static final int DB_VERSION = 9;
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -195,7 +195,13 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     //8
     private String ADD_DOWNLOADID_R = "ALTER TABLE `record` ADD COLUMN downloadID VARCHARD(45) default ''";
     private String ADD_DOWNLOADID_G = "ALTER TABLE `gps` ADD COLUMN downloadID VARCHARD(45) default ''";
-
+    //9       双数据流
+    private String ADD_ISUPLOAD = "ALTER TABLE `project` ADD COLUMN isUpload tinyint(1);";
+    private String ADD_PROJECTID = "ALTER TABLE `project` ADD COLUMN projectID char(32) default '';";
+    private String ADD_LABORUNIT = "ALTER TABLE `project` ADD COLUMN laborUnit varchar(45) default '';";
+    private String ADD_REALNAME = "ALTER TABLE `project` ADD COLUMN realName varchar(50) default '';";
+    private String ADD_UPLOADID = "ALTER TABLE `hole` ADD COLUMN uploadID char(32) default '';";
+    private String ADD_STATEGW = "ALTER TABLE `hole` ADD COLUMN stateGW tinyint(1) default 1;";
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         L.e("TAG", "DBHelper>>>>>onUpgrade--old=" + oldVersion + "--new=" + newVersion);
@@ -280,6 +286,14 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         if (oldVersion < 8) {
             sqLiteDatabase.execSQL(ADD_DOWNLOADID_R);
             sqLiteDatabase.execSQL(ADD_DOWNLOADID_G);
+        }
+        if (oldVersion < 9){
+            sqLiteDatabase.execSQL(ADD_ISUPLOAD);
+            sqLiteDatabase.execSQL(ADD_PROJECTID);
+            sqLiteDatabase.execSQL(ADD_LABORUNIT);
+            sqLiteDatabase.execSQL(ADD_REALNAME);
+            sqLiteDatabase.execSQL(ADD_UPLOADID);
+            sqLiteDatabase.execSQL(ADD_STATEGW);
         }
     }
 

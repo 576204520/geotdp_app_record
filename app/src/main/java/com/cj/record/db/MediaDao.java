@@ -266,4 +266,24 @@ public class MediaDao {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 获取所有未上传的媒体
+     *
+     * @param holeID
+     * @return
+     */
+    public List<Media> getNotUploadListByHoleIDToZF(String holeID, String recordID) {
+        List<Media> list = new ArrayList<Media>();
+        try {
+            QueryBuilder<Media, String> qb = mediaDao.queryBuilder();
+            qb.where().eq("holeID", holeID).and().eq("state", "1").and().eq("recordID", recordID);
+            qb.orderBy("createTime", true);
+            list = qb.query();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

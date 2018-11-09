@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 @DatabaseTable(tableName = "hole")//"井孔规则表")
-public class Hole implements Serializable {
+public class Hole implements Serializable , Cloneable {
 
     private static final long serialVersionUID = 1L;
     @DatabaseField(columnName = "id", id = true)
@@ -70,6 +70,8 @@ public class Hole implements Serializable {
     String endTime = "";            //钻孔结束时间
     @DatabaseField
     String state = "1";            //钻孔状态  0临时 1.记录中、未开始 2.已上传 3.已提交验收
+    @DatabaseField
+    String stateGW = "1";         //上传规委的上传状态 1、未上传 2、已上传
     @DatabaseField
     String inputPerson = "";        //记录员
     @DatabaseField
@@ -125,6 +127,46 @@ public class Hole implements Serializable {
     int userCount;//relateHoleDialog 中对list进行排序
     @DatabaseField
     String downloadID = "";         //下载数据的id
+
+    //上传到政府
+    List<Record> recordListStr;//上传到政府 封装数据
+    String secretKey; //上传到政府 密钥
+    @DatabaseField
+    String uploadID = "";
+
+    String checkStatus;        //勘探点平台端状态  0新建 1验收通过 2验收未通过 3废孔
+
+    public String getCheckStatus() {
+        return checkStatus;
+    }
+
+    public void setCheckStatus(String checkStatus) {
+        this.checkStatus = checkStatus;
+    }
+
+    public String getUploadID() {
+        return uploadID;
+    }
+
+    public void setUploadID(String uploadID) {
+        this.uploadID = uploadID;
+    }
+
+    public List<Record> getRecordListStr() {
+        return recordListStr;
+    }
+
+    public void setRecordListStr(List<Record> recordListStr) {
+        this.recordListStr = recordListStr;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
+    }
 
     public int getUserCount() {
         return userCount;
@@ -244,7 +286,8 @@ public class Hole implements Serializable {
 
             this.type = "钻孔";
 
-            this.state = "0";//新建一个临时点
+            this.state = "1";//新建一个临时点
+            this.stateGW = "1";
             this.locationState = "0";//为定位
             this.recordsCount = "0";
 
@@ -656,5 +699,24 @@ public class Hole implements Serializable {
 
     public void setDownloadID(String downloadID) {
         this.downloadID = downloadID;
+    }
+
+    public String getStateGW() {
+        return stateGW;
+    }
+
+    public void setStateGW(String stateGW) {
+        this.stateGW = stateGW;
+    }
+
+    @Override
+    public Object clone() {
+        Hole stu = null;
+        try {
+            stu = (Hole) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return stu;
     }
 }
