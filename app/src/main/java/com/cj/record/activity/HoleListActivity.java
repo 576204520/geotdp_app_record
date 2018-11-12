@@ -170,7 +170,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 }
                 break;
             case 5:
-                if("2".equals(uploadHole.getState()) && "1".equals(uploadHole.getStateGW())){
+                if("2".equals(uploadHole.getState()) && !"2".equals(uploadHole.getStateGW())){
                     getUploadDataToZF();
                 }else{
                     getUploadData();
@@ -701,6 +701,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         if (!haveNet()) {
             return;
         }
+        if(TextUtils.isEmpty(project.getProjectID())){
+            ToastUtil.showToastS(this, "项目部分信息丢失，请重新关联项目");
+            return;
+        }
         if (uploadHole.getNotUploadCount() > 0) {
             //上传操作
             obsUtils.execute(5);
@@ -873,6 +877,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             if (record.getUpdateId().equals("")) {
                 record.setUpdateId(null);
             }
+            record.setProjectID(project.getProjectID());
             if (gpsList != null && gpsList.size() > 0) {
                 record.setLongitude(gpsList.get(0).getLongitude());
                 record.setLatitude(gpsList.get(0).getLatitude());
@@ -885,6 +890,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 for (Media media : mediaList) {
                     Gps gps = gpsDao.getGpsByMedia(media.getId());
                     if (null != gps) {
+                        media.setProjectID(project.getProjectID());
                         media.setLongitude(gps.getLongitude());
                         media.setLatitude(gps.getLatitude());
                         media.setGpsTime(gps.getGpsTime());
