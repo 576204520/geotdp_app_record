@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.cj.record.R;
 import com.cj.record.activity.base.BaseActivity;
+import com.cj.record.baen.Hole;
 import com.cj.record.baen.JsonResult;
 import com.cj.record.baen.Project;
 import com.cj.record.db.HoleDao;
@@ -23,6 +24,8 @@ import com.cj.record.db.MediaDao;
 import com.cj.record.db.ProjectDao;
 import com.cj.record.db.RecordDao;
 import com.cj.record.utils.Common;
+import com.cj.record.utils.DateUtil;
+import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
@@ -35,6 +38,7 @@ import com.lzy.okgo.model.Response;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -166,31 +170,33 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                     public void onSuccess(Response<String> response) {
                         //注意这里已经是在主线程了
                         String data = response.body();//这个就是返回来的结果
-                        Gson gson = new Gson();
-                        JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
-                        //如果登陆成功，保存用户名和密码到数据库,并保存到baen
-                        if (jsonResult.getStatus()) {
-                            String result = jsonResult.getResult();
-                            Project mProject = gson.fromJson(result.toString(), Project.class);
-                            project.setSerialNumber(mProject.getSerialNumber());
-                            project.setFullName(Common.replaceAll(mProject.getFullName()));
-                            project.setCode(mProject.getCode());
-                            project.setLeaderName(mProject.getRealName());
-                            project.setCompanyName(mProject.getCompanyName());
-                            project.setOwner(mProject.getOwner());
-                            project.setAddress(mProject.getProName() + mProject.getCityName() + "" + mProject.getDisName() + mProject.getAddress());
-                            project.setDescribe(mProject.getDescribe());
-                            project.setProjectID(mProject.getProjectID());
-                            project.setUpload(mProject.isUpload());
-                            project.setCompanyID(mProject.getCompanyID());
-                            project.setLaborUnit(mProject.getLaborUnit());
-                            obsUtils.execute(2);
-                            ToastUtil.showToastS(mContext, jsonResult.getMessage());
-                        }else{
-                            showMessage(jsonResult.getMessage());
+                        if (JsonUtils.isGoodJson(data)) {
+                            Gson gson = new Gson();
+                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                            //如果登陆成功，保存用户名和密码到数据库,并保存到baen
+                            if (jsonResult.getStatus()) {
+                                String result = jsonResult.getResult();
+                                Project mProject = gson.fromJson(result.toString(), Project.class);
+                                project.setSerialNumber(mProject.getSerialNumber());
+                                project.setFullName(Common.replaceAll(mProject.getFullName()));
+                                project.setCode(mProject.getCode());
+                                project.setLeaderName(mProject.getRealName());
+                                project.setCompanyName(mProject.getCompanyName());
+                                project.setOwner(mProject.getOwner());
+                                project.setAddress(mProject.getProName() + mProject.getCityName() + "" + mProject.getDisName() + mProject.getAddress());
+                                project.setDescribe(mProject.getDescribe());
+                                project.setProjectID(mProject.getProjectID());
+                                project.setUpload(mProject.isUpload());
+                                project.setCompanyID(mProject.getCompanyID());
+                                project.setLaborUnit(mProject.getLaborUnit());
+                                obsUtils.execute(2);
+                                ToastUtil.showToastS(mContext, jsonResult.getMessage());
+                            }else{
+                                showMessage(jsonResult.getMessage());
+                            }
+                        } else {
+                            ToastUtil.showToastS(ProjectEditActiity.this, "服务器异常，请联系客服");
                         }
-
-
                     }
 
                     @Override

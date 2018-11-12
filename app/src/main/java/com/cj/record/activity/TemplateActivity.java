@@ -23,6 +23,7 @@ import com.cj.record.baen.TemplateDetail;
 import com.cj.record.db.TemplateDao;
 import com.cj.record.db.TemplateDetialDao;
 import com.cj.record.utils.Common;
+import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.L;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
@@ -119,18 +120,22 @@ public class TemplateActivity extends BaseActivity implements TemplateAdapter.On
                     public void onSuccess(Response<String> response) {
                         //注意这里已经是在主线程了
                         String data = response.body();//这个就是返回来的结果
-                        Gson gson = new Gson();
-                        JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
-                        if (jsonResult.getStatus()) {
-                            templateList = gson.fromJson(jsonResult.getResult(), new TypeToken<List<Template>>() {
-                            }.getType());
-                            if (templateList != null && templateList.size() > 0) {
-                                obsUtils.execute(2);
+                        if (JsonUtils.isGoodJson(data)) {
+                            Gson gson = new Gson();
+                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                            if (jsonResult.getStatus()) {
+                                templateList = gson.fromJson(jsonResult.getResult(), new TypeToken<List<Template>>() {
+                                }.getType());
+                                if (templateList != null && templateList.size() > 0) {
+                                    obsUtils.execute(2);
+                                } else {
+                                    ToastUtil.showToastS(TemplateActivity.this, "服务端未创建模板");
+                                }
                             } else {
-                                ToastUtil.showToastS(TemplateActivity.this, "服务端未创建模板");
+                                ToastUtil.showToastS(TemplateActivity.this, jsonResult.getMessage());
                             }
                         } else {
-                            ToastUtil.showToastS(TemplateActivity.this, jsonResult.getMessage());
+                            ToastUtil.showToastS(TemplateActivity.this, "服务器异常，请联系客服");
                         }
                     }
 

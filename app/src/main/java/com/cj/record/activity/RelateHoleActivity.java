@@ -25,6 +25,7 @@ import com.cj.record.baen.Hole;
 import com.cj.record.baen.JsonResult;
 import com.cj.record.baen.LocalUser;
 import com.cj.record.utils.Common;
+import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
@@ -132,21 +133,25 @@ public class RelateHoleActivity extends BaseActivity {
                     public void onSuccess(Response<String> response) {
                         //注意这里已经是在主线程了
                         String data = response.body();//这个就是返回来的结果
-                        Gson gson = new Gson();
-                        JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
-                        if (jsonResult.getStatus()) {
-                            relateList.addAll(gson.fromJson(jsonResult.getResult(), new TypeToken<List<Hole>>() {
-                            }.getType()));
-                            if (relateList != null && relateList.size() > 0) {
-                                sort();
-                                holeList.clear();
-                                holeList.addAll(relateList);
-                                initRecycleView();
+                        if (JsonUtils.isGoodJson(data)) {
+                            Gson gson = new Gson();
+                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                            if (jsonResult.getStatus()) {
+                                relateList.addAll(gson.fromJson(jsonResult.getResult(), new TypeToken<List<Hole>>() {
+                                }.getType()));
+                                if (relateList != null && relateList.size() > 0) {
+                                    sort();
+                                    holeList.clear();
+                                    holeList.addAll(relateList);
+                                    initRecycleView();
+                                } else {
+                                    ToastUtil.showToastS(RelateHoleActivity.this, "服务端未创建勘察点，无法关联");
+                                }
                             } else {
-                                ToastUtil.showToastS(RelateHoleActivity.this, "服务端未创建勘察点，无法关联");
+                                ToastUtil.showToastS(RelateHoleActivity.this, jsonResult.getMessage());
                             }
                         } else {
-                            ToastUtil.showToastS(RelateHoleActivity.this, jsonResult.getMessage());
+                            ToastUtil.showToastS(RelateHoleActivity.this, "服务器异常，请联系客服");
                         }
                     }
 

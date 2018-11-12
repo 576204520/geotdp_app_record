@@ -76,32 +76,36 @@ public class UpdateUtil {
                     public void onSuccess(Response<String> response) {
                         //注意这里已经是在主线程了
                         String data = response.body();//这个就是返回来的结果
-                        Gson gson = new Gson();
-                        JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
-                        //如果登陆成功，保存用户名和密码到数据库,并保存到baen
-                        if (jsonResult.getStatus()) {
-                            String result = jsonResult.getResult();
-                            VersionVo version = gson.fromJson(result.toString(), VersionVo.class);
-                            //0-不用更新  1-可以更新 2必须更新
-                            String type = version.getType();
-                            String content = "版本:" + version.getName() + "\n更新内容:" + version.getDescription() + "\n大小:" + version.getSize();
-                            int code = Integer.parseInt(version.getCode());
-                            int localCode = UpdateUtil.getVerCode(activity);
-                            if (localCode < code) {
-                                if ("2".equals(type)) {
-                                    showViesionDialog(content, true, activity);
+                        if (JsonUtils.isGoodJson(data)) {
+                            Gson gson = new Gson();
+                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                            //如果登陆成功，保存用户名和密码到数据库,并保存到baen
+                            if (jsonResult.getStatus()) {
+                                String result = jsonResult.getResult();
+                                VersionVo version = gson.fromJson(result.toString(), VersionVo.class);
+                                //0-不用更新  1-可以更新 2必须更新
+                                String type = version.getType();
+                                String content = "版本:" + version.getName() + "\n更新内容:" + version.getDescription() + "\n大小:" + version.getSize();
+                                int code = Integer.parseInt(version.getCode());
+                                int localCode = UpdateUtil.getVerCode(activity);
+                                if (localCode < code) {
+                                    if ("2".equals(type)) {
+                                        showViesionDialog(content, true, activity);
 
+                                    } else {
+                                        showViesionDialog(content, false, activity);
+                                    }
                                 } else {
-                                    showViesionDialog(content, false, activity);
+                                    //即使已经是最新，设置页面也要提示出来
+                                    if (isSetting) {
+                                        ToastUtil.showToastS(activity, "已是最新版本");
+                                    }
                                 }
                             } else {
-                                //即使已经是最新，设置页面也要提示出来
-                                if (isSetting) {
-                                    ToastUtil.showToastS(activity, "已是最新版本");
-                                }
+                                ToastUtil.showToastS(activity, jsonResult.getMessage());
                             }
                         } else {
-                            ToastUtil.showToastS(activity, jsonResult.getMessage());
+                            ToastUtil.showToastS(activity, "服务器异常，请联系客服");
                         }
                     }
 

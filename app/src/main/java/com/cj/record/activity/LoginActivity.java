@@ -12,6 +12,9 @@ import com.cj.record.R;
 import com.cj.record.activity.base.BaseActivity;
 import com.cj.record.baen.JsonResult;
 import com.cj.record.baen.LocalUser;
+import com.cj.record.baen.Project;
+import com.cj.record.utils.Common;
+import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.MD5Utils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
@@ -108,30 +111,34 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
                     public void onSuccess(Response<String> response) {
                         //注意这里已经是在主线程了
                         String data = response.body();//这个就是返回来的结果
-                        Gson gson = new Gson();
-                        JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
-                        //如果登陆成功，保存用户名和密码到数据库,并保存到baen
-                        if (jsonResult.getStatus()) {
-                            String result = jsonResult.getResult();
-                            LocalUser localUser = gson.fromJson(result.toString(), LocalUser.class);
-                            if (loginRemember.isChecked()) {
-                                SPUtils.put(mContext, Urls.SPKey.USER_PWD, password);
-                            } else {
-                                SPUtils.put(mContext, Urls.SPKey.USER_PWD, "");
+                        if (JsonUtils.isGoodJson(data)) {
+                            Gson gson = new Gson();
+                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                            //如果登陆成功，保存用户名和密码到数据库,并保存到baen
+                            if (jsonResult.getStatus()) {
+                                String result = jsonResult.getResult();
+                                LocalUser localUser = gson.fromJson(result.toString(), LocalUser.class);
+                                if (loginRemember.isChecked()) {
+                                    SPUtils.put(mContext, Urls.SPKey.USER_PWD, password);
+                                } else {
+                                    SPUtils.put(mContext, Urls.SPKey.USER_PWD, "");
+                                }
+                                if (loginAuto.isChecked()) {
+                                    SPUtils.put(mContext, Urls.SPKey.USER_AUTO, true);
+                                } else {
+                                    SPUtils.put(mContext, Urls.SPKey.USER_AUTO, false);
+                                }
+                                SPUtils.put(mContext, Urls.SPKey.USER_ID, localUser.getId());
+                                SPUtils.put(mContext, Urls.SPKey.USER_EMAIL, localUser.getEmail());
+                                SPUtils.put(mContext, Urls.SPKey.USER_REALNAME, localUser.getRealName());
+                                BaseActivity.userID = localUser.getId();
+                                startActivity(MainActivity.class);
+                                finish();
                             }
-                            if (loginAuto.isChecked()) {
-                                SPUtils.put(mContext, Urls.SPKey.USER_AUTO, true);
-                            } else {
-                                SPUtils.put(mContext, Urls.SPKey.USER_AUTO, false);
-                            }
-                            SPUtils.put(mContext, Urls.SPKey.USER_ID, localUser.getId());
-                            SPUtils.put(mContext, Urls.SPKey.USER_EMAIL, localUser.getEmail());
-                            SPUtils.put(mContext, Urls.SPKey.USER_REALNAME, localUser.getRealName());
-                            BaseActivity.userID = localUser.getId();
-                            startActivity(MainActivity.class);
-                            finish();
+                            ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
+                        } else {
+                            ToastUtil.showToastS(LoginActivity.this, "服务器异常，请联系客服");
                         }
-                        ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
                     }
 
                     @Override
