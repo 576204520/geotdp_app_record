@@ -253,6 +253,22 @@ public class HoleDao {
         return false;
     }
 
+    public boolean checkRelatedNoHole(String id, String relateID, String projectID) {
+        try {
+            List<Hole> list = holeDao.queryBuilder().where().eq("relateID", relateID).and().eq("projectID", projectID).query();
+            if (list == null || list.size() == 0) {
+                return false;
+            } else if (list.get(0).getId().equals(id)) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean checkByID(String id, String projectID) {
         try {
             List<Hole> holes = holeDao.queryBuilder().where().eq("id", id).and().eq("projectID", projectID).query();
@@ -264,6 +280,7 @@ public class HoleDao {
         }
         return false;
     }
+
     public Hole checkByDownloadID(String DownloadID, String projectID) {
         try {
             return holeDao.queryBuilder().where().eq("DownloadID", DownloadID).and().eq("projectID", projectID).queryForFirst();
@@ -287,6 +304,7 @@ public class HoleDao {
         }
         return null;
     }
+
     public Hole getIDByRelate(String relateID, String projectID) {
         try {
             return holeDao.queryBuilder().where().eq("relateID", relateID).and().eq("projectID", projectID).queryForFirst();

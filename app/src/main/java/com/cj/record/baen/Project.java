@@ -625,7 +625,7 @@ public class Project implements Serializable {
         this.laborUnit = laborUnit;
     }
 
-    public boolean isUpload() {
+    public Boolean isUpload() {
         return isUpload;
     }
 

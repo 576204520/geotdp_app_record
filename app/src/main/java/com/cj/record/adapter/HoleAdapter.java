@@ -57,25 +57,32 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
         super.onBindViewHolder(holder, position);
         MyHolder myHolder = (MyHolder) holder;
         Hole hole = list.get(position);
-        boolean isRelate = false;
-        boolean isLocation = false;
+        boolean isRelate;
+        boolean isLocation;
         //判断是否关联
-        if (TextUtils.isEmpty(hole.getRelateCode()) && TextUtils.isEmpty(hole.getRelateID())) {
-            myHolder.holeCode.setText(hole.getCode());
-            myHolder.holeCodeRelate.setText("");
-            myHolder.holeRelate.setVisibility(View.GONE);
+        if (TextUtils.isEmpty(project.getProjectID())) {
+            isRelate = false;
+        } else if (TextUtils.isEmpty(hole.getRelateCode()) || TextUtils.isEmpty(hole.getRelateID())) {
+            isRelate = false;
+        } else if (project.isUpload() && TextUtils.isEmpty(hole.getUploadID())) {
             isRelate = false;
         } else {
+            isRelate = true;
+        }
+        if(isRelate){
             myHolder.holeCode.setText(hole.getRelateCode());
             myHolder.holeCodeRelate.setText("(" + hole.getCode() + ")");
             myHolder.holeRelate.setVisibility(View.VISIBLE);
-            isRelate = true;
+        }else{
+            myHolder.holeCode.setText(hole.getCode());
+            myHolder.holeCodeRelate.setText("");
+            myHolder.holeRelate.setVisibility(View.GONE);
         }
         //判断是否定位
         if (TextUtils.isEmpty(hole.getMapLatitude()) || TextUtils.isEmpty(hole.getMapLongitude())) {
             myHolder.holeLocation.setVisibility(View.GONE);
             myHolder.holeMapTime.setVisibility(View.GONE);
-            isRelate = false;
+            isLocation = false;
         } else {
             myHolder.holeLocation.setVisibility(View.VISIBLE);
             myHolder.holeMapTime.setVisibility(View.VISIBLE);
@@ -83,7 +90,7 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
             isLocation = true;
         }
         //判断是否上传
-        if(isRelate && isLocation){
+        if (isRelate && isLocation) {
             if (project.isUpload()) {
                 if ("2".equals(hole.getState()) && "2".equals(hole.getStateGW())) {
                     myHolder.holeRight.setVisibility(View.VISIBLE);
@@ -97,7 +104,7 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
                     myHolder.holeRight.setVisibility(View.GONE);
                 }
             }
-        }else{
+        } else {
             myHolder.holeRight.setVisibility(View.GONE);
         }
 

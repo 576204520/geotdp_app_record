@@ -367,9 +367,8 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         }
         showPPW();
         //遍历数据库，查找是否关联
-        if (holeDao.checkRelated(relateHole.getId(), project.getId())) {
+        if (holeDao.checkRelatedNoHole(uploadHole.getId(),relateHole.getId(), project.getId())) {
             ToastUtil.showToastS(this, "该发布点本地已经存在关联");
-            dismissPPW();
             return;
         }
         Map<String, String> map = new HashMap<>();
@@ -678,7 +677,18 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             return;
         }
         //判断是否关联勘探点
-        if (TextUtils.isEmpty(uploadHole.getRelateID())) {
+        boolean isRelate;
+        if (TextUtils.isEmpty(project.getProjectID())) {
+            ToastUtil.showToastS(this, "项目部分信息丢失，请重新关联项目");
+            return;
+        } else if (TextUtils.isEmpty(uploadHole.getRelateCode()) || TextUtils.isEmpty(uploadHole.getRelateID())) {
+            isRelate = false;
+        } else if (project.isUpload() && TextUtils.isEmpty(uploadHole.getUploadID())) {
+            isRelate = false;
+        } else {
+            isRelate = true;
+        }
+        if (!isRelate) {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.hint)
                     .setMessage("勘探点未关联,是否获取勘探点列表，进行关联操作")
@@ -699,10 +709,6 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         }
         //检查网络
         if (!haveNet()) {
-            return;
-        }
-        if(TextUtils.isEmpty(project.getProjectID())){
-            ToastUtil.showToastS(this, "项目部分信息丢失，请重新关联项目");
             return;
         }
         if (uploadHole.getNotUploadCount() > 0) {

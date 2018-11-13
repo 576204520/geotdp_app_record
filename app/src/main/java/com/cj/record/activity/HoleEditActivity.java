@@ -172,6 +172,16 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
         initLocationFragment();
         holeCode.setText(hole.getCode());
         holeCode.addTextChangedListener(edtCodeChangeListener);
+        //显示是否关联
+        if (TextUtils.isEmpty(project.getProjectID())) {
+            holeCodeRelate.setText("");
+        } else if (TextUtils.isEmpty(hole.getRelateCode()) || TextUtils.isEmpty(hole.getRelateID())) {
+            holeCodeRelate.setText("");
+        } else if (project.isUpload() && TextUtils.isEmpty(hole.getUploadID())) {
+            holeCodeRelate.setText("");
+        } else {
+            holeCodeRelate.setText(hole.getRelateCode());
+        }
         holeCodeRelate.setText(hole.getRelateCode());
         holeType.setText(hole.getType());
         holeElevation.setText(hole.getElevation());
@@ -412,14 +422,13 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     }
 
     private void relate(final Hole relateHole) {
-        if(TextUtils.isEmpty(userID)){
+        if (TextUtils.isEmpty(userID)) {
             ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
             return;
         }
         //遍历数据库，查找是否关联
-        if (holeDao.checkRelated(relateHole.getId(), hole.getProjectID())) {
+        if (holeDao.checkRelatedNoHole(hole.getId(), relateHole.getId(), hole.getProjectID())) {
             ToastUtil.showToastS(this, "该发布点本地已经存在关联");
-            dismissPPW();
             return;
         }
         showPPW();
