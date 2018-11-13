@@ -691,7 +691,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         if (!isRelate) {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.hint)
-                    .setMessage("勘探点未关联,是否获取勘探点列表，进行关联操作")
+                    .setMessage("勘探点未关联（或因版本关系需要重新关联该点）是否获取勘探点列表，进行关联操作")
                     .setNegativeButton(R.string.record_camera_cancel_dialog_yes,
                             new DialogInterface.OnClickListener() {
                                 @Override

@@ -201,7 +201,8 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     private String ADD_LABORUNIT = "ALTER TABLE `project` ADD COLUMN laborUnit varchar(45) default '';";
     private String ADD_REALNAME = "ALTER TABLE `project` ADD COLUMN realName varchar(50) default '';";
     private String ADD_UPLOADID = "ALTER TABLE `hole` ADD COLUMN uploadID char(32) default '';";
-    private String ADD_STATEGW = "ALTER TABLE `hole` ADD COLUMN stateGW tinyint(1) default 1;";
+    private String ADD_STATEGW = "ALTER TABLE `hole` ADD COLUMN stateGW tinyint(1);";
+    private String ADD_STATEGW_UD = "update `hole` set stateGW=state;";
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         L.e("TAG", "DBHelper>>>>>onUpgrade--old=" + oldVersion + "--new=" + newVersion);
@@ -294,6 +295,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             sqLiteDatabase.execSQL(ADD_REALNAME);
             sqLiteDatabase.execSQL(ADD_UPLOADID);
             sqLiteDatabase.execSQL(ADD_STATEGW);
+            sqLiteDatabase.execSQL(ADD_STATEGW_UD);
         }
     }
 
