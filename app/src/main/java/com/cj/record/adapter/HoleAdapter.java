@@ -60,11 +60,7 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
         boolean isRelate;
         boolean isLocation;
         //判断是否关联
-        if (TextUtils.isEmpty(project.getProjectID())) {
-            isRelate = false;
-        } else if (TextUtils.isEmpty(hole.getRelateCode()) || TextUtils.isEmpty(hole.getRelateID())) {
-            isRelate = false;
-        } else if (project.isUpload() && TextUtils.isEmpty(hole.getUploadID())) {
+        if (TextUtils.isEmpty(hole.getRelateCode()) || TextUtils.isEmpty(hole.getRelateID())) {
             isRelate = false;
         } else {
             isRelate = true;
@@ -91,7 +87,7 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
         }
         //判断是否上传
         if (isRelate && isLocation) {
-            if (project.isUpload()) {
+            if (!TextUtils.isEmpty(project.getProjectID())&&project.isUpload()) {
                 if ("2".equals(hole.getState()) && "2".equals(hole.getStateGW())) {
                     myHolder.holeRight.setVisibility(View.VISIBLE);
                 } else {

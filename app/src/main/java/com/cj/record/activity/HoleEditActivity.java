@@ -172,16 +172,6 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
         initLocationFragment();
         holeCode.setText(hole.getCode());
         holeCode.addTextChangedListener(edtCodeChangeListener);
-        //显示是否关联
-        if (TextUtils.isEmpty(project.getProjectID())) {
-            holeCodeRelate.setText("");
-        } else if (TextUtils.isEmpty(hole.getRelateCode()) || TextUtils.isEmpty(hole.getRelateID())) {
-            holeCodeRelate.setText("");
-        } else if (project.isUpload() && TextUtils.isEmpty(hole.getUploadID())) {
-            holeCodeRelate.setText("");
-        } else {
-            holeCodeRelate.setText(hole.getRelateCode());
-        }
         holeCodeRelate.setText(hole.getRelateCode());
         holeType.setText(hole.getType());
         holeElevation.setText(hole.getElevation());
