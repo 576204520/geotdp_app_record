@@ -2,7 +2,9 @@ package com.cj.record.baen;
 
 import android.content.Context;
 
+import com.alibaba.idst.nls.internal.utils.L;
 import com.cj.record.adapter.ProjectAdapter;
+import com.cj.record.db.HoleDao;
 import com.cj.record.db.ProjectDao;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
@@ -181,6 +183,26 @@ public class Project implements Serializable {
         this.mapPic = "";
         //到添加项目这里，必定是登录过了 这里添加的的userid
         this.recordPerson = (String) SPUtils.get(context, Urls.SPKey.USER_ID, "");
+    }
+    /**
+     * 删除项目
+     *
+     * @param context
+     */
+    public boolean delete(Context context) {
+        try {
+            //先删除所有勘探点.
+            List<Hole> holes = new HoleDao(context).getHoleListByProjectID(id);
+            for (Hole hole : holes) {
+                hole.delete(context);
+            }
+            if (new ProjectDao(context).delete(this)) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     //给该加密的数据加密

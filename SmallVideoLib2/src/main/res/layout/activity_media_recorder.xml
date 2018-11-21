@@ -101,7 +101,7 @@
             android:layout_centerInParent="true"
             android:background="@drawable/small_video_shoot"
             android:gravity="center"
-            android:text="按住拍"
+            android:text="开始"
             android:textColor="@color/camera_progress_three"
             android:textSize="16sp" />
     </RelativeLayout>

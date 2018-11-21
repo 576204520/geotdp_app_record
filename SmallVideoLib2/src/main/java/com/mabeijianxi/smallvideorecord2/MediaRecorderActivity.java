@@ -277,36 +277,40 @@ public class MediaRecorderActivity extends Activity implements
 
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    // 检测是否手动对焦
-                    // 判断是否已经超时
-                    if (mMediaObject.getDuration() >= RECORD_TIME_MAX) {
-                        return true;
-                    }
+                    if(!mMediaRecorder.getRecordState()){
+                        // 检测是否手动对焦
+                        // 判断是否已经超时
+                        if (mMediaObject.getDuration() >= RECORD_TIME_MAX) {
+                            return true;
+                        }
 
-                    // 取消回删
-                    if (cancelDelete())
-                        return true;
-                    if (!startState) {
-                        startState = true;
-                        startRecord();
-                    } else {
-                        mMediaObject.buildMediaPart(mMediaRecorder.mCameraId);
-                        mProgressView.setData(mMediaObject);
-                        setStartUI();
-                        mMediaRecorder.setRecordState(true);
+                        // 取消回删
+                        if (cancelDelete())
+                            return true;
+                        if (!startState) {
+                            startState = true;
+                            startRecord();
+                        } else {
+                            mMediaObject.buildMediaPart(mMediaRecorder.mCameraId);
+                            mProgressView.setData(mMediaObject);
+                            setStartUI();
+                            mMediaRecorder.setRecordState(true);
+                        }
+                    }else {
+                        mMediaRecorder.setRecordState(false);
+                        if (mMediaObject.getDuration() >= RECORD_TIME_MAX) {
+                            mTitleNext.performClick();
+                        } else {
+                            mMediaRecorder.setStopDate();
+                            setStopUI();
+                        }
                     }
 
                     break;
 
                 case MotionEvent.ACTION_UP:
 
-                    mMediaRecorder.setRecordState(false);
-                    if (mMediaObject.getDuration() >= RECORD_TIME_MAX) {
-                        mTitleNext.performClick();
-                    } else {
-                        mMediaRecorder.setStopDate();
-                        setStopUI();
-                    }
+
 
 
                     // 暂停
@@ -370,8 +374,7 @@ public class MediaRecorderActivity extends Activity implements
         mPressedStatus = true;
 //		TODO 开始录制的图标
         mRecordController.animate().scaleX(0.8f).scaleY(0.8f).setDuration(500).start();
-
-
+        mRecordController.setText("暂停");
         if (mHandler != null) {
             mHandler.removeMessages(HANDLE_INVALIDATE_PROGRESS);
             mHandler.sendEmptyMessage(HANDLE_INVALIDATE_PROGRESS);
@@ -432,7 +435,7 @@ public class MediaRecorderActivity extends Activity implements
     private void setStopUI() {
         mPressedStatus = false;
         mRecordController.animate().scaleX(1).scaleY(1).setDuration(500).start();
-
+        mRecordController.setText("开始");
 
 //        mRecordDelete.setVisibility(View.VISIBLE);
         mCameraSwitch.setEnabled(true);

@@ -43,7 +43,8 @@ public class Urls {
     public static final String TEMPLATE_DOWNLOAD = SERVER_PATH + "geotdp/template/download";
     //模板上传
     public static final String TEMPLATE_UPLOAD = SERVER_PATH + "geotdp/template/upload";
-
+    // 校验人员接口
+    public static final String VERIFY_USER = SERVER_PATH + "geotdp/compileUser/checkUser";
     //老版本地址
     public static final String APP_PATH_OLD = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "com.geotdb.compile" + File.separator + "files";
     public static final String APP_PATH_CACHE = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "com.geotdbj.compile" + File.separator + "chche";

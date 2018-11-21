@@ -100,7 +100,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
 
     @Override
     public void initView() {
-        toolbar.setTitle("编辑");
+        toolbar.setTitle("项目详情与编辑");
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.mipmap.ic_clear_white_24dp);

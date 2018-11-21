@@ -461,6 +461,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         saveMediaList();
         //修改所属勘探点上传状态state，如果是新增，添加记录数量recordCount
         hole.setState("1");
+        hole.setStateGW("1");
         hole.setUpdateTime(DateUtil.date2Str(new Date()));
         if (!isEdit) {
             int count = Integer.parseInt(hole.getRecordsCount());

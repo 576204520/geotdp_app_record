@@ -319,9 +319,7 @@ public class Hole implements Serializable , Cloneable {
             for (Record record : records) {
                 record.delete(context);
             }
-            L.e("记录删除成功");
             if (new HoleDao(context).delete(this)) {
-                L.e("勘探点数据删除成功");
                 return true;
             }
         } catch (Exception e) {

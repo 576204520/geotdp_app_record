@@ -214,12 +214,9 @@ public class Media implements Serializable {
                 }
             }
             if (!aFile.exists() || aFile.delete()) {
-                L.e("照片删除成功");
                 Gps gps = new GpsDao(context).getGpsByMedia(getId());
                 if (gps == null || gps.delete(context)) {
-                    L.e("媒体的GPS数据删除成功");
                     if (new MediaDao(context).delete(this)) {
-                        L.e("媒体数据删除成功");
                         return true;
                     }
                 }

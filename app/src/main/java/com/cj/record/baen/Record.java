@@ -496,14 +496,11 @@ public class Record implements Serializable, Cloneable {
             for (Media media : medias) {
                 media.delete(context);
             }
-            L.e("照片删除成功");
             //删除对应的GPS.
             Gps gps = new GpsDao(context).getGpsByRecord(getId());
             if (gps == null || gps.delete(context)) {
-                L.e("记录的GPS数据删除成功");
                 //再删记录本身.
                 if (new RecordDao(context).delete(this)) {
-                    L.e("记录数据删除成功");
                     return true;
                 }
             }

@@ -46,7 +46,9 @@ import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
 import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.L;
+import com.cj.record.utils.MD5Utils;
 import com.cj.record.utils.ObsUtils;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
 import com.cj.record.utils.Urls;
@@ -170,11 +172,8 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 }
                 break;
             case 5:
-                if("2".equals(uploadHole.getState()) && !"2".equals(uploadHole.getStateGW())){
-                    getUploadDataToZF();
-                }else{
-                    getUploadData();
-                }
+                //上传的时候先校验身份
+                verifyUser();
                 break;
         }
     }
@@ -237,7 +236,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
     };
 
     private void initRecycleView() {
-        holeAdapter = new HoleAdapter(this, dataList,project);
+        holeAdapter = new HoleAdapter(this, dataList, project);
         //默认打开第一条数据的按钮
         holeAdapter.openFrist();
         holeAdapter.setOnItemListener(this);
@@ -367,7 +366,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         }
         showPPW();
         //遍历数据库，查找是否关联
-        if (holeDao.checkRelatedNoHole(uploadHole.getId(),relateHole.getId(), project.getId())) {
+        if (holeDao.checkRelatedNoHole(uploadHole.getId(), relateHole.getId(), project.getId())) {
             ToastUtil.showToastS(this, "该发布点本地已经存在关联");
             return;
         }
@@ -408,6 +407,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                                     uploadHole.setDescription("");
                                 }
                                 uploadHole.setState("1");
+                                uploadHole.setStateGW("1");
                                 holeDao.add(uploadHole);
                                 project.setUpdateTime(DateUtil.date2Str(new Date()) + "");
                                 projectDao.update(project);
@@ -417,12 +417,6 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                         } else {
                             ToastUtil.showToastS(HoleListActivity.this, "服务器异常，请联系客服");
                         }
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        super.onFinish();
-                        dismissPPW();
                     }
 
                     @Override
@@ -453,6 +447,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 newHole.setDescription(relateHole.getDescription());
                 newHole.setElevation(relateHole.getElevation());
                 newHole.setState("1");
+                newHole.setStateGW("1");
                 //三个参数项
                 Map<String, String> params = new HashMap<>();
                 params.put("userID", userID);
@@ -470,7 +465,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                                 //关联成功，再进行保存
                                 holeDao.add(newHole);
                                 onRefresh();
-                            }else{
+                            } else {
                                 ToastUtil.showToastS(HoleListActivity.this, jsonResult.getMessage());
                             }
                         } else {
@@ -717,12 +712,63 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         }
     }
 
-
-    private void getUploadData() {
+    private void verifyUser(){
         if (TextUtils.isEmpty(userID)) {
             ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
             return;
         }
+        showPPW();
+        Map<String, String> map = new HashMap<>();
+        map.put("projectID", project.getProjectID());
+        map.put("userID", userID);
+        map.put("verCode", UpdateUtil.getVerCode(this) + "");
+        OkGo.<String>post(Urls.VERIFY_USER)
+                .params(map)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        //注意这里已经是在主线程了
+                        String data = response.body();//这个就是返回来的结果
+                        if (JsonUtils.isGoodJson(data)) {
+                            Gson gson = new Gson();
+                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                            //如果登陆成功，保存用户名和密码到数据库,并保存到baen
+                            if (jsonResult.getStatus()) {
+                                if (project.isUpload()) {
+                                    if (!"2".equals(uploadHole.getState()) && "2".equals(uploadHole.getStateGW())) {
+                                        getUploadData();
+                                    } else {
+                                        getUploadDataToZF();
+                                    }
+                                }else{
+                                    getUploadData();
+                                }
+                            }else{
+                                ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
+                            }
+                        } else {
+                            ToastUtil.showToastS(HoleListActivity.this, "服务器异常，请联系客服");
+                        }
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        super.onFinish();
+                        dismissPPW();
+                    }
+
+                    @Override
+                    public void onError(Response<String> response) {
+                        super.onError(response);
+                        ToastUtil.showToastS(mContext, "网络连接错误");
+                    }
+                });
+
+
+
+    }
+
+    private void getUploadData() {
         showPPW();
         String strParams = "/" + project.getSerialNumber();
         final Map<String, String> map = new ConcurrentHashMap<>();
@@ -776,7 +822,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             map.putAll(Gps.getMap(resultGpsList, project.getSerialNumber()));
         }
         dismissPPW();
-        strParams += "?verCode=" + UpdateUtil.getVerCode(this) + "&userID=" + userID+"&relateID="+uploadHole.getRelateID();
+        strParams += "?verCode=" + UpdateUtil.getVerCode(this) + "&userID=" + userID + "&relateID=" + uploadHole.getRelateID();
         upload(map, recordList, realMediaList, strParams);
     }
 
@@ -813,29 +859,22 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     Gson gson = new Gson();
                     JsonResult jsonResult = gson.fromJson(data.toString(), JsonResult.class);
                     if (jsonResult.getStatus()) {
-                        if (project.isUpload()) {
-                            //上传到监管平台
-                            uploadHole.setState("2");
-                            holeDao.update(uploadHole);
-                            getUploadDataToZF();
-                        } else {
-                            //修改状态
-                            uploadHole.setState("2");
-                            holeDao.update(uploadHole);
-                            if (recordList != null && recordList.size() > 0) {
-                                for (Record record : recordList) {
-                                    record.setState("2");
-                                    recordDao.update(record);
-                                }
+                        //上传企业平台成功
+                        uploadHole.setState("2");
+                        holeDao.update(uploadHole);
+                        if (recordList != null && recordList.size() > 0) {
+                            for (Record record : recordList) {
+                                record.setState("2");
+                                recordDao.update(record);
                             }
-                            if (realMediaList != null && realMediaList.size() > 0) {
-                                for (Media media : realMediaList) {
-                                    media.setState("2");
-                                    mediaDao.update(media);
-                                }
-                            }
-                            onRefresh();
                         }
+                        if (realMediaList != null && realMediaList.size() > 0) {
+                            for (Media media : realMediaList) {
+                                media.setState("2");
+                                mediaDao.update(media);
+                            }
+                        }
+                        onRefresh();
                     } else {
                         ToastUtil.showToastS(HoleListActivity.this, jsonResult.getMessage());
                     }
@@ -880,6 +919,8 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         for (Record record : recordList) {
             List<Gps> gpsList = gpsDao.getListGpsByRecord(record.getId());//
             record.setIds(record.getId());
+            //title这个字段没用，清空
+            record.setTitle("");
             if (record.getUpdateId().equals("")) {
                 record.setUpdateId(null);
             }
@@ -923,25 +964,11 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 if (JsonUtils.isGoodJson(data)) {
                     JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
                     if (jsonResult.getStatus()) {
-                        //修改状态
+                        //上传监管成功
                         uploadHole.setStateGW("2");
                         holeDao.update(uploadHole);
-                        if (recordList != null && recordList.size() > 0) {
-                            for (Record record : recordList) {
-                                if (null == record.getUpdateId()) {
-                                    record.setUpdateId("");
-                                }
-                                record.setState("2");
-                                recordDao.update(record);
-                            }
-                        }
-                        if (saveMediaList != null && saveMediaList.size() > 0) {
-                            for (Media media : saveMediaList) {
-                                media.setState("2");
-                                mediaDao.update(media);
-                            }
-                        }
-                        onRefresh();
+                        //上传企业平台
+                        getUploadData();
                     } else {
                         ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
                     }

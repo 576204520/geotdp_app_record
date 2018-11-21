@@ -97,6 +97,7 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
         obsUtils.execute(1);
         projectSearchEt.addTextChangedListener(textWatcher);
     }
+
     TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -113,6 +114,7 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
             onRefresh();
         }
     };
+
     private void initRecycleView() {
         projectAdapter = new ProjectAdapter(mActivity, dataList);
         projectAdapter.setOnItemListener(this);
@@ -175,7 +177,7 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
                 break;
             case 4:
                 showPPW();
-                projectDao.delete(dataList.get(deletePosition));
+                dataList.get(deletePosition).delete(mActivity);
                 break;
         }
     }
