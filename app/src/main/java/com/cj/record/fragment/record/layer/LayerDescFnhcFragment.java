@@ -89,10 +89,10 @@ public class LayerDescFnhcFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    if (bhwStr.toString().length() > 50) {
+                                    if (bhwStr.toString().trim().length() > 50) {
                                         ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
                                     }else{
-                                        sprBhw.setText(bhwStr.toString());
+                                        sprBhw.setText(bhwStr.toString().trim());
                                         dialog.dismiss();
                                     }
                                 }
@@ -110,11 +110,11 @@ public class LayerDescFnhcFragment extends RecordBaseFragment {
                                             InputType.TYPE_TEXT_FLAG_CAP_WORDS).inputMaxLength(10).input("请输入自定义内容", "", false, new MaterialDialog.InputCallback() {
                                         @Override
                                         public void onInput(MaterialDialog dialog, CharSequence input) {
-                                            bhwList.add(input.toString());
+                                            bhwList.add(input.toString().trim());
                                             dialog.dismiss();
                                             bhwDialog.getBuilder().items(bhwList);
                                             bhwDialog.show();
-                                            dictionaryList.add(new Dictionary("1", "粉黏互层_包含物", input.toString(), bhwList.size() + "", userID, Record.TYPE_LAYER));
+                                            dictionaryList.add(new Dictionary("1", "粉黏互层_包含物", input.toString().trim(), bhwList.size() + "", userID, Record.TYPE_LAYER));
                                         }
                                     }).show();
                                 }
@@ -169,24 +169,24 @@ public class LayerDescFnhcFragment extends RecordBaseFragment {
 
     @Override
     public Record getRecord() {
-        record.setYs(sprYs.getText().toString());
-        record.setBhw(sprBhw.getText().toString());
-        record.setZt(sprZt.getText().toString());
-        record.setFtfchd(sprFtfchd.getText().toString());
-        record.setFzntfchd(sprFzntfchd.getText().toString());
+        record.setYs(sprYs.getText().toString().trim());
+        record.setBhw(sprBhw.getText().toString().trim());
+        record.setZt(sprZt.getText().toString().trim());
+        record.setFtfchd(sprFtfchd.getText().toString().trim());
+        record.setFzntfchd(sprFzntfchd.getText().toString().trim());
         return record;
     }
 
     @Override
     public boolean layerValidator() {
         if (sortNoYs > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "粉黏互层_颜色", sprYs.getText().toString(), "" + sortNoYs, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "粉黏互层_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
         }
         if (sortNoFtfchd > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "粉黏互层_粉土层厚", sprFtfchd.getText().toString(), "" + sortNoFtfchd, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "粉黏互层_粉土层厚", sprFtfchd.getText().toString().trim(), "" + sortNoFtfchd, userID, Record.TYPE_LAYER));
         }
         if (sortNoFzntfchd > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "粉黏互层_粉黏层厚", sprFzntfchd.getText().toString(), "" + sortNoFzntfchd, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "粉黏互层_粉黏层厚", sprFzntfchd.getText().toString().trim(), "" + sortNoFzntfchd, userID, Record.TYPE_LAYER));
         }
         if (dictionaryList.size() > 0) {
             dictionaryDao.addDictionaryList(dictionaryList);

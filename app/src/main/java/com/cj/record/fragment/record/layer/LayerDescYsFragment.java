@@ -108,23 +108,23 @@ public class LayerDescYsFragment extends RecordBaseFragment {
 
     @Override
     public Record getRecord() {
-        record.setYs(sprYs.getText().toString());
-        record.setJycd(sprJycd.getText().toString());
-        record.setWzcd(sprWzcd.getText().toString());
-        record.setJbzldj(sprJbzldj.getText().toString());
-        record.setFhcd(sprFhcd.getText().toString());
-        record.setKwx(sprKwx.getText().toString());
-        record.setJglx(sprJglx.getText().toString());
+        record.setYs(sprYs.getText().toString().trim());
+        record.setJycd(sprJycd.getText().toString().trim());
+        record.setWzcd(sprWzcd.getText().toString().trim());
+        record.setJbzldj(sprJbzldj.getText().toString().trim());
+        record.setFhcd(sprFhcd.getText().toString().trim());
+        record.setKwx(sprKwx.getText().toString().trim());
+        record.setJglx(sprJglx.getText().toString().trim());
         return record;
     }
 
     @Override
     public boolean layerValidator() {
         if (sortNoYs > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "岩石_颜色", sprYs.getText().toString(), "" + sortNoYs, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "岩石_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
         }
         if (sortNOKwx > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "岩石_可挖性", sprKwx.getText().toString(), "" + sortNOKwx, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "岩石_可挖性", sprKwx.getText().toString().trim(), "" + sortNOKwx, userID, Record.TYPE_LAYER));
         }
         return true;
     }

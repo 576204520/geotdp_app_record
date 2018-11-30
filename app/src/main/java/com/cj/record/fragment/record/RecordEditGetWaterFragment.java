@@ -74,7 +74,7 @@ public class RecordEditGetWaterFragment extends RecordBaseFragment {
 
     @Override
     public String getTitle() {
-        String title = sprMode.getText().toString();
+        String title = sprMode.getText().toString().trim();
         return title;
     }
 
@@ -85,12 +85,12 @@ public class RecordEditGetWaterFragment extends RecordBaseFragment {
 
     @Override
     public String getBegin() {
-        return edtWaterDepth.getText().toString();
+        return edtWaterDepth.getText().toString().trim();
     }
 
     @Override
     public String getEnd() {
-        return edtWaterDepth.getText().toString();
+        return edtWaterDepth.getText().toString().trim();
     }
 
 

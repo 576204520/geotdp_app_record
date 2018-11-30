@@ -352,7 +352,7 @@ public class RecordEditSPTFragment extends RecordBaseFragment {
 
     @Override
     public String getTitle() {
-        String title = edtDrillLength.getText().toString();
+        String title = edtDrillLength.getText().toString().trim();
         return title;
     }
 
@@ -363,17 +363,17 @@ public class RecordEditSPTFragment extends RecordBaseFragment {
 
     @Override
     public String getBegin() {
-        return edtBegin1.getText().toString();
+        return edtBegin1.getText().toString().trim();
     }
 
     @Override
     public String getEnd() {
         if (lltRow4.getVisibility() == View.VISIBLE) {
-            return edtEnd4.getText().toString();
+            return edtEnd4.getText().toString().trim();
         } else if (lltRow3.getVisibility() == View.VISIBLE) {
-            return edtEnd3.getText().toString();
+            return edtEnd3.getText().toString().trim();
         } else {
-            return edtEnd2.getText().toString();
+            return edtEnd2.getText().toString().trim();
         }
     }
 

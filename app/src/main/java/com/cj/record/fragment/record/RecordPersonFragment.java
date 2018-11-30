@@ -35,7 +35,7 @@ public class RecordPersonFragment extends RecordBaseFragment {
 
     @Override
     public Record getRecord() {
-        record.setRecordPerson(personName.getText().toString());
+        record.setRecordPerson(personName.getText().toString().trim());
         return record;
     }
 

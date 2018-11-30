@@ -154,10 +154,10 @@ public class LayerDescSstFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    if (mycfStr.toString().length() > 50) {
+                                    if (mycfStr.toString().trim().length() > 50) {
                                         ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
                                     }else{
-                                        sprMycf.setText(mycfStr.toString());
+                                        sprMycf.setText(mycfStr.toString().trim());
                                         dialog.dismiss();
                                     }
                                 }
@@ -175,11 +175,11 @@ public class LayerDescSstFragment extends RecordBaseFragment {
                                             InputType.TYPE_TEXT_FLAG_CAP_WORDS).inputMaxLength(10).input("请输入自定义内容", "", false, new MaterialDialog.InputCallback() {
                                         @Override
                                         public void onInput(MaterialDialog dialog, CharSequence input) {
-                                            mycfList.add(input.toString());
+                                            mycfList.add(input.toString().trim());
                                             dialog.dismiss();
                                             mycfDialog.getBuilder().items(mycfList);
                                             mycfDialog.show();
-                                            dictionaryList.add(new Dictionary("1", "碎石土_母岩成份", input.toString(), mycfList.size() + "", userID, Record.TYPE_LAYER));
+                                            dictionaryList.add(new Dictionary("1", "碎石土_母岩成份", input.toString().trim(), mycfList.size() + "", userID, Record.TYPE_LAYER));
                                         }
                                     }).show();
                                 }
@@ -217,10 +217,10 @@ public class LayerDescSstFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    if (jcStr.toString().length() > 50) {
+                                    if (jcStr.toString().trim().length() > 50) {
                                         ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
                                     }else{
-                                        sprJc.setText(jcStr.toString());
+                                        sprJc.setText(jcStr.toString().trim());
                                         dialog.dismiss();
                                     }
                                 }
@@ -238,11 +238,11 @@ public class LayerDescSstFragment extends RecordBaseFragment {
                                             InputType.TYPE_TEXT_FLAG_CAP_WORDS).inputMaxLength(10).input("请输入自定义内容", "", false, new MaterialDialog.InputCallback() {
                                         @Override
                                         public void onInput(MaterialDialog dialog, CharSequence input) {
-                                            jcList.add(input.toString());
+                                            jcList.add(input.toString().trim());
                                             dialog.dismiss();
                                             jcDialog.getBuilder().items(jcList);
                                             jcDialog.show();
-                                            dictionaryList.add(new Dictionary("1", "碎石土_夹层", input.toString(), jcList.size() + "", userID, Record.TYPE_LAYER));
+                                            dictionaryList.add(new Dictionary("1", "碎石土_夹层", input.toString().trim(), jcList.size() + "", userID, Record.TYPE_LAYER));
                                         }
                                     }).show();
                                 }
@@ -281,28 +281,28 @@ public class LayerDescSstFragment extends RecordBaseFragment {
     @Override
     public boolean layerValidator() {
         if (sortNoYs > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_颜色", sprYs.getText().toString(), "" + sortNoYs, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
         }
         if (sortNoTcw > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_充填物", sprTcw.getText().toString(), "" + sortNoTcw, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_充填物", sprTcw.getText().toString().trim(), "" + sortNoTcw, userID, Record.TYPE_LAYER));
         }
         if (sortNoKlxz > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_颗粒形状", sprKlxz.getText().toString(), "" + sortNoKlxz, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_颗粒形状", sprKlxz.getText().toString().trim(), "" + sortNoKlxz, userID, Record.TYPE_LAYER));
         }
         if (sortNoYbljx > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_一般粒径小", sprYbljx.getText().toString(), "" + sortNoYbljx, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_一般粒径小", sprYbljx.getText().toString().trim(), "" + sortNoYbljx, userID, Record.TYPE_LAYER));
         }
         if (sortNoYbljd > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_一般粒径大", sprYbljd.getText().toString(), "" + sortNoYbljd, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_一般粒径大", sprYbljd.getText().toString().trim(), "" + sortNoYbljd, userID, Record.TYPE_LAYER));
         }
         if (sortNoJdljx > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_较大粒径小", sprJdljx.getText().toString(), "" + sortNoJdljx, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_较大粒径小", sprJdljx.getText().toString().trim(), "" + sortNoJdljx, userID, Record.TYPE_LAYER));
         }
         if (sortNoJdljd > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_较大粒径大", sprJdljd.getText().toString(), "" + sortNoJdljd, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_较大粒径大", sprJdljd.getText().toString().trim(), "" + sortNoJdljd, userID, Record.TYPE_LAYER));
         }
         if (sortNoZdlj > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_最大粒径", sprZdlj.getText().toString(), "" + sortNoZdlj, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_最大粒径", sprZdlj.getText().toString().trim(), "" + sortNoZdlj, userID, Record.TYPE_LAYER));
         }
         if (dictionaryList.size() > 0) {
             dictionaryDao.addDictionaryList(dictionaryList);
@@ -370,21 +370,21 @@ public class LayerDescSstFragment extends RecordBaseFragment {
 
     @Override
     public Record getRecord() {
-        record.setYs(sprYs.getText().toString());
-        record.setMsd(sprMsd.getText().toString());
-        record.setTcw(sprTcw.getText().toString());
-        record.setKlxz(sprKlxz.getText().toString());
-        record.setKlpl(sprKlpl.getText().toString());
-        record.setYbljx(sprYbljx.getText().toString());
-        record.setYbljd(sprYbljd.getText().toString());
-        record.setJdljx(sprJdljx.getText().toString());
-        record.setJdljd(sprJdljd.getText().toString());
-        record.setZdlj(sprZdlj.getText().toString());
-        record.setMycf(sprMycf.getText().toString());
-        record.setFhcd(sprFhcd.getText().toString());
-        record.setKljp(sprKljp.getText().toString());
-        record.setSd(sprSd.getText().toString());
-        record.setJc(sprJc.getText().toString());
+        record.setYs(sprYs.getText().toString().trim());
+        record.setMsd(sprMsd.getText().toString().trim());
+        record.setTcw(sprTcw.getText().toString().trim());
+        record.setKlxz(sprKlxz.getText().toString().trim());
+        record.setKlpl(sprKlpl.getText().toString().trim());
+        record.setYbljx(sprYbljx.getText().toString().trim());
+        record.setYbljd(sprYbljd.getText().toString().trim());
+        record.setJdljx(sprJdljx.getText().toString().trim());
+        record.setJdljd(sprJdljd.getText().toString().trim());
+        record.setZdlj(sprZdlj.getText().toString().trim());
+        record.setMycf(sprMycf.getText().toString().trim());
+        record.setFhcd(sprFhcd.getText().toString().trim());
+        record.setKljp(sprKljp.getText().toString().trim());
+        record.setSd(sprSd.getText().toString().trim());
+        record.setJc(sprJc.getText().toString().trim());
         return record;
     }
 

@@ -77,7 +77,7 @@ public class RecordEditGetEarthFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    if (testStr.toString().length() > 100) {
+                                    if (testStr.toString().trim().length() > 100) {
                                         ToastUtil.showToastS(mActivity,"该字段最大100字符，请重新选择");
                                     }else{
                                         sprTestType.setText(testStr.toString());
@@ -102,7 +102,7 @@ public class RecordEditGetEarthFragment extends RecordBaseFragment {
                                             dialog.dismiss();
                                             testDialog.getBuilder().items(testList);
                                             testDialog.show();
-                                            dictionaryList.add(new Dictionary("1", "试验类型", input.toString(), testList.size() + "", userID, Record.TYPE_GET_EARTH));
+                                            dictionaryList.add(new Dictionary("1", "试验类型", input.toString().trim(), testList.size() + "", userID, Record.TYPE_GET_EARTH));
                                         }
                                     }).show();
                                 }
@@ -200,7 +200,7 @@ public class RecordEditGetEarthFragment extends RecordBaseFragment {
 
     @Override
     public String getTitle() {
-        String title = sprEarthType.getText().toString() + "--" + sprMode.getText().toString();
+        String title = sprEarthType.getText().toString().trim() + "--" + sprMode.getText().toString().trim();
         return title;
     }
 
@@ -214,7 +214,7 @@ public class RecordEditGetEarthFragment extends RecordBaseFragment {
         boolean validator = true;
 
         if (sortNoMode > 0 && validator) {
-            dictionaryDao.addDictionary(new Dictionary("1", "取土工具和方法", sprMode.getText().toString(), "" + sortNoMode, userID, Record.TYPE_GET_EARTH));
+            dictionaryDao.addDictionary(new Dictionary("1", "取土工具和方法", sprMode.getText().toString().trim(), "" + sortNoMode, userID, Record.TYPE_GET_EARTH));
         }
 
         if (dictionaryList.size() > 0) {

@@ -102,7 +102,7 @@ public class RecordOperateCodeFragment extends RecordBaseFragment implements Obs
 
     @Override
     public Record getRecord() {
-        record.setTestType(operatecodeCode.getText().toString());
+        record.setTestType(operatecodeCode.getText().toString().trim());
         return record;
     }
 

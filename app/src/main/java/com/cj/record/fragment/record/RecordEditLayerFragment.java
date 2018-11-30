@@ -355,11 +355,11 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
     @Override
     public boolean validator() {
         boolean validator = true;
-        if ("".equals(sprType.getText().toString())) {
+        if ("".equals(sprType.getText().toString().trim())) {
             sprType.setError("岩土分类不能为空");
             validator = false;
         }
-        if ("".equals(sprName.getText().toString())) {
+        if ("".equals(sprName.getText().toString().trim())) {
             sprName.setError("岩土定名不能为空");
             validator = false;
         }

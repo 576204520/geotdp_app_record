@@ -103,7 +103,7 @@ public class RecordEditFrequencyFragment extends RecordBaseFragment {
 
     @Override
     public String getTitle() {
-        String title = sprType.getText().toString() + "--" + sprMode.getText().toString();
+        String title = sprType.getText().toString().trim() + "--" + sprMode.getText().toString().trim();
         return title;
     }
 
@@ -116,10 +116,10 @@ public class RecordEditFrequencyFragment extends RecordBaseFragment {
     public boolean validator() {
         boolean validator = true;
         if (sortNoType > 0 && validator) {
-            dictionaryDao.addDictionary(new Dictionary("1", "钻进方法", sprType.getText().toString(), "" + sortNoType, userID, Record.TYPE_FREQUENCY));
+            dictionaryDao.addDictionary(new Dictionary("1", "钻进方法", sprType.getText().toString().trim(), "" + sortNoType, userID, Record.TYPE_FREQUENCY));
         }
         if (sortNoMode > 0 && validator) {
-            dictionaryDao.addDictionary(new Dictionary("1", "护壁方法", sprMode.getText().toString(), "" + sortNoMode, userID, Record.TYPE_FREQUENCY));
+            dictionaryDao.addDictionary(new Dictionary("1", "护壁方法", sprMode.getText().toString().trim(), "" + sortNoMode, userID, Record.TYPE_FREQUENCY));
         }
         return validator;
     }

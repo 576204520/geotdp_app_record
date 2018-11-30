@@ -51,10 +51,7 @@ public class DropListAdapter extends ArrayAdapter {
 
     @Override
     public Object getItem(int location) {
-        //由于列表里面添加了编号，以空格为分割点
-        String s = list.get(location).getValue().toString();
-        String[] arr = s.split(" ");
-        return arr[0];
+        return list.get(location).getValue().toString().trim();
     }
 
 

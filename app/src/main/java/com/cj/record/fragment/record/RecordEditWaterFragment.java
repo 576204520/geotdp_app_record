@@ -143,18 +143,18 @@ public class RecordEditWaterFragment extends RecordBaseFragment {
         boolean validator = true;
         double waterShow = 0.0;
         double waterStable = 0.0;
-        String show = edtWaterShow.getText().toString();
-        String stable = edtWaterStable.getText().toString();
+        String show = edtWaterShow.getText().toString().trim();
+        String stable = edtWaterStable.getText().toString().trim();
         if (("".equals(show) || Double.valueOf(show) == 0) && ("".equals(stable) || Double.valueOf(stable) == 0)) {
             validator = false;
             edtWaterShow.setError("至少输入一种水位");
             edtWaterStable.setError("至少输入一种水位");
         } else {
-            String sh = edtWaterShow.getText().toString();
+            String sh = edtWaterShow.getText().toString().trim();
             if (sh.equals("")) {
                 sh = "0";
             }
-            String st = edtWaterStable.getText().toString();
+            String st = edtWaterStable.getText().toString().trim();
             if (st.equals("")) {
                 st = "0";
             }
@@ -180,14 +180,14 @@ public class RecordEditWaterFragment extends RecordBaseFragment {
         }
 
         if (sortNoType > 0 && validator) {
-            dictionaryDao.addDictionary(new Dictionary("1", "地下水类型", waterType.getText().toString(), "" + sortNoType, userID, Record.TYPE_WATER));
+            dictionaryDao.addDictionary(new Dictionary("1", "地下水类型", waterType.getText().toString().trim(), "" + sortNoType, userID, Record.TYPE_WATER));
         }
         return validator;
     }
 
     @Override
     public String getTitle() {
-        String title = waterType.getText().toString();
+        String title = waterType.getText().toString().trim();
         return title;
     }
 
@@ -198,12 +198,12 @@ public class RecordEditWaterFragment extends RecordBaseFragment {
 
     @Override
     public String getBegin() {
-        return edtWaterShow.getText().toString();
+        return edtWaterShow.getText().toString().trim();
     }
 
     @Override
     public String getEnd() {
-        return edtWaterStable.getText().toString();
+        return edtWaterStable.getText().toString().trim();
     }
 
 

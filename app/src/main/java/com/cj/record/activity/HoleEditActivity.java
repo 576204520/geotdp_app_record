@@ -294,7 +294,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     }
 
     private void save() {
-        String code = holeCode.getText().toString().trim();
+        String code = holeCode.getText().toString().trim().trim();
         if (TextUtils.isEmpty(code)) {
             ToastUtil.showToastS(HoleEditActivity.this, "请输入勘探点编号");
             return;
@@ -320,12 +320,12 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                 }
             }
         }
-        hole.setCode(holeCode.getText().toString().trim());
-        hole.setType(holeType.getText().toString());
-        hole.setElevation(holeElevation.getText().toString());
-        hole.setDepth(holeDepth.getText().toString());
+        hole.setCode(holeCode.getText().toString().trim().trim());
+        hole.setType(holeType.getText().toString().trim());
+        hole.setElevation(holeElevation.getText().toString().trim());
+        hole.setDepth(holeDepth.getText().toString().trim());
         hole.setUpdateTime(DateUtil.date2Str(new Date()));
-        hole.setRadius(holeRadius.getText().toString());
+        hole.setRadius(holeRadius.getText().toString().trim());
         holeDao.add(hole);
         setResult(RESULT_OK);
         finish();
@@ -440,7 +440,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                             //如果登陆成功，保存用户名和密码到数据库,并保存到baen
                             if (jsonResult.getStatus()) {
                                 String result = jsonResult.getResult();
-                                Hole h = gson.fromJson(result.toString(), Hole.class);
+                                Hole h = gson.fromJson(result.toString().trim(), Hole.class);
                                 //修改界面,就该hole
                                 holeCodeRelate.setText(h.getCode());
                                 hole.setRelateCode(h.getCode());
@@ -522,7 +522,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
 
         @Override
         public void afterTextChanged(Editable s) {
-            String code = holeCode.getText().toString();
+            String code = holeCode.getText().toString().trim();
             if (TextUtils.isEmpty(code)) {
                 holeCode.setError("请输入勘察点编号");
             } else if (code.length() > 20) {

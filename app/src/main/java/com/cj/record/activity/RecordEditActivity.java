@@ -356,11 +356,11 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
             return false;
         }
         //记录编号和其他描述长度限制
-        if(recordCode.getText().toString().length()>20){
+        if(recordCode.getText().toString().trim().length()>20){
             recordCode.setError("编号长度不能超过20");
             return false;
         }
-        if(recordDescription.getText().toString().length()>50){
+        if(recordDescription.getText().toString().trim().length()>50){
             recordDescription.setError("描述长度不能超过50");
             return false;
         }
@@ -391,7 +391,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
             }
         }
 
-        if ("".equals(recordCode.getText().toString())) {
+        if ("".equals(recordCode.getText().toString().trim())) {
             recordCode.setError("记录编号不能为空");
             return false;
         }

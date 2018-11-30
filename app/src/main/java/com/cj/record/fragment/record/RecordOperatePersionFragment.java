@@ -106,19 +106,19 @@ public class RecordOperatePersionFragment extends RecordBaseFragment implements 
 
     @Override
     public Record getRecord() {
-        record.setOperatePerson(operatepersonName.getText().toString());
-        record.setTestType(operatepersonCode.getText().toString());
+        record.setOperatePerson(operatepersonName.getText().toString().trim());
+        record.setTestType(operatepersonCode.getText().toString().trim());
         return record;
     }
 
     @Override
     public boolean validator() {
         boolean validator = true;
-        if (TextUtils.isEmpty(operatepersonName.getText().toString())) {
+        if (TextUtils.isEmpty(operatepersonName.getText().toString().trim())) {
             operatepersonName.setError("姓名不能为空");
             validator = false;
         }
-        if (TextUtils.isEmpty(operatepersonCode.getText().toString())) {
+        if (TextUtils.isEmpty(operatepersonCode.getText().toString().trim())) {
             operatepersonCode.setError("编号不能为空");
             validator = false;
         }

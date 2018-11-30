@@ -149,7 +149,7 @@ public class RecordEditDPTFragment extends RecordBaseFragment {
 
     @Override
     public String getTitle() {
-        String title = sprPowerType.getText().toString();
+        String title = sprPowerType.getText().toString().trim();
         return title;
     }
 
@@ -160,12 +160,12 @@ public class RecordEditDPTFragment extends RecordBaseFragment {
 
     @Override
     public String getBegin() {
-        return edtBegin.getText().toString();
+        return edtBegin.getText().toString().trim();
     }
 
     @Override
     public String getEnd() {
-        return edtEnd.getText().toString();
+        return edtEnd.getText().toString().trim();
     }
 
     @Override

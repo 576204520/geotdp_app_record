@@ -102,7 +102,7 @@ public class RecordTechnicianFragment extends RecordBaseFragment implements ObsU
 
     @Override
     public Record getRecord() {
-        record.setOperatePerson(technicianName.getText().toString());
+        record.setOperatePerson(technicianName.getText().toString().trim());
         return record;
     }
 

@@ -101,7 +101,7 @@ public class RecordPrincipalFragment extends RecordBaseFragment implements ObsUt
 
     @Override
     public Record getRecord() {
-        record.setOperatePerson(principalName.getText().toString());
+        record.setOperatePerson(principalName.getText().toString().trim());
         return record;
     }
 

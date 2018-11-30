@@ -99,10 +99,10 @@ public class LayerDescTtFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    if (zycfStr.toString().length() > 50) {
+                                    if (zycfStr.toString().trim().length() > 50) {
                                         ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
                                     }else{
-                                        sprZycf.setText(zycfStr.toString());
+                                        sprZycf.setText(zycfStr.toString().trim());
                                         dialog.dismiss();
                                     }
                                 }
@@ -120,11 +120,11 @@ public class LayerDescTtFragment extends RecordBaseFragment {
                                             InputType.TYPE_TEXT_FLAG_CAP_WORDS).inputMaxLength(10).input("请输入自定义内容", "", false, new MaterialDialog.InputCallback() {
                                         @Override
                                         public void onInput(MaterialDialog dialog, CharSequence input) {
-                                            zycyList.add(input.toString());
+                                            zycyList.add(input.toString().trim());
                                             dialog.dismiss();
                                             zycfDialog.getBuilder().items(zycyList);
                                             zycfDialog.show();
-                                            dictionaryList.add(new Dictionary("1", "填土_主要成分", input.toString(), zycyList.size() + "", userID, Record.TYPE_LAYER));
+                                            dictionaryList.add(new Dictionary("1", "填土_主要成分", input.toString().trim(), zycyList.size() + "", userID, Record.TYPE_LAYER));
                                         }
                                     }).show();
                                 }
@@ -158,10 +158,10 @@ public class LayerDescTtFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    if (cycfStr.toString().length() > 50) {
+                                    if (cycfStr.toString().trim().length() > 50) {
                                         ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
                                     }else{
-                                        sprCycf.setText(cycfStr.toString());
+                                        sprCycf.setText(cycfStr.toString().trim());
                                         dialog.dismiss();
                                     }
                                 }
@@ -179,11 +179,11 @@ public class LayerDescTtFragment extends RecordBaseFragment {
                                             InputType.TYPE_TEXT_FLAG_CAP_WORDS).inputMaxLength(10).input("请输入自定义内容", "", false, new MaterialDialog.InputCallback() {
                                         @Override
                                         public void onInput(MaterialDialog dialog, CharSequence input) {
-                                            cycfList.add(input.toString());
+                                            cycfList.add(input.toString().trim());
                                             dialog.dismiss();
                                             cycfDialog.getBuilder().items(cycfList);
                                             cycfDialog.show();
-                                            dictionaryList.add(new Dictionary("1", "填土_次要成分", input.toString(), cycfList.size() + "", userID, Record.TYPE_LAYER));
+                                            dictionaryList.add(new Dictionary("1", "填土_次要成分", input.toString().trim(), cycfList.size() + "", userID, Record.TYPE_LAYER));
                                         }
                                     }).show();
 
@@ -219,10 +219,10 @@ public class LayerDescTtFragment extends RecordBaseFragment {
                             }).callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    if (ysStr.toString().length() > 50) {
+                                    if (ysStr.toString().trim().length() > 50) {
                                         ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
                                     }else{
-                                        sprYs.setText(ysStr.toString());
+                                        sprYs.setText(ysStr.toString().trim());
                                         dialog.dismiss();
                                     }
                                 }
@@ -240,11 +240,11 @@ public class LayerDescTtFragment extends RecordBaseFragment {
                                             InputType.TYPE_TEXT_FLAG_CAP_WORDS).inputMaxLength(10).input("请输入自定义内容", "", false, new MaterialDialog.InputCallback() {
                                         @Override
                                         public void onInput(MaterialDialog dialog, CharSequence input) {
-                                            ysList.add(input.toString());
+                                            ysList.add(input.toString().trim());
                                             dialog.dismiss();
                                             ysDialog.getBuilder().items(ysList);
                                             ysDialog.show();
-                                            dictionaryList.add(new Dictionary("1", "填土_颜色", input.toString(), ysList.size() + "", userID, Record.TYPE_LAYER));
+                                            dictionaryList.add(new Dictionary("1", "填土_颜色", input.toString().trim(), ysList.size() + "", userID, Record.TYPE_LAYER));
                                         }
                                     }).show();
                                 }
@@ -276,12 +276,12 @@ public class LayerDescTtFragment extends RecordBaseFragment {
 
     @Override
     public Record getRecord() {
-        record.setZycf(sprZycf.getText().toString());
-        record.setYs(sprYs.getText().toString());
-        record.setCycf(sprCycf.getText().toString());
-        record.setDjnd(sprDjnd.getText().toString());
-        record.setMsd(sprMsd.getText().toString());
-        record.setJyx(sprJyx.getText().toString());
+        record.setZycf(sprZycf.getText().toString().trim());
+        record.setYs(sprYs.getText().toString().trim());
+        record.setCycf(sprCycf.getText().toString().trim());
+        record.setDjnd(sprDjnd.getText().toString().trim());
+        record.setMsd(sprMsd.getText().toString().trim());
+        record.setJyx(sprJyx.getText().toString().trim());
         return record;
     }
 
