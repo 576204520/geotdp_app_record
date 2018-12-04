@@ -424,6 +424,12 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                         super.onError(response);
                         ToastUtil.showToastS(mContext, "网络连接错误");
                     }
+
+                    @Override
+                    public void onFinish() {
+                        super.onFinish();
+                        dismissPPW();
+                    }
                 });
     }
 
