@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/hole_title"
-     layout="@layout/incule_toolbar" />
+        layout="@layout/incule_toolbar" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -28,11 +28,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="勘探点编号(本地)"
+                android:maxLength="20"
+                android:singleLine="true"
                 android:textSize="14sp"
                 app:met_baseColor="@android:color/holo_red_light"
                 app:met_clearButton="true"
-                android:singleLine="true"
-                android:maxLength="20"
                 app:met_floatingLabel="highlight"
                 app:met_floatingLabelText="勘探点编号(本地)" />
 
@@ -45,7 +45,7 @@
                 android:textSize="14sp"
                 app:met_clearButton="true"
                 app:met_floatingLabel="highlight"
-                app:met_floatingLabelText="关联勘探点编号(平台)"/>
+                app:met_floatingLabelText="关联勘探点编号(平台)" />
 
             <net.qiujuer.genius.ui.widget.Button
                 android:id="@+id/hole_doRelate"
@@ -127,10 +127,151 @@
 
             </LinearLayout>
 
-            <FrameLayout
-                android:id="@+id/hole_scene_fragment"
+            <!--<FrameLayout-->
+            <!--android:id="@+id/hole_scene_fragment"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
+            <LinearLayout
+                android:id="@+id/scene_item_ll"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@color/colorTexthintGrey"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/scene_jizhang_fl"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@color/colorWhite">
+
+                    <TextView
+                        android:id="@+id/scene_jizhang_tv"
+                        style="@style/changjing_item_title"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginStart="14dp"
+                        android:text="司钻员" />
+
+                    <TextView
+                        android:id="@+id/scene_jizhang"
+                        style="@style/changjing_item_name" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/scene_zuanji_fl"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="0.6dp"
+                    android:background="@color/colorWhite">
+
+                    <TextView
+                        android:id="@+id/scene_zuanji_tv"
+                        style="@style/changjing_item_title"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginStart="14dp"
+                        android:text="钻机" />
+
+                    <TextView
+                        android:id="@+id/scene_zuanji"
+                        style="@style/changjing_item_name" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/scene_miaoshu_fl"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="0.6dp"
+                    android:background="@color/colorWhite">
+
+                    <TextView
+                        android:id="@+id/scene_miaoshu_tv"
+                        style="@style/changjing_item_title"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginStart="14dp"
+                        android:text="描述员" />
+
+                    <TextView
+                        android:id="@+id/scene_miaoshu"
+                        style="@style/changjing_item_name" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/scene_changjing_fl"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="0.6dp"
+                    android:background="@color/colorWhite">
+
+                    <TextView
+                        android:id="@+id/scene_changjing_tv"
+                        style="@style/changjing_item_title"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginStart="14dp"
+                        android:text="场景" />
+
+                    <TextView
+                        android:id="@+id/scene_changjing"
+                        style="@style/changjing_item_name" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/scene_fuze_fl"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="0.6dp"
+                    android:background="@color/colorWhite">
+
+                    <TextView
+                        android:id="@+id/scene_fuze_tv"
+                        style="@style/changjing_item_title"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginStart="14dp"
+                        android:text="项目负责人" />
+
+                    <TextView
+                        android:id="@+id/scene_fuze"
+                        style="@style/changjing_item_name" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/scene_gongcheng_fl"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="0.6dp"
+                    android:background="@color/colorWhite">
+
+                    <TextView
+                        android:id="@+id/scene_gongcheng_tv"
+                        style="@style/changjing_item_title"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginStart="14dp"
+                        android:text="项目工程师" />
+
+                    <TextView
+                        android:id="@+id/scene_gongcheng"
+                        style="@style/changjing_item_name" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/scene_tizuan_fl"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginBottom="0.6dp"
+                    android:layout_marginTop="0.6dp"
+                    android:background="@color/colorWhite">
+
+                    <TextView
+                        android:id="@+id/scene_tizuan_tv"
+                        style="@style/changjing_item_title"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginStart="14dp"
+                        android:text="提钻录像" />
+
+                    <TextView
+                        android:id="@+id/scene_tizuan"
+                        style="@style/changjing_item_name" />
+                </FrameLayout>
+            </LinearLayout>
 
             <net.qiujuer.genius.ui.widget.Button
                 android:id="@+id/hole_doLocation"

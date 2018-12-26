@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cj.record.baen.JsonResult;
+import com.cj.record.baen.Record;
 import com.cj.record.db.RecordDao;
 import com.cj.record.utils.L;
 import com.cj.record.R;
@@ -81,8 +82,8 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     MaterialEditTextElevation holeDepth;
     @BindView(R.id.hole_description)
     TextView holeDescription;
-    @BindView(R.id.hole_scene_fragment)
-    FrameLayout holeSceneFragment;
+    //    @BindView(R.id.hole_scene_fragment)
+//    FrameLayout holeSceneFragment;
     @BindView(R.id.hole_doLocation)
     Button holeDoLocation;
     @BindView(R.id.hole_latitude)
@@ -101,6 +102,50 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     TextView holeDescriptionTitle;
     @BindView(R.id.hole_description_ll)
     LinearLayout holeDescriptionLl;
+    @BindView(R.id.scene_jizhang_tv)
+    TextView sceneJizhangTv;
+    @BindView(R.id.scene_jizhang)
+    TextView sceneJizhang;
+    @BindView(R.id.scene_zuanji_tv)
+    TextView sceneZuanjiTv;
+    @BindView(R.id.scene_zuanji)
+    TextView sceneZuanji;
+    @BindView(R.id.scene_miaoshu_tv)
+    TextView sceneMiaoshuTv;
+    @BindView(R.id.scene_miaoshu)
+    TextView sceneMiaoshu;
+    @BindView(R.id.scene_changjing_tv)
+    TextView sceneChangjingTv;
+    @BindView(R.id.scene_changjing)
+    TextView sceneChangjing;
+    @BindView(R.id.scene_fuze_tv)
+    TextView sceneFuzeTv;
+    @BindView(R.id.scene_fuze)
+    TextView sceneFuze;
+    @BindView(R.id.scene_gongcheng_tv)
+    TextView sceneGongchengTv;
+    @BindView(R.id.scene_gongcheng)
+    TextView sceneGongcheng;
+    @BindView(R.id.scene_tizuan_tv)
+    TextView sceneTizuanTv;
+    @BindView(R.id.scene_tizuan)
+    TextView sceneTizuan;
+    @BindView(R.id.scene_jizhang_fl)
+    FrameLayout sceneJizhangFl;
+    @BindView(R.id.scene_zuanji_fl)
+    FrameLayout sceneZuanjiFl;
+    @BindView(R.id.scene_miaoshu_fl)
+    FrameLayout sceneMiaoshuFl;
+    @BindView(R.id.scene_changjing_fl)
+    FrameLayout sceneChangjingFl;
+    @BindView(R.id.scene_fuze_fl)
+    FrameLayout sceneFuzeFl;
+    @BindView(R.id.scene_gongcheng_fl)
+    FrameLayout sceneGongchengFl;
+    @BindView(R.id.scene_tizuan_fl)
+    FrameLayout sceneTizuanFl;
+    @BindView(R.id.scene_item_ll)
+    LinearLayout sceneItemLl;
 
     HoleLocationFragment locationFragment;
     HoleSceneFragment sceneFragment;
@@ -113,6 +158,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     private ProjectDao projectDao;
     private List<DropItemVo> sprTypeList;
     private ObsUtils obsUtils;
+    private List<Record> recordList;
 
     @Override
     public int getLayoutId() {
@@ -122,6 +168,11 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     @Override
     public void initData() {
         super.initData();
+        isEdit = getIntent().getBooleanExtra(MainActivity.FROMTYPE, false);
+        project = (Project) getIntent().getSerializableExtra(MainActivity.PROJECT);
+        holeDao = new HoleDao(this);
+        recordDao = new RecordDao(this);
+        projectDao = new ProjectDao(this);
         obsUtils = new ObsUtils();
         obsUtils.setObsLinstener(this);
         obsUtils.execute(1);
@@ -131,11 +182,6 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     public void onSubscribe(int type) {
         switch (type) {
             case 1:
-                isEdit = getIntent().getBooleanExtra(MainActivity.FROMTYPE, false);
-                project = (Project) getIntent().getSerializableExtra(MainActivity.PROJECT);
-                holeDao = new HoleDao(this);
-                recordDao = new RecordDao(this);
-                projectDao = new ProjectDao(this);
                 if (isEdit) {
                     //true编辑
                     hole = (Hole) getIntent().getSerializableExtra(MainActivity.HOLE);
@@ -145,6 +191,10 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                     holeDao.add(hole);
                 }
                 break;
+            case 2:
+                recordList = recordDao.getSceneRecord(hole.getId());
+                break;
+
         }
     }
 
@@ -154,6 +204,11 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
             case 1:
                 initPage(hole);
                 break;
+            case 2:
+                if (recordList != null && recordList.size() > 0) {
+                    initScene();
+                }
+                break;
         }
     }
 
@@ -162,16 +217,17 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
         if (TextUtils.isEmpty(hole.getMapLatitude()) || TextUtils.isEmpty(hole.getMapLongitude())) {
             holeLocationLl.setVisibility(View.GONE);
             holeDoLocation.setVisibility(View.VISIBLE);
-            holeSceneFragment.setVisibility(View.GONE);
+            sceneItemLl.setVisibility(View.GONE);
         } else {
             holeLocationLl.setVisibility(View.VISIBLE);
             holeDoLocation.setVisibility(View.GONE);
-            initSenceFragment(hole.getType());
-            holeSceneFragment.setVisibility(View.VISIBLE);
+//            initSenceFragment(hole.getType());
+            sceneItemLl.setVisibility(View.VISIBLE);
+            obsUtils.execute(2);
         }
         initLocationFragment();
         holeCode.setText(hole.getCode());
-        holeCode.addTextChangedListener(edtCodeChangeListener);
+//        holeCode.addTextChangedListener(edtCodeChangeListener);
         holeCodeRelate.setText(hole.getRelateCode());
         holeType.setText(hole.getType());
         holeElevation.setText(hole.getElevation());
@@ -190,17 +246,45 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
         holeType.setOnItemClickListener(sprTypeListener);
     }
 
-    private void initSenceFragment(String holeType) {
-        sceneFragment = new HoleSceneFragment();
-        Bundle bundle = new Bundle();
-        //向detailFragment传入参数hole
-        bundle.putSerializable(MainActivity.HOLE, hole);
-        //传入参数区分是钻孔、探井
-        bundle.putString(MainActivity.EXTRA_HOLE_TYPE, holeType);
-        sceneFragment.setArguments(bundle);
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.hole_scene_fragment, sceneFragment, "type");
-        ft.commit();
+//    private void initSenceFragment(String holeType) {
+//        sceneFragment = new HoleSceneFragment();
+//        Bundle bundle = new Bundle();
+//        //向detailFragment传入参数hole
+//        bundle.putSerializable(MainActivity.HOLE, hole);
+//        //传入参数区分是钻孔、探井
+//        bundle.putString(MainActivity.EXTRA_HOLE_TYPE, holeType);
+//        sceneFragment.setArguments(bundle);
+//        FragmentTransaction ft = getFragmentManager().beginTransaction();
+//        ft.replace(R.id.hole_scene_fragment, sceneFragment, "type");
+//        ft.commit();
+//    }
+
+    private void initScene() {
+        changeType(hole.getType());
+        for (Record record : recordList) {
+            if (record.getType().equals(Record.TYPE_SCENE_OPERATEPERSON)) {
+                sceneJizhang.setText(record.getOperatePerson());
+                sceneJizhangTv.setTextColor(getResources().getColor(R.color.colorPrimary));
+            } else if (record.getType().equals(Record.TYPE_SCENE_OPERATECODE)) {
+                sceneZuanji.setText(record.getTestType());
+                sceneZuanjiTv.setTextColor(getResources().getColor(R.color.colorPrimary));
+            } else if (record.getType().equals(Record.TYPE_SCENE_RECORDPERSON)) {
+                sceneMiaoshu.setText(record.getRecordPerson());
+                sceneMiaoshuTv.setTextColor(getResources().getColor(R.color.colorPrimary));
+            } else if (record.getType().equals(Record.TYPE_SCENE_SCENE)) {
+                sceneChangjing.setText(record.getOperatePerson());
+                sceneChangjingTv.setTextColor(getResources().getColor(R.color.colorPrimary));
+            } else if (record.getType().equals(Record.TYPE_SCENE_PRINCIPAL)) {
+                sceneFuze.setText(record.getOperatePerson());
+                sceneFuzeTv.setTextColor(getResources().getColor(R.color.colorPrimary));
+            } else if (record.getType().equals(Record.TYPE_SCENE_TECHNICIAN)) {
+                sceneGongcheng.setText(record.getOperatePerson());
+                sceneGongchengTv.setTextColor(getResources().getColor(R.color.colorPrimary));
+            } else if (record.getType().equals(Record.TYPE_SCENE_VIDEO)) {
+                sceneTizuan.setText(record.getOperatePerson());
+                sceneTizuanTv.setTextColor(getResources().getColor(R.color.colorPrimary));
+            }
+        }
     }
 
     private void initLocationFragment() {
@@ -340,7 +424,9 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                 .show();
     }
 
-    @OnClick({R.id.hole_doRelate, R.id.hole_doLocation})
+    @OnClick({R.id.hole_doRelate, R.id.hole_doLocation, R.id.scene_jizhang_fl,
+            R.id.scene_zuanji_fl, R.id.scene_miaoshu_fl, R.id.scene_changjing_fl,
+            R.id.scene_fuze_fl, R.id.scene_gongcheng_fl, R.id.scene_tizuan_fl})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.hole_doRelate:
@@ -373,8 +459,10 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                     hole.setLocationState("1");
                     holeDao.add(hole);
                     //加载scene布局
-                    initSenceFragment(hole.getType());
-                    holeSceneFragment.setVisibility(View.VISIBLE);
+//                    initSenceFragment(hole.getType());
+//                    holeSceneFragment.setVisibility(View.VISIBLE);
+                    sceneItemLl.setVisibility(View.VISIBLE);
+
                 } else {
                     ToastUtil.showToastS(this, "未能获取定位信息，请稍等");
                 }
@@ -386,7 +474,53 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                     holeDescription.setVisibility(View.GONE);
                 }
                 break;
+            case R.id.scene_jizhang_fl:
+                checkRecord(Record.TYPE_SCENE_OPERATEPERSON);
+                break;
+            case R.id.scene_zuanji_fl:
+                checkRecord(Record.TYPE_SCENE_OPERATECODE);
+                break;
+            case R.id.scene_miaoshu_fl:
+                checkRecord(Record.TYPE_SCENE_RECORDPERSON);
+                break;
+            case R.id.scene_changjing_fl:
+                checkRecord(Record.TYPE_SCENE_SCENE);
+                break;
+            case R.id.scene_fuze_fl:
+                checkRecord(Record.TYPE_SCENE_PRINCIPAL);
+                break;
+            case R.id.scene_gongcheng_fl:
+                checkRecord(Record.TYPE_SCENE_TECHNICIAN);
+                break;
+            case R.id.scene_tizuan_fl:
+                checkRecord(Record.TYPE_SCENE_VIDEO);
+                break;
         }
+    }
+
+    private void checkRecord(String type) {
+        Record record = recordDao.getRecordByType(hole.getId(), type);
+        if (record == null) {
+            goAdd(type);
+        } else {
+            goEdit(record);
+        }
+    }
+
+    private void goAdd(String type) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(MainActivity.FROMTYPE, false);
+        bundle.putSerializable(MainActivity.HOLE, hole);
+        bundle.putString(MainActivity.EXTRA_RECORD_TYPE, type);
+        startActivityForResult(RecordEditActivity.class, bundle, MainActivity.RECORD_GO_EDIT);
+    }
+
+    private void goEdit(Record record) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(MainActivity.FROMTYPE, true);
+        bundle.putSerializable(MainActivity.HOLE, hole);
+        bundle.putSerializable(MainActivity.RECORD, record);
+        startActivityForResult(RecordEditActivity.class, bundle, MainActivity.RECORD_GO_EDIT);
     }
 
     private void doRelete() {
@@ -403,11 +537,15 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (requestCode == MainActivity.GO_LOCAL_CREATE && resultCode == RESULT_OK) {
             if (data != null) {
                 Hole relateHole = (Hole) data.getExtras().getSerializable(MainActivity.HOLE);
                 relate(relateHole);
             }
+        }
+        if (requestCode == MainActivity.RECORD_GO_EDIT && resultCode == RESULT_OK) {
+            hole = holeDao.queryForId(hole.getId());
+            initPage(hole);
         }
     }
 
@@ -503,10 +641,21 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             hole.setType(sprTypeList.get(i).getName());
-            initSenceFragment(sprTypeList.get(i).getName());
+            changeType(sprTypeList.get(i).getName());
         }
     };
 
+    private void changeType(String type) {
+        if ("探井".equals(type)) {
+            sceneJizhangFl.setVisibility(View.GONE);
+            sceneZuanjiFl.setVisibility(View.GONE);
+            sceneTizuanFl.setVisibility(View.GONE);
+        } else {
+            sceneJizhangFl.setVisibility(View.VISIBLE);
+            sceneZuanjiFl.setVisibility(View.VISIBLE);
+            sceneTizuanFl.setVisibility(View.VISIBLE);
+        }
+    }
 
     /**
      * 当前code改变时验证是否重复
