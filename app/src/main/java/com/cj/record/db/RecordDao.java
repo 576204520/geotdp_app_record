@@ -334,6 +334,23 @@ public class RecordDao {
     }
 
     /**
+     * 获取项目的所有指定类型的所有记录
+     *
+     * @return
+     */
+    public List<Record> getRecordListByProjectIDAndType(String projectID, String type) {
+        List<Record> list = new ArrayList<>();
+        try {
+            QueryBuilder<Record, String> qb = recordDao.queryBuilder();
+            qb.where().eq("projectID", projectID).and().eq("type", type);
+            list = qb.query();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
      * 根据项目ID、类别，查询所有记录
      * 机长列表
      */

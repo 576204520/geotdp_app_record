@@ -365,14 +365,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public void onSubscribe(int type) {
         switch (type) {
             case 1:
+                projectDao = new ProjectDao(MainActivity.this);
+                holeDao = new HoleDao(MainActivity.this);
+                recordDao = new RecordDao(MainActivity.this);
                 //遍历所有字段，检查长度
                 File newFile = new File(Urls.DATABASE_BASE);
                 boolean initData = (boolean) SPUtils.get(MainActivity.this, Urls.SPKey.DATA_INIT, false);
                 if (!initData && newFile.exists() && !TextUtils.isEmpty(userID)) {
                     L.e("onSubscribe:遍历数据库开始");
-                    projectDao = new ProjectDao(MainActivity.this);
-                    holeDao = new HoleDao(MainActivity.this);
-                    recordDao = new RecordDao(MainActivity.this);
                     List<Project> projectList = projectDao.getAll(userID);
                     if (projectList != null && projectList.size() > 0) {
                         for (Project project : projectList) {
@@ -479,6 +479,25 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         }
                     }
                     SPUtils.put(MainActivity.this, Urls.SPKey.DATA_INIT, true);
+                }
+                boolean initData2 = (boolean) SPUtils.get(MainActivity.this, Urls.SPKey.DATA_INIT2, false);
+                if (!initData2 && newFile.exists() && !TextUtils.isEmpty(userID)) {
+                    L.e("onSubscribe:遍历数据库开始---第二次");
+                    List<Project> projectList = projectDao.getAll(userID);
+                    if (projectList != null && projectList.size() > 0) {
+                        for (Project project : projectList) {
+                            List<Record> recordList = recordDao.getRecordListByProjectIDAndType(project.getId(), Record.TYPE_SCENE_OPERATEPERSON);
+                            if (recordList != null && recordList.size() > 0) {
+                                for (Record record : recordList) {
+                                    if (record.getTestType().length() > 50) {
+                                        record.setTestType(record.getTestType().substring(0, 50));
+                                        recordDao.update(record);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    SPUtils.put(MainActivity.this, Urls.SPKey.DATA_INIT2, true);
                 }
                 break;
         }

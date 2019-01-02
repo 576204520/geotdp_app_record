@@ -73,6 +73,7 @@ public class Urls {
         public static final String USER_AUTO = "userAuto";
         //判断是否整理过数据
         public static final String DATA_INIT = "initData";
+        public static final String DATA_INIT2 = "initData2";
     }
 
     //各企业自己的key

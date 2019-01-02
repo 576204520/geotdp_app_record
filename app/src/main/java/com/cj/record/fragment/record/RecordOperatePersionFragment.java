@@ -118,6 +118,10 @@ public class RecordOperatePersionFragment extends RecordBaseFragment implements 
             operatepersonName.setError("姓名不能为空");
             validator = false;
         }
+        if (operatepersonCode.getText().toString().length() > 50){
+            operatepersonCode.setError("钻机编号最长50");
+            validator = false;
+        }
         if (TextUtils.isEmpty(operatepersonCode.getText().toString().trim())) {
             operatepersonCode.setError("编号不能为空");
             validator = false;
