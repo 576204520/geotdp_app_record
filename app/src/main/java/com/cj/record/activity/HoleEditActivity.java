@@ -370,6 +370,13 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                                 hole.setMapLatitude("");
                                 hole.setMapLongitude("");
                                 holeDao.update(hole);
+                                //清除定位信息，删除所有记录
+                                List<Record> recordList = recordDao.getRecordListByHoleID(hole.getId());
+                                if (recordList != null && recordList.size() > 0) {
+                                    for (Record record : recordList) {
+                                        recordDao.delete(record);
+                                    }
+                                }
                                 setResult(RESULT_OK);
                                 finish();
                             }

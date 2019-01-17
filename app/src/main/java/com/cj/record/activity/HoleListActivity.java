@@ -619,24 +619,43 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
     public void recordListClick(int position) {
         final Hole hole = dataList.get(position);
         if (TextUtils.isEmpty(hole.getMapLatitude()) || TextUtils.isEmpty(hole.getMapLongitude())) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.hint)
-                    .setMessage("勘探点未定位,是否编辑勘察点，进行定位操作")
-                    .setNegativeButton(R.string.record_camera_cancel_dialog_yes,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    goEdit(hole);
-                                }
-                            })
-                    .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)
-                    .setCancelable(false)
-                    .show();
+            showMsgDialog(hole, "勘探点未定位,是否编辑勘察点，进行定位操作");
             return;
+        }
+        //查看信息是否编录完整
+        int complete;
+        if ("探井".equals(hole.getType())) {
+            complete = recordDao.checkTJ(hole.getId());
+            if (complete < 2) {
+                showMsgDialog(hole, "勘探点数据不完整，请完善（描述员、场景）记录");
+                return;
+            }
+        } else {
+            complete = recordDao.checkZK(hole.getId());
+            if (complete < 4) {
+                showMsgDialog(hole, "勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录");
+                return;
+            }
         }
         Bundle bundle = new Bundle();
         bundle.putSerializable(MainActivity.HOLE, dataList.get(position));
         startActivityForResult(RecordListActivity.class, bundle, MainActivity.HOLE_GO_LIST);
+    }
+
+    private void showMsgDialog(Hole hole, String msg) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.hint)
+                .setMessage(msg)
+                .setNegativeButton(R.string.record_camera_cancel_dialog_yes,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                goEdit(hole);
+                            }
+                        })
+                .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)
+                .setCancelable(false)
+                .show();
     }
 
     @Override
@@ -718,7 +737,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         }
     }
 
-    private void verifyUser(){
+    private void verifyUser() {
         if (TextUtils.isEmpty(userID)) {
             ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
             return;
@@ -746,10 +765,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                                     } else {
                                         getUploadDataToZF();
                                     }
-                                }else{
+                                } else {
                                     getUploadData();
                                 }
-                            }else{
+                            } else {
                                 ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
                             }
                         } else {
@@ -769,7 +788,6 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                         ToastUtil.showToastS(mContext, "网络连接错误");
                     }
                 });
-
 
 
     }
