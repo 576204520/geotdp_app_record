@@ -7,4 +7,9 @@
         android:orderInCategory="90"
         android:title="添加"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/act_main"
+        android:orderInCategory="90"
+        android:title="m"
+        app:showAsAction="ifRoom" />
 </menu>

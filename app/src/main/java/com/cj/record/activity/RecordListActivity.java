@@ -272,6 +272,9 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                     ToastUtil.showToastS(this, "不可以编辑他人数据");
                 }
                 return true;
+            case R.id.act_main:
+                startActivity(MainActivity.class);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -298,7 +301,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
             bundle.putSerializable(MainActivity.RECORD, dataList.get(position));
             startActivityForResult(RecordEditActivity.class, bundle, MainActivity.RECORD_GO_EDIT);
         } else {
-            ToastUtil.showToastS(this,"不可以编辑他人数据");
+            ToastUtil.showToastS(this, "不可以编辑他人数据");
         }
 
     }
