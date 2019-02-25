@@ -56,6 +56,7 @@ import com.cj.record.fragment.record.RecordTechnicianFragment;
 import com.cj.record.fragment.record.RecordVideoFragment;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
+import com.cj.record.utils.GPSutils;
 import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.L;
 import com.cj.record.utils.MD5Utils;
@@ -443,7 +444,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         record.setDescription(recordDescription.getText().toString());
         record.setState("1");
         record.setIsDelete("0");
-        record.setUpdateTime(DateUtil.date2Str(new Date()));
+        record.setUpdateTime(GPSutils.utcToTimeZoneDate(amapLocation.getTime()));
         record.setRecordPerson((String) SPUtils.get(this, Urls.SPKey.USER_REALNAME, ""));
         return true;
     }

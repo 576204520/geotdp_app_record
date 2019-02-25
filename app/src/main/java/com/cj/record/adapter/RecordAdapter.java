@@ -38,14 +38,12 @@ public class RecordAdapter extends AbstractSlideExpandableListAdapter<RecordAdap
     private Context mContext;
     private LayoutInflater inflater;
     private List<HoleAdapter.MyHolder> holderList;
-    private GpsDao gpsDao;
     public RecordAdapter(Context context, List<Record> list) {
         this.mContext = context;
         this.list = list;
         inflater = LayoutInflater.from(mContext);
         holderList = new ArrayList<>();
 //        setItemExpandCollapseListener(this);
-        gpsDao = new GpsDao(mContext);
     }
 
     @Override
@@ -63,13 +61,7 @@ public class RecordAdapter extends AbstractSlideExpandableListAdapter<RecordAdap
         myHolder.recordType.setText(record.getType());
         myHolder.recordName.setText(record.getTitle());
         myHolder.recordCreateTime.setText("创建时间:" + record.getCreateTime());
-        Gps gps = gpsDao.getGpsByRecord(record.getId());
-        if (gps != null) {
-            myHolder.recordMapTime.setText("定位时间:" + gps.getGpsTime());
-            myHolder.recordMapTime.setVisibility(View.VISIBLE);
-        } else {
-            myHolder.recordMapTime.setVisibility(View.GONE);
-        }
+        myHolder.recordMapTime.setText("定位时间:" + record.getUpdateTime());
         if (record.getType().equals(Record.TYPE_GET_WATER)) {
             myHolder.recordBeginDepth.setVisibility(View.VISIBLE);
             myHolder.recordEb.setVisibility(View.GONE);
