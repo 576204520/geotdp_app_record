@@ -397,6 +397,7 @@ public class Record implements Serializable, Cloneable {
             if (recordType.equals(TYPE_GET_EARTH)) {
                 this.earthType = "";
                 this.getMode = "";
+                this.earthType = "Ⅰ级样";
             } else if (recordType.equals(TYPE_GET_WATER)) {
                 waterDepth = "0";
                 this.getMode = "";

@@ -212,7 +212,7 @@ public class MaterialBetterSpinner extends MaterialAutoCompleteTextView implemen
     public static int MODE_CLEAR = 1;
     public static int MODE_CUSTOM = 2;
     public static int MODE_CLEAR_CUSTOM = 3;
-
+    public static int MODE_NORMAL = 4;
     public void setAdapter(Context context, List<DropItemVo> list) {
         setAdapter(context, list, 0);
     }

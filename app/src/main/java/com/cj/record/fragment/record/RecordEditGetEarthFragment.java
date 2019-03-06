@@ -118,7 +118,7 @@ public class RecordEditGetEarthFragment extends RecordBaseFragment {
         });
 
         earthTypeList = getEarthTypeList();
-        sprEarthType.setAdapter(mActivity, earthTypeList, MaterialBetterSpinner.MODE_CLEAR);
+        sprEarthType.setAdapter(mActivity, earthTypeList, MaterialBetterSpinner.MODE_NORMAL);
         sprMode.setAdapter(mActivity, getEarthModeList(), MaterialBetterSpinner.MODE_CLEAR_CUSTOM);
         sprMode.setOnItemClickListener(modeListener);
         //设置工具方法为可选可编辑
