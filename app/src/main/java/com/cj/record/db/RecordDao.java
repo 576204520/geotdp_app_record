@@ -102,14 +102,13 @@ public class RecordDao {
             QueryBuilder<Record, String> qb = recordDao.queryBuilder();
             qb.where().eq("holeID", holeID)
                     .and().eq("state", "1")
-                    .and().eq("type", Record.TYPE_FREQUENCY)
-                    .or().eq("type", Record.TYPE_LAYER)
-                    .or().eq("type", Record.TYPE_GET_EARTH)
-                    .or().eq("type", Record.TYPE_GET_WATER)
-                    .or().eq("type", Record.TYPE_DPT)
-                    .or().eq("type", Record.TYPE_SPT)
-                    .or().eq("type", Record.TYPE_WATER)
-                    .or().eq("type", Record.TYPE_SCENE);
+                    .and().ne("type", Record.TYPE_SCENE_OPERATEPERSON)
+                    .and().ne("type", Record.TYPE_SCENE_OPERATECODE)
+                    .and().ne("type", Record.TYPE_SCENE_RECORDPERSON)
+                    .and().ne("type", Record.TYPE_SCENE_SCENE)
+                    .and().ne("type", Record.TYPE_SCENE_PRINCIPAL)
+                    .and().ne("type", Record.TYPE_SCENE_TECHNICIAN)
+                    .and().ne("type", Record.TYPE_SCENE_VIDEO);
             qb.orderBy("createTime", true);
             list = qb.query();
         } catch (Exception e) {
