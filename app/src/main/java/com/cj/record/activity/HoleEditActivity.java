@@ -618,7 +618,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                             }
                             ToastUtil.showToastS(mContext, jsonResult.getMessage());
                         } else {
-                            ToastUtil.showToastS(HoleEditActivity.this, "服务器异常，请联系客服");
+                            ToastUtil.showToastS(HoleEditActivity.this, "关联勘探点，服务器异常，请联系客服");
                         }
                     }
 
@@ -631,7 +631,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                     @Override
                     public void onError(Response<String> response) {
                         super.onError(response);
-                        ToastUtil.showToastS(mContext, "网络连接错误");
+                        ToastUtil.showToastS(mContext, "关联勘探点，网络连接错误");
                     }
                 });
     }

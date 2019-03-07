@@ -415,14 +415,14 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                             }
                             ToastUtil.showToastS(HoleListActivity.this, jsonResult.getMessage());
                         } else {
-                            ToastUtil.showToastS(HoleListActivity.this, "服务器异常，请联系客服");
+                            ToastUtil.showToastS(HoleListActivity.this, "关联勘探点，服务器异常，请联系客服");
                         }
                     }
 
                     @Override
                     public void onError(Response<String> response) {
                         super.onError(response);
-                        ToastUtil.showToastS(mContext, "网络连接错误");
+                        ToastUtil.showToastS(mContext, "关联勘探点，网络连接错误");
                     }
 
                     @Override
@@ -476,7 +476,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                             }
                         } else {
                             holeDao.delete(newHole);
-                            ToastUtil.showToastS(HoleListActivity.this, "服务器异常，请联系客服");
+                            ToastUtil.showToastS(HoleListActivity.this, "关联勘探点，服务器异常，请联系客服");
                         }
                         dismissPPW();
                     }
@@ -486,7 +486,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                         super.onError(response);
                         holeDao.delete(newHole);
                         dismissPPW();
-                        ToastUtil.showToastS(HoleListActivity.this, "网络连接错误");
+                        ToastUtil.showToastS(HoleListActivity.this, "关联勘探点，网络连接错误");
                     }
                 });
             }
@@ -531,7 +531,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                         }
                         ToastUtil.showToastS(mContext, jsonResult.getMessage());
                     } else {
-                        ToastUtil.showToastS(HoleListActivity.this, "服务器异常，请联系客服");
+                        ToastUtil.showToastS(HoleListActivity.this, "获取数据，服务器异常，请联系客服");
                     }
                 }
 
@@ -544,7 +544,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 @Override
                 public void onError(Response<String> response) {
                     super.onError(response);
-                    ToastUtil.showToastS(HoleListActivity.this, "网络连接错误");
+                    ToastUtil.showToastS(HoleListActivity.this, "获取数据，网络连接错误");
                 }
             });
         }
@@ -772,7 +772,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                                 ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
                             }
                         } else {
-                            ToastUtil.showToastS(HoleListActivity.this, "服务器异常，请联系客服");
+                            ToastUtil.showToastS(HoleListActivity.this, "校验人员，服务器异常，请联系客服");
                         }
                     }
 
@@ -785,7 +785,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     @Override
                     public void onError(Response<String> response) {
                         super.onError(response);
-                        ToastUtil.showToastS(mContext, "网络连接错误");
+                        ToastUtil.showToastS(mContext, "校验人员，网络连接错误");
                     }
                 });
 
@@ -799,6 +799,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         map.putAll(uploadHole.getNameValuePairMap(project.getSerialNumber()));
         //获取record
         final List<Record> recordList = recordDao.getNotUploadListByHoleID(uploadHole.getId());
+        List<Record> recordListScene = recordDao.getNotUploadListByHoleIDScene(uploadHole.getId());
+        if (recordListScene != null && recordListScene.size() > 0) {
+            recordList.addAll(recordListScene);
+        }
         List<Gps> resultGpsList = new LinkedList<>();
         if (recordList != null && recordList.size() > 0) {
             map.putAll(Record.getMap(recordList, project.getSerialNumber()));
@@ -903,7 +907,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                         ToastUtil.showToastS(HoleListActivity.this, jsonResult.getMessage());
                     }
                 } else {
-                    ToastUtil.showToastS(HoleListActivity.this, "服务器异常，请联系客服");
+                    ToastUtil.showToastS(HoleListActivity.this, "上传企业平台，服务器异常，请联系客服");
                 }
             }
 
@@ -937,6 +941,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         uploadHoleZF.setRelateID(uploadHole.getUploadID());
         //获取record
         List<Record> recordList = recordDao.getNotUploadListByHoleID(uploadHole.getId());
+        List<Record> recordListScene = recordDao.getNotUploadListByHoleIDScene(uploadHole.getId());
+        if (recordListScene != null && recordListScene.size() > 0) {
+            recordList.addAll(recordListScene);
+        }
         //用来保存的list
         List<Media> saveMediaList = new ArrayList<>();
         //获取gps,赋值给recordList
@@ -997,7 +1005,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                         ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
                     }
                 } else {
-                    ToastUtil.showToastS(HoleListActivity.this, "服务器异常，请联系客服");
+                    ToastUtil.showToastS(HoleListActivity.this, "上传监管平台，服务器异常，请联系客服");
                 }
             }
 

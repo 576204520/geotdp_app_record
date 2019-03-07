@@ -100,7 +100,45 @@ public class RecordDao {
         List<Record> list = new ArrayList<Record>();
         try {
             QueryBuilder<Record, String> qb = recordDao.queryBuilder();
-            qb.where().eq("holeID", holeID).and().eq("state", "1");
+            qb.where().eq("holeID", holeID)
+                    .and().eq("state", "1")
+                    .and().eq("type", Record.TYPE_FREQUENCY)
+                    .or().eq("type", Record.TYPE_LAYER)
+                    .or().eq("type", Record.TYPE_GET_EARTH)
+                    .or().eq("type", Record.TYPE_GET_WATER)
+                    .or().eq("type", Record.TYPE_DPT)
+                    .or().eq("type", Record.TYPE_SPT)
+                    .or().eq("type", Record.TYPE_WATER)
+                    .or().eq("type", Record.TYPE_SCENE);
+            qb.orderBy("createTime", true);
+            list = qb.query();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
+     * 获取一个勘探点下所有所有未上传的记录 场景的
+     * 查出所有未上传的机长等信息
+     * @param holeID
+     * @return
+     */
+    public List<Record> getNotUploadListByHoleIDScene(String holeID) {
+        List<Record> list = new ArrayList<Record>();
+        try {
+            QueryBuilder<Record, String> qb = recordDao.queryBuilder();
+            qb.where().eq("holeID", holeID)
+                    .and().eq("state", "1")
+                    .and().eq("updateID", "")
+                    .and().ne("type", Record.TYPE_FREQUENCY)
+                    .and().ne("type", Record.TYPE_LAYER)
+                    .and().ne("type", Record.TYPE_GET_EARTH)
+                    .and().ne("type", Record.TYPE_GET_WATER)
+                    .and().ne("type", Record.TYPE_DPT)
+                    .and().ne("type", Record.TYPE_SPT)
+                    .and().ne("type", Record.TYPE_WATER)
+                    .and().ne("type", Record.TYPE_SCENE);
             qb.orderBy("createTime", true);
             list = qb.query();
         } catch (Exception e) {

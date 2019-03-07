@@ -96,6 +96,7 @@ public class RecordOperatePersionFragment extends RecordBaseFragment implements 
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     if (i + 1 < list.size()) {
+                        operatepersonName.setText(recordList.get(i).getOperatePerson());
                         operatepersonCode.setText(recordList.get(i).getTestType());
                     }
                 }
@@ -116,6 +117,10 @@ public class RecordOperatePersionFragment extends RecordBaseFragment implements 
         boolean validator = true;
         if (TextUtils.isEmpty(operatepersonName.getText().toString().trim())) {
             operatepersonName.setError("姓名不能为空");
+            validator = false;
+        }
+        if (operatepersonName.getText().toString().length() > 16){
+            operatepersonName.setError("姓名最长16");
             validator = false;
         }
         if (operatepersonCode.getText().toString().length() > 50){

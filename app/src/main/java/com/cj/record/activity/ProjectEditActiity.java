@@ -195,7 +195,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                                 showMessage(jsonResult.getMessage());
                             }
                         } else {
-                            ToastUtil.showToastS(ProjectEditActiity.this, "服务器异常，请联系客服");
+                            ToastUtil.showToastS(ProjectEditActiity.this, "关联项目，服务器异常，请联系客服");
                         }
                     }
 
@@ -208,7 +208,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                     @Override
                     public void onError(Response<String> response) {
                         super.onError(response);
-                        ToastUtil.showToastS(mContext, "网络连接错误");
+                        ToastUtil.showToastS(mContext, "关联项目，网络连接错误");
                     }
                 });
     }
