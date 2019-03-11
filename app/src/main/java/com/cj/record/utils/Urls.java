@@ -45,6 +45,9 @@ public class Urls {
     public static final String TEMPLATE_UPLOAD = SERVER_PATH + "geotdp/template/upload";
     // 校验人员接口
     public static final String VERIFY_USER = SERVER_PATH + "geotdp/compileUser/checkUser";
+    // 登陆失败，但是邮箱正确，修改描述员证件号和身份证号
+    public static final String UPDATE_USER = SERVER_PATH + "geotdp/compileUser/updateInfo";
+    public static final String UPDATE_PWD = SERVER_PATH + "geotdp/compileUser/resetPassword";
     //老版本地址
     public static final String APP_PATH_OLD = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "com.geotdb.compile" + File.separator + "files";
     public static final String APP_PATH_CACHE = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "com.geotdbj.compile" + File.separator + "chche";
@@ -71,6 +74,8 @@ public class Urls {
         public static final String USER_REALNAME = "userRealName";
         public static final String USER_PWD = "userPassword";
         public static final String USER_AUTO = "userAuto";
+        public static final String USER_IDCARD = "userIdCard";
+        public static final String USER_CERTIFICATENUMBER3 = "userCertificateNuCmber3";
         //判断是否整理过数据
         public static final String DATA_INIT = "initData";
         public static final String DATA_INIT2 = "initData2";

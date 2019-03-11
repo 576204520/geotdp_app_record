@@ -11,6 +11,9 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 
+import com.cj.record.R;
+import com.cj.record.activity.base.BaseActivity;
+
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.UUID;
@@ -89,7 +92,6 @@ public class Common {
     }
 
 
-
     //检查gps是否开启
     public static boolean gPSIsOPen(final Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -102,10 +104,11 @@ public class Common {
         }
         return false;
     }
+
     /**
      * 检查gps
      */
-    public static boolean haveGps( Context context){
+    public static boolean haveGps(Context context) {
         if (!Common.gPSIsOPen(context)) {
             new AlertDialog.Builder(context)
                     .setTitle("定位服务提示")
@@ -121,11 +124,12 @@ public class Common {
                     .setCancelable(false)
                     .show();
             return false;
-        }else{
+        } else {
             return true;
         }
     }
-    public static String replaceAll(String str){
+
+    public static String replaceAll(String str) {
         return str.replaceAll("&mdash;", "—")
                 .replaceAll("&ldquo;", "“")
                 .replaceAll("&rdquo;", "”")
@@ -135,4 +139,18 @@ public class Common {
                 .replaceAll("&hellip;", "…");
     }
 
+    public static void showMessage(Context context, String message) {
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.hint)
+                .setMessage(message)
+                .setNegativeButton(R.string.agree,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                .setCancelable(false)
+                .show();
+    }
 }

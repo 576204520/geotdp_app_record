@@ -374,7 +374,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                                 List<Record> recordList = recordDao.getRecordListByHoleID(hole.getId());
                                 if (recordList != null && recordList.size() > 0) {
                                     for (Record record : recordList) {
-                                        recordDao.delete(record);
+                                        record.delete(HoleEditActivity.this);
                                     }
                                 }
                                 setResult(RESULT_OK);
@@ -387,11 +387,11 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     private void save() {
         String code = holeCode.getText().toString().trim().trim();
         if (TextUtils.isEmpty(code)) {
-            ToastUtil.showToastS(HoleEditActivity.this, "请输入勘探点编号");
+            Common.showMessage(HoleEditActivity.this, "请输入勘探点编号");
             return;
         }
         if (code.length() > 20) {
-            ToastUtil.showToastS(HoleEditActivity.this, "勘探点编号长度不能超过20");
+            Common.showMessage(HoleEditActivity.this, "勘探点编号长度不能超过20");
             return;
         }
         //判断hole完整性，钻孔（描述员、司钻员、钻机、场景）、探井（描述员、场景）
@@ -400,14 +400,23 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
             if ("探井".equals(hole.getType())) {
                 complete = recordDao.checkTJ(hole.getId());
                 if (complete < 2) {
-                    showComplateDialog("勘探点数据不完整，请完善（描述员、场景）记录");
+                    Common.showMessage(this, "勘探点数据不完整，请完善（描述员、场景）记录");
                     return;
                 }
             } else {
                 complete = recordDao.checkZK(hole.getId());
                 if (complete < 4) {
-                    showComplateDialog("勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录");
+                    Common.showMessage(this, "勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录");
                     return;
+                }
+            }
+        }
+        //如果是探井的类型，判断是否有司钻员、钻机的记录，如果有则删除
+        if ("探井".equals(hole.getType())) {
+            List<Record> tjRecord = recordDao.getRecordListForJzAndZj(hole.getId());
+            if (tjRecord != null && tjRecord.size() > 0) {
+                for (Record record : tjRecord) {
+                    record.delete(HoleEditActivity.this);
                 }
             }
         }
@@ -420,15 +429,6 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
         holeDao.add(hole);
         setResult(RESULT_OK);
         finish();
-    }
-
-    public void showComplateDialog(String msg) {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.hint)
-                .setMessage(msg)
-                .setNegativeButton(R.string.record_camera_cancel_dialog_yes, null)
-                .setCancelable(false)
-                .show();
     }
 
     @OnClick({R.id.hole_doRelate, R.id.hole_doLocation, R.id.scene_jizhang_fl,
@@ -471,7 +471,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                     sceneItemLl.setVisibility(View.VISIBLE);
 
                 } else {
-                    ToastUtil.showToastS(this, "未能获取定位信息，请稍等");
+                    Common.showMessage(this, "未能获取定位信息，请稍等");
                 }
                 break;
             case R.id.hole_description_title:
@@ -532,7 +532,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
 
     private void doRelete() {
         if (TextUtils.isEmpty(project.getSerialNumber())) {
-            ToastUtil.showToastS(this, "所在项目未关联");
+            Common.showMessage(this, "所在项目未关联");
         } else {
             Bundle bundle = new Bundle();
             bundle.putInt(MainActivity.RELATE_TYPE, MainActivity.HAVE_NOALL);
@@ -558,12 +558,12 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
 
     private void relate(final Hole relateHole) {
         if (TextUtils.isEmpty(userID)) {
-            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+            Common.showMessage(this, "用户信息丢失，请尝试重新登陆");
             return;
         }
         //遍历数据库，查找是否关联
         if (holeDao.checkRelatedNoHole(hole.getId(), relateHole.getId(), hole.getProjectID())) {
-            ToastUtil.showToastS(this, "该发布点本地已经存在关联");
+            Common.showMessage(this, "该发布点本地已经存在关联");
             return;
         }
         showPPW();
@@ -616,9 +616,9 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                                 project.setUpdateTime(DateUtil.date2Str(new Date()) + "");
                                 projectDao.update(project);
                             }
-                            ToastUtil.showToastS(mContext, jsonResult.getMessage());
+                            Common.showMessage(HoleEditActivity.this, jsonResult.getMessage());
                         } else {
-                            ToastUtil.showToastS(HoleEditActivity.this, "关联勘探点，服务器异常，请联系客服");
+                            Common.showMessage(HoleEditActivity.this, "关联勘探点，服务器异常，请联系客服");
                         }
                     }
 
@@ -631,7 +631,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                     @Override
                     public void onError(Response<String> response) {
                         super.onError(response);
-                        ToastUtil.showToastS(mContext, "关联勘探点，网络连接错误");
+                        Common.showMessage(HoleEditActivity.this, "关联勘探点，网络连接错误");
                     }
                 });
     }

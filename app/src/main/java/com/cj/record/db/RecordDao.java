@@ -13,6 +13,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.stmt.Where;
 
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,6 +121,7 @@ public class RecordDao {
     /**
      * 获取一个勘探点下所有所有未上传的记录 场景的
      * 查出所有未上传的机长等信息
+     *
      * @param holeID
      * @return
      */
@@ -530,10 +532,10 @@ public class RecordDao {
 
     public int checkZK(String holeID) {
         int complate = 0;
-        List<Record> jz = getRecordListByType(holeID, "机长");
-        List<Record> zj = getRecordListByType(holeID, "钻机");
-        List<Record> msy = getRecordListByType(holeID, "描述员");
-        List<Record> cj = getRecordListByType(holeID, "场景");
+        List<Record> jz = getRecordListByType(holeID, Record.TYPE_SCENE_OPERATEPERSON);
+        List<Record> zj = getRecordListByType(holeID, Record.TYPE_SCENE_OPERATECODE);
+        List<Record> msy = getRecordListByType(holeID, Record.TYPE_SCENE_RECORDPERSON);
+        List<Record> cj = getRecordListByType(holeID, Record.TYPE_SCENE_SCENE);
         if (jz != null && jz.size() > 0) {
             complate++;
         }
@@ -551,8 +553,8 @@ public class RecordDao {
 
     public int checkTJ(String holeID) {
         int complate = 0;
-        List<Record> msy = getRecordListByType(holeID, "描述员");
-        List<Record> cj = getRecordListByType(holeID, "场景");
+        List<Record> msy = getRecordListByType(holeID, Record.TYPE_SCENE_RECORDPERSON);
+        List<Record> cj = getRecordListByType(holeID, Record.TYPE_SCENE_SCENE);
         if (msy != null && msy.size() > 0) {
             complate++;
         }
@@ -560,5 +562,21 @@ public class RecordDao {
             complate++;
         }
         return complate;
+    }
+
+    public List<Record> getRecordListForJzAndZj(String holeID) {
+        try {
+            Where<Record, String> where = recordDao.queryBuilder().where();
+            where.eq("holeID", holeID);
+            where.and();
+            where.or(
+                    where.eq("type", Record.TYPE_SCENE_OPERATEPERSON),
+                    where.eq("type", Record.TYPE_SCENE_OPERATECODE)
+            );
+            return where.query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

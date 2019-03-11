@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cj.record">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -35,7 +36,8 @@
     <uses-permission android:name="android.permission.SET_TIME_ZONE"></uses-permission>
     <!--二维码震动-->
     <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
     <application
         android:name=".activity.base.App"
         android:allowBackup="true"
@@ -108,8 +110,9 @@
             android:name=".activity.VideoPlayerActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.RelateHoleActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.RelateHoleActivity"
+            android:screenOrientation="portrait" />
         <!--更新app-->
         <service android:name=".service.DownloadService"></service>
 
@@ -133,6 +136,12 @@
             android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activity.TemplateActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.UpdateInfoActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.UpdatePwdActivity"
             android:screenOrientation="portrait"></activity>
     </application>
 

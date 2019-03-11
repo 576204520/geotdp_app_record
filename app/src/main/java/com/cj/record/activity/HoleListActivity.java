@@ -122,6 +122,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
     private MediaDao mediaDao;
     private Dialog chooseDialog;
     private HoleInfoDialog holeInfoDialog;//详情
+    private String jzTestType = "";
 
     @Override
     public int getLayoutId() {
@@ -367,7 +368,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         showPPW();
         //遍历数据库，查找是否关联
         if (holeDao.checkRelatedNoHole(uploadHole.getId(), relateHole.getId(), project.getId())) {
-            ToastUtil.showToastS(this, "该发布点本地已经存在关联");
+            Common.showMessage(this, "该发布点本地已经存在关联");
             return;
         }
         Map<String, String> map = new HashMap<>();
@@ -413,16 +414,16 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                                 projectDao.update(project);
                                 onRefresh();
                             }
-                            ToastUtil.showToastS(HoleListActivity.this, jsonResult.getMessage());
+                            Common.showMessage(HoleListActivity.this, jsonResult.getMessage());
                         } else {
-                            ToastUtil.showToastS(HoleListActivity.this, "关联勘探点，服务器异常，请联系客服");
+                            Common.showMessage(HoleListActivity.this, "关联勘探点，服务器异常，请联系客服");
                         }
                     }
 
                     @Override
                     public void onError(Response<String> response) {
                         super.onError(response);
-                        ToastUtil.showToastS(mContext, "关联勘探点，网络连接错误");
+                        Common.showMessage(HoleListActivity.this, "关联勘探点，网络连接错误");
                     }
 
                     @Override
@@ -441,7 +442,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         for (Hole relateHole : checkList) {
             //遍历数据库，查找是否关联
             if (holeDao.checkRelated(relateHole.getId(), project.getId())) {
-                ToastUtil.showToastS(this, relateHole.getCode() + "勘探点本地已经存在关联");
+                Common.showMessage(this, relateHole.getCode() + "勘探点本地已经存在关联");
             } else {
                 showPPW();
                 //每次都新建一个新的勘察点
@@ -472,11 +473,11 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                                 holeDao.add(newHole);
                                 onRefresh();
                             } else {
-                                ToastUtil.showToastS(HoleListActivity.this, jsonResult.getMessage());
+                                Common.showMessage(HoleListActivity.this, jsonResult.getMessage());
                             }
                         } else {
                             holeDao.delete(newHole);
-                            ToastUtil.showToastS(HoleListActivity.this, "关联勘探点，服务器异常，请联系客服");
+                            Common.showMessage(HoleListActivity.this, "关联勘探点，服务器异常，请联系客服");
                         }
                         dismissPPW();
                     }
@@ -486,7 +487,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                         super.onError(response);
                         holeDao.delete(newHole);
                         dismissPPW();
-                        ToastUtil.showToastS(HoleListActivity.this, "关联勘探点，网络连接错误");
+                        Common.showMessage(HoleListActivity.this, "关联勘探点，网络连接错误");
                     }
                 });
             }
@@ -499,7 +500,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             return;
         }
         if (TextUtils.isEmpty(userID)) {
-            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+            Common.showMessage(this, "用户信息丢失，请尝试重新登陆");
             return;
         }
         for (LocalUser localUser : localUserList) {
@@ -521,7 +522,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                             //查询userid是否相同，查询项目下钻孔的relateID是否存在
                             //判断该项目下是否存在关联的勘探点 projectID、relateID
                             if (holeDao.checkRelated(hole.getRelateID(), project.getId())) {
-                                ToastUtil.showToastS(HoleListActivity.this, hole.getRelateCode() + "(" + hole.getCode() + ")关联孔本地已经存在");
+                                Common.showMessage(HoleListActivity.this, hole.getRelateCode() + "(" + hole.getCode() + ")关联孔本地已经存在");
                                 return;
                             } else {
                                 hole.setId(Common.getUUID());
@@ -529,9 +530,9 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                                 onRefresh();
                             }
                         }
-                        ToastUtil.showToastS(mContext, jsonResult.getMessage());
+                        Common.showMessage(HoleListActivity.this, jsonResult.getMessage());
                     } else {
-                        ToastUtil.showToastS(HoleListActivity.this, "获取数据，服务器异常，请联系客服");
+                        Common.showMessage(HoleListActivity.this, "获取数据，服务器异常，请联系客服");
                     }
                 }
 
@@ -544,7 +545,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 @Override
                 public void onError(Response<String> response) {
                     super.onError(response);
-                    ToastUtil.showToastS(HoleListActivity.this, "获取数据，网络连接错误");
+                    Common.showMessage(HoleListActivity.this, "获取数据，网络连接错误");
                 }
             });
         }
@@ -603,7 +604,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals(userID)) {
             goEdit(hole);
         } else {
-            ToastUtil.showToastS(this, "不可以编辑他人数据");
+            Common.showMessage(this, "不可以编辑他人数据");
         }
     }
 
@@ -671,12 +672,12 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         uploadHole = dataList.get(position);
         //判断项目是否关联
         if (TextUtils.isEmpty(project.getSerialNumber())) {
-            ToastUtil.showToastS(this, "该项目还没有序列号，请返回项目列表，关联该项目");
+            Common.showMessage(this, "该项目还没有序列号，请返回项目列表，关联该项目");
             return;
         }
         //判断是否是自己的项目
         if (uploadHole.getUserID() != null && !uploadHole.getUserID().equals(userID)) {
-            ToastUtil.showToastS(this, "不能上传别人的项目");
+            Common.showMessage(this, "不能上传别人的项目");
             return;
         }
         //判断是否定位
@@ -696,10 +697,38 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     .show();
             return;
         }
+        //已经定位，但是数据不全
+        int complete;
+        if ("探井".equals(uploadHole.getType())) {
+            complete = recordDao.checkTJ(uploadHole.getId());
+            if (complete < 2) {
+                Common.showMessage(this,"勘探点数据不完整，请完善（描述员、场景）记录");
+                return;
+            }
+        } else {
+            complete = recordDao.checkZK(uploadHole.getId());
+            if (complete < 4) {
+                Common.showMessage(this,"勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录");
+                return;
+            }
+
+            Record jz = recordDao.getRecordByType(uploadHole.getId(), Record.TYPE_SCENE_OPERATEPERSON);
+            if (jz != null) {
+                if (!TextUtils.isEmpty(jz.getTestType())) {
+                    jzTestType = jz.getTestType();
+                } else {
+                    Common.showMessage(this, "机长信息缺失机长编号，请填写");
+                    return;
+                }
+            } else {
+                Common.showMessage(this, "机长信息未填写，请编辑机长信息");
+                return;
+            }
+        }
         //判断是否关联勘探点
         boolean isRelate;
         if (TextUtils.isEmpty(project.getProjectID())) {
-            ToastUtil.showToastS(this, "项目部分信息丢失，请重新关联项目");
+            Common.showMessage(this, "项目部分信息丢失，请重新关联项目");
             return;
         } else if (TextUtils.isEmpty(uploadHole.getRelateCode()) || TextUtils.isEmpty(uploadHole.getRelateID())) {
             isRelate = false;
@@ -739,13 +768,15 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
 
     private void verifyUser() {
         if (TextUtils.isEmpty(userID)) {
-            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+            Common.showMessage(this, "用户信息丢失，请尝试重新登陆");
             return;
         }
         showPPW();
         Map<String, String> map = new HashMap<>();
         map.put("projectID", project.getProjectID());
         map.put("userID", userID);
+        map.put("testType", jzTestType);
+        map.put("holeType",uploadHole.getType());
         map.put("verCode", UpdateUtil.getVerCode(this) + "");
         OkGo.<String>post(Urls.VERIFY_USER)
                 .params(map)
@@ -769,10 +800,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                                     getUploadData();
                                 }
                             } else {
-                                ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
+                                Common.showMessage(HoleListActivity.this, jsonResult.getMessage() + "");
                             }
                         } else {
-                            ToastUtil.showToastS(HoleListActivity.this, "校验人员，服务器异常，请联系客服");
+                            Common.showMessage(HoleListActivity.this, "校验人员，服务器异常，请联系客服");
                         }
                     }
 
@@ -785,7 +816,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     @Override
                     public void onError(Response<String> response) {
                         super.onError(response);
-                        ToastUtil.showToastS(mContext, "校验人员，网络连接错误");
+                        Common.showMessage(HoleListActivity.this, "校验人员，网络连接错误");
                     }
                 });
 
@@ -904,10 +935,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                         }
                         onRefresh();
                     } else {
-                        ToastUtil.showToastS(HoleListActivity.this, jsonResult.getMessage());
+                        Common.showMessage(HoleListActivity.this, jsonResult.getMessage());
                     }
                 } else {
-                    ToastUtil.showToastS(HoleListActivity.this, "上传企业平台，服务器异常，请联系客服");
+                    Common.showMessage(HoleListActivity.this, "上传企业平台，服务器异常，请联系客服");
                 }
             }
 
@@ -926,7 +957,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             @Override
             public void onError(Response<String> response) {
                 super.onError(response);
-                ToastUtil.showToastS(mContext, "上传企业平台，网络连接错误");
+                Common.showMessage(HoleListActivity.this, "上传企业平台，网络连接错误");
             }
         });
     }
@@ -1002,10 +1033,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                         //上传企业平台
                         getUploadData();
                     } else {
-                        ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
+                        Common.showMessage(HoleListActivity.this, jsonResult.getMessage() + "");
                     }
                 } else {
-                    ToastUtil.showToastS(HoleListActivity.this, "上传监管平台，服务器异常，请联系客服");
+                    Common.showMessage(HoleListActivity.this, "上传监管平台，服务器异常，请联系客服");
                 }
             }
 
@@ -1018,7 +1049,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             @Override
             public void onError(Response<String> response) {
                 super.onError(response);
-                ToastUtil.showToastS(mContext, "上传监管平台，网络连接错误");
+                Common.showMessage(HoleListActivity.this, "上传监管平台，网络连接错误");
             }
         });
     }
@@ -1181,7 +1212,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             case R.id.choose_hole_relate:
                 //关联创建
                 if (TextUtils.isEmpty(project.getSerialNumber())) {
-                    ToastUtil.showToastS(this, "所在项目未关联");
+                    Common.showMessage(this, "所在项目未关联");
                 } else {
                     Bundle relate = new Bundle();
                     relate.putInt(MainActivity.RELATE_TYPE, MainActivity.HAVE_SOME);
@@ -1192,7 +1223,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             case R.id.choose_hole_down:
                 //下载数据
                 if (TextUtils.isEmpty(project.getSerialNumber())) {
-                    ToastUtil.showToastS(this, "所在项目未关联");
+                    Common.showMessage(this, "所在项目未关联");
                 } else {
                     Bundle down = new Bundle();
                     down.putInt(MainActivity.RELATE_TYPE, MainActivity.HAVE_ALL);

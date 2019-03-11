@@ -1,5 +1,6 @@
 package com.cj.record.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.text.TextUtils;
@@ -97,7 +98,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
             return;
         }
         //检查网络
-        if(!haveNet()){
+        if (!haveNet()) {
             return;
         }
         showPPW();
@@ -114,6 +115,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
                         if (JsonUtils.isGoodJson(data)) {
                             Gson gson = new Gson();
                             JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                            ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
                             //如果登陆成功，保存用户名和密码到数据库,并保存到baen
                             if (jsonResult.getStatus()) {
                                 String result = jsonResult.getResult();
@@ -131,13 +133,28 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
                                 SPUtils.put(mContext, Urls.SPKey.USER_ID, localUser.getId());
                                 SPUtils.put(mContext, Urls.SPKey.USER_EMAIL, localUser.getEmail());
                                 SPUtils.put(mContext, Urls.SPKey.USER_REALNAME, localUser.getRealName());
+                                SPUtils.put(mContext, Urls.SPKey.USER_IDCARD, localUser.getIdCard());
+                                SPUtils.put(mContext, Urls.SPKey.USER_CERTIFICATENUMBER3, localUser.getCertificateNumber3());
                                 BaseActivity.userID = localUser.getId();
                                 startActivity(MainActivity.class);
                                 finish();
+                            } else {
+                                String result = jsonResult.getResult();
+                                if (!TextUtils.isEmpty(result)) {
+                                    LocalUser localUser = gson.fromJson(result.toString(), LocalUser.class);
+                                    SPUtils.put(mContext, Urls.SPKey.USER_ID, localUser.getId());
+                                    SPUtils.put(mContext, Urls.SPKey.USER_EMAIL, localUser.getEmail());
+                                    SPUtils.put(mContext, Urls.SPKey.USER_REALNAME, localUser.getRealName());
+                                    SPUtils.put(mContext, Urls.SPKey.USER_IDCARD, TextUtils.isEmpty(localUser.getIdCard()) ? "" : localUser.getIdCard());
+                                    SPUtils.put(mContext, Urls.SPKey.USER_CERTIFICATENUMBER3, TextUtils.isEmpty(localUser.getCertificateNumber3()) ? "" : localUser.getCertificateNumber3());
+                                    Intent intent = new Intent(LoginActivity.this, UpdateInfoActivity.class);
+                                    intent.putExtra(MainActivity.HINT, jsonResult.getMessage());
+                                    startActivity(intent);
+                                }
                             }
-                            ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
+
                         } else {
-                            ToastUtil.showToastS(LoginActivity.this, "服务器异常，请联系客服");
+                            Common.showMessage(LoginActivity.this, "服务器异常，请联系客服");
                         }
                     }
 
@@ -150,7 +167,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
                     @Override
                     public void onError(Response<String> response) {
                         super.onError(response);
-                        ToastUtil.showToastS(mContext, "网络连接错误");
+                        Common.showMessage(LoginActivity.this, "网络连接错误");
                     }
                 });
     }

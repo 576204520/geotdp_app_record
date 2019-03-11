@@ -140,21 +140,21 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
      */
     public void doRelevance() {
         //检查网络
-        if(!haveNet()){
+        if (!haveNet()) {
             return;
         }
         String number = projecEditNumber.getText().toString().trim();
         if (TextUtils.isEmpty(number)) {
-            ToastUtil.showToastS(mContext, "请输入项目序列号");
+            Common.showMessage(this, "请输入项目序列号");
             return;
         }
-        if(TextUtils.isEmpty(userID)){
-            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
+        if (TextUtils.isEmpty(userID)) {
+            Common.showMessage(this, "用户信息丢失，请尝试重新登陆");
             return;
         }
         boolean isHave = projectDao.checkNumber(userID, number, project.getId());
         if (isHave) {
-            ToastUtil.showToastS(mContext, "该序列号本地已经存在");
+            Common.showMessage(this, "该序列号本地已经存在");
             return;
         }
 
@@ -190,12 +190,10 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                                 project.setCompanyID(mProject.getCompanyID());
                                 project.setLaborUnit(mProject.getLaborUnit());
                                 obsUtils.execute(2);
-                                ToastUtil.showToastS(mContext, jsonResult.getMessage());
-                            }else{
-                                showMessage(jsonResult.getMessage());
                             }
+                            Common.showMessage(ProjectEditActiity.this, jsonResult.getMessage());
                         } else {
-                            ToastUtil.showToastS(ProjectEditActiity.this, "关联项目，服务器异常，请联系客服");
+                            Common.showMessage(ProjectEditActiity.this, "关联项目，服务器异常，请联系客服");
                         }
                     }
 
@@ -208,24 +206,12 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                     @Override
                     public void onError(Response<String> response) {
                         super.onError(response);
-                        ToastUtil.showToastS(mContext, "关联项目，网络连接错误");
+                        Common.showMessage(ProjectEditActiity.this, "关联项目，网络连接错误");
                     }
                 });
     }
-    private void showMessage(String message) {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.hint)
-                .setMessage(message)
-                .setNegativeButton(R.string.agree,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                .setCancelable(false)
-                .show();
-    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_project_edit, menu);
@@ -241,7 +227,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                 return true;
             case R.id.act_save:
                 if (TextUtils.isEmpty(projecEditName.getText().toString())) {
-                    ToastUtil.showToastS(mContext, "请输入项目名称");
+                    Common.showMessage(ProjectEditActiity.this, "请输入项目名称");
                     return true;
                 }
                 project.setFullName(projecEditName.getText().toString());

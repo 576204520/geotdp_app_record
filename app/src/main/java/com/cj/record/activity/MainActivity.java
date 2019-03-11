@@ -106,6 +106,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public static final String SN = "serialNumber";
     public static final int EDIT_GO_TEMPLATE = 501;
     public static final String TEMPLATE = "template";
+    public static final String HINT = "hint";
 
     @Override
     public int getLayoutId() {
@@ -141,8 +142,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         //从sp文件拿到用户信息，在登录成功时保存的
         name.setText((String) SPUtils.get(mContext, Urls.SPKey.USER_REALNAME, ""));
         email.setText((String) SPUtils.get(mContext, Urls.SPKey.USER_EMAIL, ""));
-
+        headerView.setOnClickListener(headerViewListener);
     }
+
+    View.OnClickListener headerViewListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            startActivity(UpdatePwdActivity.class);
+        }
+    };
 
     private void initProject() {
         //初始化加载项目

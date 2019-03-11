@@ -46,7 +46,7 @@ public class LocalUser implements Serializable {
     @DatabaseField
     String email = "";
     @DatabaseField
-    String idCard = "";
+    String idCard = "";//身份证号
     @DatabaseField
     String isDelete = "";
     @DatabaseField
@@ -74,7 +74,7 @@ public class LocalUser implements Serializable {
     @DatabaseField
     String authorities3 = "";
     @DatabaseField
-    String certificateNumber3 = "";
+    String certificateNumber3 = ""; //描述员证书号
     @DatabaseField
     String authorities4 = "";
     @DatabaseField

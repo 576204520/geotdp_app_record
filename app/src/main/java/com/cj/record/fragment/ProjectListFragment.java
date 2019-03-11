@@ -30,6 +30,7 @@ import com.cj.record.adapter.ProjectAdapter;
 import com.cj.record.adapter.SpacesItemDecoration;
 import com.cj.record.baen.Project;
 import com.cj.record.db.ProjectDao;
+import com.cj.record.utils.Common;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
@@ -233,7 +234,7 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
             bundle.putString(MainActivity.SN, sn);
             startActivity(ReleteLocationActivity.class, bundle);
         } else {
-            ToastUtil.showToastS(mActivity, "该项目未关联，请先关联项目信息");
+            Common.showMessage(mActivity, "该项目未关联，请先关联项目信息");
         }
     }
 
