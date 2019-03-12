@@ -12,17 +12,32 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 
 import com.cj.record.R;
+import com.cj.record.activity.UpdatePwdActivity;
 import com.cj.record.baen.DropItemVo;
+import com.cj.record.baen.JsonResult;
 import com.cj.record.baen.Record;
 import com.cj.record.db.RecordDao;
+import com.cj.record.utils.Common;
+import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.ObsUtils;
+import com.cj.record.utils.SPUtils;
+import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialBetterSpinner;
 import com.cj.record.views.MaterialEditTextNoEmoji;
+import com.google.gson.Gson;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import net.qiujuer.genius.ui.widget.Button;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -34,6 +49,8 @@ public class RecordOperatePersionFragment extends RecordBaseFragment implements 
     MaterialBetterSpinner operatepersonName;
     @BindView(R.id.operateperson_code)
     MaterialEditTextNoEmoji operatepersonCode;
+    @BindView(R.id.operateperson_check)
+    Button operatepersonCheck;
 
     private List<Record> recordList;
     private ObsUtils obsUtils;
@@ -48,12 +65,60 @@ public class RecordOperatePersionFragment extends RecordBaseFragment implements 
         super.initData();
         obsUtils = new ObsUtils();
         obsUtils.setObsLinstener(this);
+        operatepersonCheck.setOnClickListener(personCheckListener);
     }
 
     @Override
     public void initView() {
         super.initView();
         obsUtils.execute(1);
+    }
+
+    View.OnClickListener personCheckListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            doCheck();
+        }
+    };
+
+    private void doCheck() {
+        if (!validator()) {
+            return;
+        }
+        showPPW();
+        Map<String, String> map = new HashMap<>();
+        map.put("userID", userID);
+        map.put("operatePerson", operatepersonName.getText().toString().trim());
+        map.put("testType", operatepersonCode.getText().toString().trim());
+        OkGo.<String>post(Urls.CHECK_OPERATE)
+                .params(map)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        String data = response.body();
+                        if (JsonUtils.isGoodJson(data)) {
+                            Gson gson = new Gson();
+                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
+                            if (jsonResult.getStatus()) {
+                            }
+                            Common.showMessage(mActivity, jsonResult.getMessage());
+                        } else {
+                            ToastUtil.showToastS(mActivity, "服务器异常，请联系客服");
+                        }
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        super.onFinish();
+                        dismissPPW();
+                    }
+
+                    @Override
+                    public void onError(Response<String> response) {
+                        super.onError(response);
+                        ToastUtil.showToastS(mActivity, "网络连接错误");
+                    }
+                });
     }
 
     @Override
@@ -119,11 +184,11 @@ public class RecordOperatePersionFragment extends RecordBaseFragment implements 
             operatepersonName.setError("姓名不能为空");
             validator = false;
         }
-        if (operatepersonName.getText().toString().length() > 16){
+        if (operatepersonName.getText().toString().length() > 16) {
             operatepersonName.setError("姓名最长16");
             validator = false;
         }
-        if (operatepersonCode.getText().toString().length() > 50){
+        if (operatepersonCode.getText().toString().length() > 50) {
             operatepersonCode.setError("钻机编号最长50");
             validator = false;
         }

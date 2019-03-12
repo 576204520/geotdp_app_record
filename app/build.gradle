@@ -8,8 +8,8 @@ android {
         applicationId "com.cj.record"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 45
-        versionName "3.2.5"
+        versionCode 46
+        versionName "3.2.6"
         multiDexEnabled true
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
         ndk {

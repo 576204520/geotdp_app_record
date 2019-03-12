@@ -48,6 +48,7 @@ public class Urls {
     // 登陆失败，但是邮箱正确，修改描述员证件号和身份证号
     public static final String UPDATE_USER = SERVER_PATH + "geotdp/compileUser/updateInfo";
     public static final String UPDATE_PWD = SERVER_PATH + "geotdp/compileUser/resetPassword";
+    public static final String CHECK_OPERATE = SERVER_PATH + "geotdp/people/checkOperate";
     //老版本地址
     public static final String APP_PATH_OLD = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "com.geotdb.compile" + File.separator + "files";
     public static final String APP_PATH_CACHE = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "com.geotdbj.compile" + File.separator + "chche";

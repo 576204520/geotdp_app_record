@@ -24,4 +24,13 @@
         app:met_clearButton="true"
         app:met_floatingLabel="highlight"
         app:met_floatingLabelText="司钻员证件号" />
+
+    <net.qiujuer.genius.ui.widget.Button
+        android:id="@+id/operateperson_check"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:background="@drawable/textview_stroke_btn"
+        android:text="校验司钻员信息"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp" />
 </LinearLayout>
