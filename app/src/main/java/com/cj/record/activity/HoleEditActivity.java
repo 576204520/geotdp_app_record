@@ -223,6 +223,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
             holeDoLocation.setVisibility(View.GONE);
 //            initSenceFragment(hole.getType());
             sceneItemLl.setVisibility(View.VISIBLE);
+            changeType(hole.getType());
             obsUtils.execute(2);
         }
         initLocationFragment();
@@ -469,7 +470,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
 //                    initSenceFragment(hole.getType());
 //                    holeSceneFragment.setVisibility(View.VISIBLE);
                     sceneItemLl.setVisibility(View.VISIBLE);
-
+                    changeType(hole.getType());
                 } else {
                     Common.showMessage(this, "未能获取定位信息，请稍等");
                 }
@@ -590,18 +591,18 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                                 holeCodeRelate.setText(h.getCode());
                                 hole.setRelateCode(h.getCode());
                                 hole.setRelateID(h.getId());
-                                if (h.getUploadID() != null) {
+                                if (!TextUtils.isEmpty(h.getUploadID())) {
                                     hole.setUploadID(h.getUploadID());
                                 }
-                                if (h.getDepth() != null) {
+                                if (!TextUtils.isEmpty(h.getDepth())) {
                                     holeDepth.setText(h.getDepth());
                                     hole.setDepth(h.getDepth());
                                 }
-                                if (h.getElevation() != null) {
+                                if (!TextUtils.isEmpty(h.getElevation())) {
                                     holeElevation.setText(h.getElevation());
                                     hole.setElevation(h.getElevation());
                                 }
-                                if (h.getDescription() != null) {
+                                if (!TextUtils.isEmpty(h.getDescription())) {
                                     holeDescriptionLl.setVisibility(View.VISIBLE);
                                     holeDescription.setText(h.getDescription());
                                     hole.setDescription(h.getDescription());
@@ -609,6 +610,10 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                                     holeDescriptionLl.setVisibility(View.GONE);
                                     holeDescription.setText("");
                                     hole.setDescription("");
+                                }
+                                if (!TextUtils.isEmpty(h.getType())) {
+                                    hole.setType(h.getType());
+                                    holeType.setText(h.getType());
                                 }
                                 hole.setState("1");
                                 hole.setStateGW("1");

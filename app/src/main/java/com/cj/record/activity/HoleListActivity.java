@@ -393,19 +393,22 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                                 //修改界面,就该hole
                                 uploadHole.setRelateCode(h.getCode());
                                 uploadHole.setRelateID(h.getId());
-                                if (h.getUploadID() != null) {
+                                if (!TextUtils.isEmpty(h.getUploadID())) {
                                     uploadHole.setUploadID(h.getUploadID());
                                 }
-                                if (h.getDepth() != null) {
+                                if (!TextUtils.isEmpty(h.getDepth())) {
                                     uploadHole.setDepth(h.getDepth());
                                 }
-                                if (h.getElevation() != null) {
+                                if (!TextUtils.isEmpty(h.getElevation())) {
                                     uploadHole.setElevation(h.getElevation());
                                 }
-                                if (h.getDescription() != null) {
+                                if (!TextUtils.isEmpty(h.getDescription())) {
                                     uploadHole.setDescription(h.getDescription());
                                 } else {
                                     uploadHole.setDescription("");
+                                }
+                                if (!TextUtils.isEmpty(h.getType())) {
+                                    uploadHole.setType(h.getType());
                                 }
                                 uploadHole.setState("1");
                                 uploadHole.setStateGW("1");
@@ -450,6 +453,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 newHole.setRelateCode(relateHole.getCode());
                 newHole.setRelateID(relateHole.getId());
                 newHole.setUploadID(relateHole.getUploadID());
+                newHole.setType(relateHole.getType());
                 newHole.setDepth(relateHole.getDepth());
                 newHole.setDescription(relateHole.getDescription());
                 newHole.setElevation(relateHole.getElevation());
@@ -702,13 +706,13 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         if ("探井".equals(uploadHole.getType())) {
             complete = recordDao.checkTJ(uploadHole.getId());
             if (complete < 2) {
-                Common.showMessage(this,"勘探点数据不完整，请完善（描述员、场景）记录");
+                Common.showMessage(this, "勘探点数据不完整，请完善（描述员、场景）记录");
                 return;
             }
         } else {
             complete = recordDao.checkZK(uploadHole.getId());
             if (complete < 4) {
-                Common.showMessage(this,"勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录");
+                Common.showMessage(this, "勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录");
                 return;
             }
 
@@ -776,7 +780,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         map.put("projectID", project.getProjectID());
         map.put("userID", userID);
         map.put("testType", jzTestType);
-        map.put("holeType",uploadHole.getType());
+        map.put("holeType", uploadHole.getType());
         map.put("verCode", UpdateUtil.getVerCode(this) + "");
         OkGo.<String>post(Urls.VERIFY_USER)
                 .params(map)

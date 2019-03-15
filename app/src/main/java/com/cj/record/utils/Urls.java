@@ -13,10 +13,10 @@ public class Urls {
 //    public static final String SERVER_PATH = "http://jx.geotdp.com:8083/";//江西
 //    public static final String SERVER_PATH = "http://xj.geotdp.com/";//新疆
 //    public static final String SERVER_PATH = "http://ln.geotdp.com:8081/";//辽宁
-    public static final String SERVER_PATH = "http://bj.geotdp.com:8081/";//北京
-    // 登录请求
+    public static final String SERVER_PATH = "https://bj.geotdp.com/";//北京
+    //登录请求
     //上传钻孔到规委
-    public static final String UPLOAD_GW = "http://bjgw.geotdp.com:8083/geotdp/hole/uploadHoleNew";
+    public static final String UPLOAD_GW = "https://bjgw.geotdp.com/geotdp/hole/uploadHoleNew";
     // 登录请求#
     public static final String LOGIN_POST = SERVER_PATH + "geotdp/compileUser/login";
     //获取版本信息
