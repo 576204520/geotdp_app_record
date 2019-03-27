@@ -24,143 +24,37 @@ import java.util.List;
  * @author XuFeng
  *         2015/8/14.
  */
-public class HoleDao {
+public class HoleDao extends BaseDAO<Hole> {
 
 
-    private Context context;
-    private Dao<Hole, String> holeDao;
-    private DBHelper helper;
+    private static HoleDao instance;
 
-    public HoleDao(Context context) {
-        this.context = context;
-        try {
-            helper = DBHelper.getInstance(context);
-            holeDao = helper.getDao(Hole.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private HoleDao() {
     }
 
-    /**
-     * 获取一个勘探点
-     *
-     * @param holeID
-     */
-    public Hole queryForId(String holeID) {
-        try {
-            return holeDao.queryForId(holeID);
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public synchronized static HoleDao getInstance() {
+        if (instance == null) {
+            instance = new HoleDao();
         }
-        return null;
+        return instance;
     }
 
-    /**
-     * 根据isRelated字段查询
-     */
-    public Hole queryForIsRelated(String relateID) {
-        try {
-            return holeDao.queryBuilder().where().eq("isRelated", relateID).queryForFirst();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    @Override
+    public Dao<Hole, String> getDAO() throws SQLException {
+        return DBManager.getInstance().getDAO(Hole.class);
     }
 
-    public List<Hole> getHoleListByCode(String projectID, String code) {
-        List<Hole> list = new ArrayList<>();
-        try {
-            list = holeDao.queryBuilder().where().eq("projectID", projectID).and().
-                    like("code", code + "%").or().like("code", "%" + code).or().like("code", "%" + code + "%").query();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
 
     public List<Hole> getHoleListByProjectIDUserDelete(String projectID) {
         List<Hole> list = new ArrayList<>();
         try {
-            QueryBuilder<Hole, String> qb = holeDao.queryBuilder();
+            QueryBuilder<Hole, String> qb = instance.getDAO().queryBuilder();
             qb.where().eq("projectID", projectID);
             list = qb.query();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
-    }
-
-    /**
-     * 增加一个勘探点\ 创建或者修改
-     *
-     * @param hole
-     */
-    public void add(Hole hole) {
-        try {
-            holeDao.createOrUpdate(hole);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 获取所有未上传的勘探点
-     *
-     * @param projectID
-     * @return
-     */
-    public List<Hole> getHoleListByNotUpload(String projectID) {
-        List<Hole> list = new ArrayList<Hole>();
-        try {
-            QueryBuilder<Hole, String> qb = holeDao.queryBuilder();
-            qb.where().eq("projectID", projectID).and().eq("state", "1").and().eq("isDelete", "0");
-            list = qb.query();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    /**
-     * 更新勘探点
-     *
-     * @param hole
-     */
-    public void update(Hole hole) {
-        try {
-            holeDao.update(hole);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 删除勘探点
-     *
-     * @param hole
-     */
-    public boolean delete(Hole hole) {
-        try {
-            holeDao.delete(hole);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    /**
-     * 根据ID删除
-     */
-    public boolean deleteByID(String id) {
-        try {
-            holeDao.deleteById(id);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
 
@@ -173,7 +67,7 @@ public class HoleDao {
     public List<Hole> getHoleListByProjectID(String projectID) {
         List<Hole> list = new ArrayList<>();
         try {
-            QueryBuilder<Hole, String> qb = holeDao.queryBuilder();
+            QueryBuilder<Hole, String> qb = instance.getDAO().queryBuilder();
             qb.where().eq("projectID", projectID).and().eq("isDelete", "0");
             list = qb.query();
         } catch (Exception e) {
@@ -182,53 +76,10 @@ public class HoleDao {
         return list;
     }
 
-    /**
-     * 查看该点之下是否都已经上传，点、记录、媒体
-     */
-    public boolean checkIsUpload(String holeID) {
-        L.e("TAG", "holeID--->>" + holeID);
-        //当前点
-        if (!"2".equals(queryForId(holeID).getState())) {
-            return false;
-        }
-        //所有的记录
-        List<Record> recordList = new RecordDao(context).getRecordListByHoleID(holeID);
-        if (recordList != null) {
-            for (Record record : recordList) {
-                L.e("TAG", "record--->>" + record.getState());
-                if (!"2".equals(record.getState())) {
-                    return false;
-                }
-            }
-        }
-        //所有的媒体
-        List<Media> mediaList = new MediaDao(context).getMediaListByHoleID(holeID);
-        if (mediaList != null) {
-            for (Media media : mediaList) {
-                L.e("TAG", "media--->>" + media.getState());
-                if (!"2".equals(media.getState())) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 根据项目ID查询所有点，是否都提交验收
-     */
-    public List<Hole> getHoleListBeSubmit(String projectID) {
-        try {
-            return holeDao.queryBuilder().where().eq("projectID", projectID).and().eq("state", "3").query();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     public void updateState(String projectID) {
         try {
-            UpdateBuilder updateBuilder = holeDao.updateBuilder();
+            UpdateBuilder updateBuilder = instance.getDAO().updateBuilder();
             updateBuilder.where().eq("projectID", projectID);
             updateBuilder.updateColumnValue("state", "1");
             updateBuilder.updateColumnValue("relateID", "");
@@ -241,7 +92,7 @@ public class HoleDao {
 
     public boolean checkRelated(String relateID, String projectID) {
         try {
-            List<Hole> list = holeDao.queryBuilder().where().eq("relateID", relateID).and().eq("projectID", projectID).query();
+            List<Hole> list = instance.getDAO().queryBuilder().where().eq("relateID", relateID).and().eq("projectID", projectID).query();
             if (list == null || list.size() == 0) {
                 return false;
             } else {
@@ -255,7 +106,7 @@ public class HoleDao {
 
     public boolean checkRelatedNoHole(String id, String relateID, String projectID) {
         try {
-            List<Hole> list = holeDao.queryBuilder().where().eq("relateID", relateID).and().eq("projectID", projectID).query();
+            List<Hole> list = instance.getDAO().queryBuilder().where().eq("relateID", relateID).and().eq("projectID", projectID).query();
             if (list == null || list.size() == 0) {
                 return false;
             } else if (list.get(0).getId().equals(id)) {
@@ -269,26 +120,6 @@ public class HoleDao {
         return false;
     }
 
-    public boolean checkByID(String id, String projectID) {
-        try {
-            List<Hole> holes = holeDao.queryBuilder().where().eq("id", id).and().eq("projectID", projectID).query();
-            if (holes != null && holes.size() > 0) {
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public Hole checkByDownloadID(String DownloadID, String projectID) {
-        try {
-            return holeDao.queryBuilder().where().eq("DownloadID", DownloadID).and().eq("projectID", projectID).queryForFirst();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     /**
      * 想办法验证将要保存的编号数据库里是否存在
@@ -298,20 +129,12 @@ public class HoleDao {
      */
     public List<Hole> getHoleByCode(Context context, String code, String projectID) {
         try {
-            return holeDao.queryBuilder().where().eq("code", code).and().eq("projectID", projectID).query();
+            return instance.getDAO().queryBuilder().where().eq("code", code).and().eq("projectID", projectID).query();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public Hole getIDByRelate(String relateID, String projectID) {
-        try {
-            return holeDao.queryBuilder().where().eq("relateID", relateID).and().eq("projectID", projectID).queryForFirst();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
 }

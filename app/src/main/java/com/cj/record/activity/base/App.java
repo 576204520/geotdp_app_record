@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.support.multidex.MultiDex;
 
 
+import com.cj.record.db.DBManager;
 import com.cj.record.utils.Urls;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
@@ -40,6 +41,7 @@ import okhttp3.OkHttpClient;
  * Created by Administrator on 2017/8/25.
  */
 public class App extends Application implements Thread.UncaughtExceptionHandler {
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -51,7 +53,6 @@ public class App extends Application implements Thread.UncaughtExceptionHandler 
         initSmallVideo();
         //二维码扫描
         ZXingLibrary.initDisplayOpinion(this);
-
     }
 
     @Override

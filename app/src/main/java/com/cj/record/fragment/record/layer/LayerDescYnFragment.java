@@ -14,6 +14,7 @@ import com.cj.record.R;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
+import com.cj.record.db.DictionaryDao;
 import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
@@ -63,10 +64,10 @@ public class LayerDescYnFragment extends RecordBaseFragment {
     @Override
     public void initData() {
         super.initData();
-        sprYsList = dictionaryDao.getDropItemList(getSqlString("淤泥_颜色"));
-        sprBhwList = dictionaryDao.getDropItemList(getSqlString("淤泥_包含物"));
-        sprHslList = dictionaryDao.getDropItemList(getSqlString("淤泥_含水量"));
-        sprZtList = dictionaryDao.getDropItemList(getSqlString("淤泥_状态"));
+        sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("淤泥_颜色"));
+        sprBhwList = DictionaryDao.getInstance().getDropItemList(getSqlString("淤泥_包含物"));
+        sprHslList = DictionaryDao.getInstance().getDropItemList(getSqlString("淤泥_含水量"));
+        sprZtList = DictionaryDao.getInstance().getDropItemList(getSqlString("淤泥_状态"));
 
         sprYs.setAdapter(mActivity, sprYsList, MaterialBetterSpinner.MODE_CLEAR_CUSTOM);
         sprYs.setOnItemClickListener(ysListener);
@@ -233,13 +234,13 @@ public class LayerDescYnFragment extends RecordBaseFragment {
     @Override
     public boolean layerValidator() {
         if (sortNoYs > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "淤泥_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
+            DictionaryDao.getInstance().add(new Dictionary("1", "淤泥_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
         }
         if (sortNoHsl > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "淤泥_含水量", sprHsl.getText().toString().trim(), "" + sortNoHsl, userID, Record.TYPE_LAYER));
+            DictionaryDao.getInstance().add(new Dictionary("1", "淤泥_含水量", sprHsl.getText().toString().trim(), "" + sortNoHsl, userID, Record.TYPE_LAYER));
         }
         if (dictionaryList.size() > 0) {
-            dictionaryDao.addDictionaryList(dictionaryList);
+            DictionaryDao.getInstance().addDictionaryList(dictionaryList);
         }
         return true;
     }

@@ -51,8 +51,6 @@ public class RecordInfoDialog extends DialogFragment {
     TextView reocrdMedia;
     Unbinder unbinder;
     private Record record;
-    private RecordDao reocrdDao;
-    private MediaDao mediaDao;
     private String projectName;
     private String holeCode;
 
@@ -60,7 +58,6 @@ public class RecordInfoDialog extends DialogFragment {
         this.context = context;
         this.holeCode = holeCode;
         this.record = record;
-        mediaDao = new MediaDao(context);
         show(context.getSupportFragmentManager(), "FOLDER_SELECTOR");
     }
 
@@ -97,7 +94,7 @@ public class RecordInfoDialog extends DialogFragment {
         reocrdContent.setText(Html.fromHtml(record.getContent()).toString());
         reocrdCreateTime.setText(record.getCreateTime());
         reocrdUpdateTime.setText(record.getUpdateTime());
-        reocrdMedia.setText(mediaDao.getMediaCountByrdcordID(record.getId()) + "");
+        reocrdMedia.setText(MediaDao.getInstance().getMediaCountByrdcordID(record.getId()) + "");
         return dialog;
     }
 

@@ -12,47 +12,37 @@ import java.util.List;
  * Created by Administrator on 2018/7/10.
  */
 
-public class TemplateDetialDao {
-    private Context context;
-    private Dao<TemplateDetail, String> dao;
+public class TemplateDetialDao extends BaseDAO<TemplateDetail> {
+    private static TemplateDetialDao instance;
 
-    public TemplateDetialDao(Context context) {
-        this.context = context;
-        try {
-            dao = DBHelper.getInstance(context).getDao(TemplateDetail.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private TemplateDetialDao() {
     }
 
-    public void save(TemplateDetail templateDetail) {
-        try {
-            dao.createOrUpdate(templateDetail);
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public synchronized static TemplateDetialDao getInstance() {
+        if (instance == null) {
+            instance = new TemplateDetialDao();
         }
+        return instance;
     }
+
+    @Override
+    public Dao<TemplateDetail, String> getDAO() throws SQLException {
+        return DBManager.getInstance().getDAO(TemplateDetail.class);
+    }
+
 
     public void saveList(List<TemplateDetail> list) {
         for (TemplateDetail templateDetail : list) {
-            save(templateDetail);
+            addOrUpdate(templateDetail);
         }
     }
 
     public List<TemplateDetail> queryList(String templateId) {
         try {
-            return dao.queryBuilder().where().eq("templateId", templateId).query();
+            return instance.getDAO().queryBuilder().where().eq("templateId", templateId).query();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public void delete(TemplateDetail templateDetail){
-        try {
-            dao.delete(templateDetail);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 }

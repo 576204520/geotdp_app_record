@@ -8,7 +8,6 @@ import java.io.File;
  * Created by Administrator on 2017/8/25.
  */
 public class Urls {
-
     //下载apk地址#
 //    public static final String SERVER_PATH = "http://gx.geotdp.com:8083/";//广西
 //    public static final String SERVER_PATH = "http://jx.geotdp.com:8083/";//江西

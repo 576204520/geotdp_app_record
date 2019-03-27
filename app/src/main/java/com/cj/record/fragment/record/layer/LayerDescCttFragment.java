@@ -13,6 +13,7 @@ import com.cj.record.R;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
+import com.cj.record.db.DictionaryDao;
 import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
@@ -61,11 +62,11 @@ public class LayerDescCttFragment extends RecordBaseFragment {
     @Override
     public void initData() {
         super.initData();
-        sprYsList = dictionaryDao.getDropItemList(getSqlString("冲填土_颜色"));
-        sprDjndList = dictionaryDao.getDropItemList(getSqlString("冲填土_堆积年代"));                //颗粒级配
-        sprMsdList = dictionaryDao.getDropItemList(getSqlString("冲填土_密实度"));                //颗粒形状
-        sprJyxList = dictionaryDao.getDropItemList(getSqlString("冲填土_均匀性"));                    //湿度
-        sprWzcfList = dictionaryDao.getDropItemList(getSqlString("冲填土_状态"));
+        sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("冲填土_颜色"));
+        sprDjndList = DictionaryDao.getInstance().getDropItemList(getSqlString("冲填土_堆积年代"));                //颗粒级配
+        sprMsdList = DictionaryDao.getInstance().getDropItemList(getSqlString("冲填土_密实度"));                //颗粒形状
+        sprJyxList = DictionaryDao.getInstance().getDropItemList(getSqlString("冲填土_均匀性"));                    //湿度
+        sprWzcfList = DictionaryDao.getInstance().getDropItemList(getSqlString("冲填土_状态"));
         wzcfList = new ArrayList<>();
         wzcfList = DropItemVo.getStrList(sprWzcfList);
 //        wzcfList.add("以泥沙为主");
@@ -215,7 +216,7 @@ public class LayerDescCttFragment extends RecordBaseFragment {
     @Override
     public boolean layerValidator() {
         if (dictionaryList.size() > 0) {
-            dictionaryDao.addDictionaryList(dictionaryList);
+            DictionaryDao.getInstance().addDictionaryList(dictionaryList);
         }
         return true;
     }

@@ -18,6 +18,7 @@ import com.cj.record.activity.MainActivity;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
+import com.cj.record.db.DictionaryDao;
 import com.cj.record.fragment.record.layer.LayerDescCttFragment;
 import com.cj.record.fragment.record.layer.LayerDescFnhcFragment;
 import com.cj.record.fragment.record.layer.LayerDescFtFragment;
@@ -173,7 +174,7 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
                 causesSort = "岩石的成因类型";
                 eraSort = "岩石的地质年代";
             }
-            sprCausesList = dictionaryDao.getDropItemList(getSqlString(causesSort));
+            sprCausesList = DictionaryDao.getInstance().getDropItemList(getSqlString(causesSort));
             bhwList = new ArrayList<>();
             bhwList = DropItemVo.getStrList(sprCausesList);
             edtCauses.setOnDialogListener(new MaterialBetterSpinner.OnDialogListener() {
@@ -234,7 +235,7 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
                     causesDialog.show();
                 }
             });
-            eraList = dictionaryDao.getDropItemList(getSqlString(eraSort));
+            eraList = DictionaryDao.getInstance().getDropItemList(getSqlString(eraSort));
             edtEra.setAdapter(mActivity, eraList, MaterialBetterSpinner.MODE_CLEAR_CUSTOM);
             edtEra.setOnItemClickListener(eraListener);
         } catch (Exception e) {
@@ -292,7 +293,7 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
     }
 
     private List<DropItemVo> getLayerTypeList() {
-        layerTypeList = dictionaryDao.getDropItemList(getSqlString("岩土类型"));
+        layerTypeList = DictionaryDao.getInstance().getDropItemList(getSqlString("岩土类型"));
         if (layerTypeList.get(layerTypeList.size() - 1).getName().equals("自定义")) {
             layerTypeList.remove(layerTypeList.size() - 1);
         }
@@ -300,7 +301,7 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
     }
 
     private List<DropItemVo> getLayerNameList(String sqlName) {
-        layerNameList = dictionaryDao.getDropItemList(getSqlString(sqlName));
+        layerNameList = DictionaryDao.getInstance().getDropItemList(getSqlString(sqlName));
         return layerNameList;
     }
 
@@ -368,18 +369,18 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
             recordBaseFragment.layerValidator();
         }
         if (sortNoType > 0 && validator) {
-            dictionaryDao.addDictionary(new Dictionary("1", "岩土类型", sprType.getText().toString(), "" + sortNoType, userID, Record.TYPE_LAYER));
+            DictionaryDao.getInstance().add(new Dictionary("1", "岩土类型", sprType.getText().toString(), "" + sortNoType, userID, Record.TYPE_LAYER));
         }
         if (sortNoName > 0 && validator) {
-            dictionaryDao.addDictionary(new Dictionary("1", sprType.getText().toString(), sprName.getText().toString(), "" + sortNoName, userID, Record.TYPE_LAYER));
+            DictionaryDao.getInstance().add(new Dictionary("1", sprType.getText().toString(), sprName.getText().toString(), "" + sortNoName, userID, Record.TYPE_LAYER));
         }
 
         if (dictionaryList.size() > 0) {
-            dictionaryDao.addDictionaryList(dictionaryList);
+            DictionaryDao.getInstance().addDictionaryList(dictionaryList);
         }
 
         if (sortNoEra > 0 && validator) {
-            dictionaryDao.addDictionary(new Dictionary("1", eraSort, edtEra.getText().toString(), "" + sortNoEra, userID, Record.TYPE_LAYER));
+            DictionaryDao.getInstance().add(new Dictionary("1", eraSort, edtEra.getText().toString(), "" + sortNoEra, userID, Record.TYPE_LAYER));
         }
 
         return validator;

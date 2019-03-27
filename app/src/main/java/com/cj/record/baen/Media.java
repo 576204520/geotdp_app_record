@@ -21,7 +21,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.amap.api.location.AMapLocation;
-import com.cj.record.db.DBHelper;
 import com.cj.record.db.GpsDao;
 import com.cj.record.db.MediaDao;
 import com.cj.record.utils.Common;
@@ -159,10 +158,8 @@ public class Media implements Serializable {
 
     public HashMap getCodeMap(Context context, String projectID) {
         HashMap hashmap = new HashMap();
-        DBHelper dbHelper = DBHelper.getInstance(context);
         try {
-            Dao<Hole, String> dao = dbHelper.getDao(Hole.class);
-            GenericRawResults<String> results = dao.queryRaw("select name from media where name like 'T-___'and projectID='" + projectID + "' and state !='0'", new RawRowMapper<String>() {
+            GenericRawResults<String> results = GpsDao.getInstance().getDAO().queryRaw("select name from media where name like 'T-___'and projectID='" + projectID + "' and state !='0'", new RawRowMapper<String>() {
                 @Override
                 public String mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
                     String s = resultColumns[0];
@@ -190,8 +187,8 @@ public class Media implements Serializable {
     public Media get(Context context, String id) {
         Media media = null;
         try {
-            media = new MediaDao(context).getMediaByID(id);
-            media.setGps(new GpsDao(context).getGpsByMedia(id));
+            media = MediaDao.getInstance().getMediaByID(id);
+            media.setGps(GpsDao.getInstance().getGpsByMedia(id));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -204,28 +201,21 @@ public class Media implements Serializable {
      *
      * @param context
      */
-    public boolean delete(Context context) {
-        try {
-            //如果是视频的话，视频保存的是文件夹路径，其中包括了视频和图片，都要刪除
-            File aFile = new File(localPath);
-            if (aFile.isDirectory()) {
-                if (aFile.exists()) {
-                    FileUtil.deleteAllFiles(localPath);
-                }
+    public void delete(Context context) {
+        //如果是视频的话，视频保存的是文件夹路径，其中包括了视频和图片，都要刪除
+        File aFile = new File(localPath);
+        if (aFile.isDirectory()) {
+            if (aFile.exists()) {
+                FileUtil.deleteAllFiles(localPath);
             }
-            if (!aFile.exists() || aFile.delete()) {
-                Gps gps = new GpsDao(context).getGpsByMedia(getId());
-                if (gps == null || gps.delete(context)) {
-                    if (new MediaDao(context).delete(this)) {
-                        return true;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
-        return false;
+        if (!aFile.exists() || aFile.delete()) {
+            Gps gps = GpsDao.getInstance().getGpsByMedia(getId());
+            if (gps != null) {
+                GpsDao.getInstance().delete(gps);
+                MediaDao.getInstance().delete(this);
+            }
+        }
     }
 
     //生成属性列表

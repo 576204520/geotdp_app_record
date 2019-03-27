@@ -61,7 +61,6 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
     private Hole hole;
     private List<Record> dataList;
     private List<Record> newList;
-    private RecordDao recordDao;
     private ObsUtils obsUtils;
     private RecordAdapter recordAdapter;
     private LinearLayoutManager linearLayoutManager;
@@ -134,7 +133,6 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                 hole = (Hole) getIntent().getSerializableExtra(MainActivity.HOLE);
                 dataList = new ArrayList<>();
                 newList = new ArrayList<>();
-                recordDao = new RecordDao(this);
                 recordInfoDialog = new RecordInfoDialog();
                 break;
             case 2:
@@ -148,14 +146,14 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                 }
                 //获取分页数据
                 page = 0;
-                total = recordDao.getSortCountMap(hole.getId()).get(1);
+                total = RecordDao.getInstance().getSortCountMap(hole.getId()).get(1);
                 dataList.clear();
-                dataList.addAll(recordDao.getRecordList(hole.getId(), size, page, divSort.getId().toString(), divSequence.getId().toString()));
+                dataList.addAll(RecordDao.getInstance().getRecordList(hole.getId(), size, page, divSort.getId().toString(), divSequence.getId().toString()));
                 break;
             case 3:
                 page++;
                 newList.clear();
-                newList = recordDao.getRecordList(hole.getId(), size, page, divSort.getId().toString(), divSequence.getId().toString());
+                newList = RecordDao.getInstance().getRecordList(hole.getId(), size, page, divSort.getId().toString(), divSequence.getId().toString());
                 break;
         }
     }
@@ -190,7 +188,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
     }
 
     private List<DropItemVo> getLayerTypeList() {
-        Map<Integer, Integer> countMap = new RecordDao(this).getSortCountMap(hole.getId());
+        Map<Integer, Integer> countMap = RecordDao.getInstance().getSortCountMap(hole.getId());
         listSort = new ArrayList<DropItemVo>();
         listSort.add(new DropItemVo("", "全部记录(" + countMap.get(1) + ")"));
         listSort.add(new DropItemVo(Record.TYPE_FREQUENCY, "回次记录(" + countMap.get(2) + ")"));
@@ -322,10 +320,10 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //删除记录，其实是添加这条记录的updateID为本记录id
-                                Record delRecord = recordDao.queryForId(record.getId());
+                                Record delRecord = RecordDao.getInstance().queryById(record.getId());
                                 delRecord.setUpdateId(record.getId());
                                 delRecord.setState("1");
-                                recordDao.update(delRecord);
+                                RecordDao.getInstance().addOrUpdate(delRecord);
                                 onRefresh();
                             }
                         })

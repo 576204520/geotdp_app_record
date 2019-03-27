@@ -80,8 +80,7 @@ public class VideoPlayerActivity extends BaseActivity {
             return;
         }
         if (!StringUtils.isEmpty(mediaId)) {
-            mediaDao = new MediaDao(this);
-            media = mediaDao.getMediaByID(mediaId);
+            media = MediaDao.getInstance().getMediaByID(mediaId);
             isLook = true;
         }
         videoplayer.setUp(videoUri, JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, "");

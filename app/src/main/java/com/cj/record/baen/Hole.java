@@ -3,14 +3,10 @@ package com.cj.record.baen;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.cj.record.db.DBHelper;
 import com.cj.record.db.HoleDao;
 import com.cj.record.db.RecordDao;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
-import com.cj.record.utils.L;
-import com.cj.record.utils.SPUtils;
-import com.cj.record.utils.Urls;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
@@ -18,7 +14,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -35,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 @DatabaseTable(tableName = "hole")//"井孔规则表")
-public class Hole implements Serializable , Cloneable {
+public class Hole implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1L;
     @DatabaseField(columnName = "id", id = true)
@@ -312,28 +307,19 @@ public class Hole implements Serializable , Cloneable {
      *
      * @param context
      */
-    public boolean delete(Context context) {
-        try {
-            //先删除所有记录.
-            List<Record> records = new RecordDao(context).getRecordListByHoleID(id);
-            for (Record record : records) {
-                record.delete(context);
-            }
-            if (new HoleDao(context).delete(this)) {
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void delete(Context context) {
+        //先删除所有记录.
+        List<Record> records = RecordDao.getInstance().getRecordListByHoleID(id);
+        for (Record record : records) {
+            record.delete(context);
         }
-        return false;
+        HoleDao.getInstance().delete(this);
     }
 
     public HashMap getCodeMap(Context context, String projectID) {
         HashMap hashmap = new HashMap();
-        DBHelper dbHelper = DBHelper.getInstance(context);
         try {
-            Dao<Hole, String> dao = dbHelper.getDao(Hole.class);
-            GenericRawResults<String> results = dao.queryRaw("select code from hole where code like '__-___'and projectID='" + projectID + "'", new RawRowMapper<String>() {
+            GenericRawResults<String> results = HoleDao.getInstance().getDAO().queryRaw("select code from hole where code like '__-___'and projectID='" + projectID + "'", new RawRowMapper<String>() {
                 @Override
                 public String mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
                     String s = resultColumns[0];

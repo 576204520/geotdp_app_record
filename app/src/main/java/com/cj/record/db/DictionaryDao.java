@@ -17,26 +17,33 @@ import java.util.List;
 /**
  * Created by Administrator on 2017/3/15.
  */
-public class DictionaryDao {
+public class DictionaryDao extends BaseDAO<Dictionary> {
 
-    private Context context;
-    private Dao<Dictionary, String> dao;
-    private DBHelper helper;
 
-    public DictionaryDao(Context context) {
-        this.context = context;
-        try {
-            helper = DBHelper.getInstance(context);
-            dao = helper.getDao(Dictionary.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private static DictionaryDao instance;
+
+    private DictionaryDao() {
     }
+
+    public synchronized static DictionaryDao getInstance() {
+        if (instance == null) {
+            instance = new DictionaryDao();
+        }
+        return instance;
+    }
+
+
+
+    @Override
+    public Dao<Dictionary, String> getDAO() throws SQLException {
+        return DBManager.getInstance().getDAO(Dictionary.class);
+    }
+
 
     public List<DropItemVo> getDropItemList(String query) {
         List<DropItemVo> list = new ArrayList<DropItemVo>();
         try {
-            GenericRawResults<DropItemVo> results = dao.queryRaw(query, new RawRowMapper<DropItemVo>() {
+            GenericRawResults<DropItemVo> results = instance.getDAO().queryRaw(query, new RawRowMapper<DropItemVo>() {
                 @Override
                 public DropItemVo mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
                     DropItemVo dropItemVo = new DropItemVo();
@@ -60,19 +67,6 @@ public class DictionaryDao {
 
 
     /**
-     * 按对象添加字典
-     *
-     * @param dictionary
-     */
-    public void addDictionary(Dictionary dictionary) {
-        try {
-            dao.create(dictionary);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * 按集合添加字典
      *
      * @param list
@@ -80,7 +74,7 @@ public class DictionaryDao {
     public void addDictionaryList(List<Dictionary> list) {
         if (list != null && list.size() > 0) {
             for (Dictionary dictionary : list) {
-                addDictionary(dictionary);
+                add(dictionary);
             }
         }
     }
@@ -90,7 +84,7 @@ public class DictionaryDao {
      */
     public List<Dictionary> getDictionary() {
         try {
-            return dao.queryBuilder().orderByRaw("sort").where().eq("type", "1").query();
+            return instance.getDAO().queryBuilder().orderByRaw("sort").where().eq("type", "1").query();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -102,7 +96,7 @@ public class DictionaryDao {
      */
     public void deleteByDictionary(Dictionary dictionary) {
         try {
-            DeleteBuilder builder = dao.deleteBuilder();
+            DeleteBuilder builder = instance.getDAO().deleteBuilder();
             builder.where().eq("name", dictionary.getName());
             builder.prepare();
             builder.delete();
