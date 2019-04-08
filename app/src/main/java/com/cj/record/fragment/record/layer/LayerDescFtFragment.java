@@ -15,7 +15,6 @@ import com.cj.record.adapter.DropListAdapter;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
-import com.cj.record.db.DictionaryDao;
 import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
@@ -68,11 +67,11 @@ public class LayerDescFtFragment extends RecordBaseFragment {
     @Override
     public void initData() {
         super.initData();
-        sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉土_颜色"));
-        sprBhwList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉土_包含物"));
-        sprJcList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉土_夹层"));
-        sprSdList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉土_湿度"));
-        sprMsdList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉土_密实度"));
+        sprYsList = dictionaryDao.getDropItemList(getSqlString("粉土_颜色"));
+        sprBhwList = dictionaryDao.getDropItemList(getSqlString("粉土_包含物"));
+        sprJcList = dictionaryDao.getDropItemList(getSqlString("粉土_夹层"));
+        sprSdList = dictionaryDao.getDropItemList(getSqlString("粉土_湿度"));
+        sprMsdList = dictionaryDao.getDropItemList(getSqlString("粉土_密实度"));
 
         bhwList = new ArrayList<>();
         bhwList = DropItemVo.getStrList(sprBhwList);
@@ -97,8 +96,8 @@ public class LayerDescFtFragment extends RecordBaseFragment {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
                                     if (bhwStr.toString().trim().length() > 50) {
-                                        ToastUtil.showToastS(mActivity, "该字段最大50字符，请重新选择");
-                                    } else {
+                                        ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
+                                    }else{
                                         sprBhw.setText(bhwStr.toString().trim());
                                         dialog.dismiss();
                                     }
@@ -159,8 +158,8 @@ public class LayerDescFtFragment extends RecordBaseFragment {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
                                     if (jcStr.toString().trim().length() > 50) {
-                                        ToastUtil.showToastS(mActivity, "该字段最大50字符，请重新选择");
-                                    } else {
+                                        ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
+                                    }else{
                                         sprJc.setText(jcStr.toString().trim());
                                         dialog.dismiss();
                                     }
@@ -234,10 +233,10 @@ public class LayerDescFtFragment extends RecordBaseFragment {
     @Override
     public boolean layerValidator() {
         if (sortNoYs > 0) {
-            DictionaryDao.getInstance().add(new Dictionary("1", "粉土_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "粉土_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
         }
         if (dictionaryList.size() > 0) {
-            DictionaryDao.getInstance().addDictionaryList(dictionaryList);
+            dictionaryDao.addDictionaryList(dictionaryList);
         }
         return true;
     }

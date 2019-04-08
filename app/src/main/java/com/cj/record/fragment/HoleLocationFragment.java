@@ -18,8 +18,13 @@ package com.cj.record.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -39,7 +44,7 @@ import com.cj.record.R;
 import com.cj.record.activity.MainActivity;
 import com.cj.record.activity.base.BaseFragment;
 import com.cj.record.baen.Hole;
-import com.cj.record.db.HoleDao;
+import com.cj.record.db.DBHelper;
 import com.cj.record.utils.L;
 import com.cj.record.utils.ObsUtils;
 import com.j256.ormlite.dao.Dao;
@@ -54,6 +59,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 public class HoleLocationFragment extends BaseFragment implements ObsUtils.ObsLinstener, LocationSource, AMapLocationListener {
@@ -82,6 +89,7 @@ public class HoleLocationFragment extends BaseFragment implements ObsUtils.ObsLi
     private String projectID;
     private Hole hole;
     private List<Hole> list;
+    private DBHelper dbHelper;
     private ObsUtils obsUtils;
     private int firstInt = 1;
 
@@ -151,10 +159,12 @@ public class HoleLocationFragment extends BaseFragment implements ObsUtils.ObsLi
     //获取所有的点信息
     private List<Hole> getList(String projectID) {
         list = new ArrayList<Hole>();
+        dbHelper = DBHelper.getInstance(getActivity());
         try {
+            Dao<Hole, String> dao = dbHelper.getDao(Hole.class);
             String oneSql = "select id,code,type,state,recordsCount,updateTime,cast(mapLatitude as text),cast(mapLongitude as text),mapTime ,abs(mapLatitude - " + aMapLocation.getLatitude() + ") + abs(mapLongitude - " + aMapLocation.getLongitude() + ") as  adsvalue  from hole where projectID='" + projectID + "' and locationState ='1' order by  adsvalue LIMIT 10";
             L.e(oneSql);
-            GenericRawResults<Hole> results = HoleDao.getInstance().getDAO().queryRaw(oneSql, new RawRowMapper<Hole>() {
+            GenericRawResults<Hole> results = dao.queryRaw(oneSql, new RawRowMapper<Hole>() {
                 @Override
                 public Hole mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
                     Hole hole = new Hole();

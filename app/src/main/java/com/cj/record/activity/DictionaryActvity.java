@@ -55,12 +55,14 @@ public class DictionaryActvity extends BaseActivity {
     @BindView(R.id.dictionary_upload)
     Button dictionaryUpload;
     private List<Dictionary> dictionaryList;
+    private DictionaryDao dictionaryDao;
     private DictionaryAdapter adapter;
     private List<Dictionary> list;
 
     private boolean isSelectAll;
 
     private Map<String, String> map;
+    private DictionaryDao dao;
 
     @Override
     public int getLayoutId() {
@@ -75,7 +77,9 @@ public class DictionaryActvity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         dictionaryRecycler.setLayoutManager(new LinearLayoutManager(this));
         map = new HashMap<>();
+        dao = new DictionaryDao(this);
         dictionaryList = new ArrayList<>();
+        dictionaryDao = new DictionaryDao(this);
         list = new ArrayList<>();
         initList();
     }
@@ -89,12 +93,12 @@ public class DictionaryActvity extends BaseActivity {
         isSelectAll = false;
         dictionaryList.clear();
         list.clear();
-        dictionaryList = DictionaryDao.getInstance().getDictionary();
+        dictionaryList = dictionaryDao.getDictionary();
         if (dictionaryList != null) {
             adapter = new DictionaryAdapter(this, dictionaryList);
             dictionaryRecycler.setAdapter(adapter);
-            setListener();
         }
+        setListener();
     }
 
     private void setListener() {
@@ -150,10 +154,10 @@ public class DictionaryActvity extends BaseActivity {
     }
 
     public void upload() {
-        if (list != null && list.size() > 0) {
+        if (dictionaryList != null && dictionaryList.size() > 0) {
             uploadDialog();
         } else {
-            ToastUtil.showToastS(this, "还未选择需要上传的字段");
+            ToastUtil.showToastS(this, "当前没有自定义词库");
         }
     }
 
@@ -195,7 +199,7 @@ public class DictionaryActvity extends BaseActivity {
         new MaterialDialog.Builder(this).content("确认删除选中词库").positiveText(R.string.agree).negativeText(R.string.disagree).callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog dialog) {
-                DictionaryDao.getInstance().deleteByDicList(list);
+                dictionaryDao.deleteByDicList(list);
                 initList();
             }
         }).show();
@@ -210,7 +214,7 @@ public class DictionaryActvity extends BaseActivity {
             new MaterialDialog.Builder(this).content("下载关联词库，将删除本地词库，是否下载？").positiveText(R.string.agree).negativeText(R.string.disagree).callback(new MaterialDialog.ButtonCallback() {
                 @Override
                 public void onPositive(MaterialDialog dialog) {
-                    if (TextUtils.isEmpty(userID)) {
+                    if(TextUtils.isEmpty(userID)){
                         ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
                         return;
                     }
@@ -229,19 +233,18 @@ public class DictionaryActvity extends BaseActivity {
         new MaterialDialog.Builder(this).content("上传本地词库，将覆盖云端备份，是否上传？").positiveText(R.string.agree).negativeText(R.string.disagree).callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog dialog) {
-                uploadDictionary(list);
+                uploadDictionary(dictionaryList);
             }
         }).show();
     }
 
 
     public void downloadDictionary(final String userID) {
-        if (TextUtils.isEmpty(userID)) {
+        if(TextUtils.isEmpty(userID)){
             ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
             return;
         }
         showPPW();
-        map.clear();
         map.put("relateID", userID);
         map.put("verCode", UpdateUtil.getVerCode(this) + "");
         OkGo.<String>post(Urls.DICTIONARY_DOWNLOAD).params(map).execute(new StringCallback() {
@@ -255,8 +258,8 @@ public class DictionaryActvity extends BaseActivity {
                         try {
                             List<Dictionary> list = gson.fromJson(jsonResult.getResult(), new TypeToken<List<Dictionary>>() {
                             }.getType());
-                            DictionaryDao.getInstance().deleteAll();
-                            DictionaryDao.getInstance().addDictionaryList(list);
+                            dao.deleteAll();
+                            dao.addDictionaryList(list);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -284,13 +287,12 @@ public class DictionaryActvity extends BaseActivity {
     }
 
     public void uploadDictionary(List<Dictionary> list) {
-        if (TextUtils.isEmpty(userID)) {
+        if(TextUtils.isEmpty(userID)){
             ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
             return;
         }
-        map.clear();
         map = getMap(list);
-        map.put("userID", userID);
+        map.put("userID",userID);
         map.put("verCode", UpdateUtil.getVerCode(this) + "");
         showPPW();
         OkGo.<String>post(Urls.DICTIONARY_UPLOAD).params(map).execute(new StringCallback() {
@@ -302,7 +304,6 @@ public class DictionaryActvity extends BaseActivity {
 
             @Override
             public void onFinish() {
-                dismissPPW();
                 super.onFinish();
             }
 

@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.cj.record.baen.JsonResult;
 import com.cj.record.baen.Record;
-import com.cj.record.db.HoleDao;
 import com.cj.record.db.RecordDao;
 import com.cj.record.utils.L;
 import com.cj.record.R;
@@ -28,6 +27,7 @@ import com.cj.record.activity.base.BaseActivity;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.Project;
+import com.cj.record.db.HoleDao;
 import com.cj.record.db.ProjectDao;
 import com.cj.record.fragment.HoleLocationFragment;
 import com.cj.record.fragment.HoleSceneFragment;
@@ -152,7 +152,10 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
 
     private boolean isEdit;//true编辑、false添加
     private Hole hole;
+    private HoleDao holeDao;
+    private RecordDao recordDao;
     private Project project;
+    private ProjectDao projectDao;
     private List<DropItemVo> sprTypeList;
     private ObsUtils obsUtils;
     private List<Record> recordList;
@@ -167,6 +170,9 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
         super.initData();
         isEdit = getIntent().getBooleanExtra(MainActivity.FROMTYPE, false);
         project = (Project) getIntent().getSerializableExtra(MainActivity.PROJECT);
+        holeDao = new HoleDao(this);
+        recordDao = new RecordDao(this);
+        projectDao = new ProjectDao(this);
         obsUtils = new ObsUtils();
         obsUtils.setObsLinstener(this);
         obsUtils.execute(1);
@@ -182,11 +188,11 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                 } else {
                     //false添加
                     hole = new Hole(mContext, project.getId());
-                    HoleDao.getInstance().getInstance().addOrUpdate(hole);
+                    holeDao.add(hole);
                 }
                 break;
             case 2:
-                recordList = RecordDao.getInstance().getInstance().getSceneRecord(hole.getId());
+                recordList = recordDao.getSceneRecord(hole.getId());
                 break;
 
         }
@@ -325,19 +331,19 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     public void onBackPressed() {
         //添加模式，为定位并且未关联，退出要删除该孔
         if (!isEdit && TextUtils.isEmpty(hole.getRelateID()) && TextUtils.isEmpty(hole.getRelateCode()) && hole.getLocationState().equals("0")) {
-            HoleDao.getInstance().delete(hole);
+            holeDao.delete(hole);
         }
         //不管是否关联，只要定位了就判断信息是否完善
         if ("1".equals(hole.getLocationState())) {
             int complete;
             if ("探井".equals(hole.getType())) {
-                complete = RecordDao.getInstance().checkTJ(hole.getId());
+                complete = recordDao.checkTJ(hole.getId());
                 if (complete < 2) {
                     finishDialog("勘探点数据不完整，请完善（描述员、场景）记录，否则不保留定位信息");
                     return;
                 }
             } else {
-                complete = RecordDao.getInstance().checkZK(hole.getId());
+                complete = recordDao.checkZK(hole.getId());
                 if (complete < 4) {
                     finishDialog("勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录,否则不保留定位信息");
                     return;
@@ -364,9 +370,9 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                                 hole.setLocationState("0");
                                 hole.setMapLatitude("");
                                 hole.setMapLongitude("");
-                                HoleDao.getInstance().addOrUpdate(hole);
+                                holeDao.update(hole);
                                 //清除定位信息，删除所有记录
-                                List<Record> recordList = RecordDao.getInstance().getRecordListByHoleID(hole.getId());
+                                List<Record> recordList = recordDao.getRecordListByHoleID(hole.getId());
                                 if (recordList != null && recordList.size() > 0) {
                                     for (Record record : recordList) {
                                         record.delete(HoleEditActivity.this);
@@ -393,13 +399,13 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
         if ("1".equals(hole.getLocationState())) {
             int complete;
             if ("探井".equals(hole.getType())) {
-                complete = RecordDao.getInstance().checkTJ(hole.getId());
+                complete = recordDao.checkTJ(hole.getId());
                 if (complete < 2) {
                     Common.showMessage(this, "勘探点数据不完整，请完善（描述员、场景）记录");
                     return;
                 }
             } else {
-                complete = RecordDao.getInstance().checkZK(hole.getId());
+                complete = recordDao.checkZK(hole.getId());
                 if (complete < 4) {
                     Common.showMessage(this, "勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录");
                     return;
@@ -408,7 +414,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
         }
         //如果是探井的类型，判断是否有司钻员、钻机的记录，如果有则删除
         if ("探井".equals(hole.getType())) {
-            List<Record> tjRecord = RecordDao.getInstance().getRecordListForJzAndZj(hole.getId());
+            List<Record> tjRecord = recordDao.getRecordListForJzAndZj(hole.getId());
             if (tjRecord != null && tjRecord.size() > 0) {
                 for (Record record : tjRecord) {
                     record.delete(HoleEditActivity.this);
@@ -421,7 +427,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
         hole.setDepth(holeDepth.getText().toString().trim());
         hole.setUpdateTime(DateUtil.date2Str(new Date()));
         hole.setRadius(holeRadius.getText().toString().trim());
-        HoleDao.getInstance().addOrUpdate(hole);
+        holeDao.add(hole);
         setResult(RESULT_OK);
         finish();
     }
@@ -459,7 +465,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                     hole.setMapTime(GPSutils.utcToTimeZoneDate(locationFragment.aMapLocation.getTime()));
                     hole.setCreateTime(GPSutils.utcToTimeZoneDate(locationFragment.aMapLocation.getTime()));
                     hole.setLocationState("1");
-                    HoleDao.getInstance().addOrUpdate(hole);
+                    holeDao.add(hole);
                     //加载scene布局
 //                    initSenceFragment(hole.getType());
 //                    holeSceneFragment.setVisibility(View.VISIBLE);
@@ -501,7 +507,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
     }
 
     private void checkRecord(String type) {
-        Record record = RecordDao.getInstance().getRecordByType(hole.getId(), type);
+        Record record = recordDao.getRecordByType(hole.getId(), type);
         if (record == null) {
             goAdd(type);
         } else {
@@ -546,7 +552,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
             }
         }
         if (requestCode == MainActivity.RECORD_GO_EDIT && resultCode == RESULT_OK) {
-            hole = HoleDao.getInstance().queryById(hole.getId());
+            hole = holeDao.queryForId(hole.getId());
             initPage(hole);
         }
     }
@@ -557,7 +563,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
             return;
         }
         //遍历数据库，查找是否关联
-        if (HoleDao.getInstance().checkRelatedNoHole(hole.getId(), relateHole.getId(), hole.getProjectID())) {
+        if (holeDao.checkRelatedNoHole(hole.getId(), relateHole.getId(), hole.getProjectID())) {
             Common.showMessage(this, "该发布点本地已经存在关联");
             return;
         }
@@ -611,9 +617,9 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                                 }
                                 hole.setState("1");
                                 hole.setStateGW("1");
-                                HoleDao.getInstance().addOrUpdate(hole);
+                                holeDao.add(hole);
                                 project.setUpdateTime(DateUtil.date2Str(new Date()) + "");
-                                ProjectDao.getInstance().addOrUpdate(project);
+                                projectDao.update(project);
                             }
                             Common.showMessage(HoleEditActivity.this, jsonResult.getMessage());
                         } else {
@@ -684,7 +690,7 @@ public class HoleEditActivity extends BaseActivity implements ObsUtils.ObsLinste
                 holeCode.setError("勘探点编号长度不能超过20");
             } else {
                 //根据查询结果判断是否有一样的code
-                List<Hole> list = HoleDao.getInstance().getHoleByCode(HoleEditActivity.this, code, hole.getProjectID());
+                List<Hole> list = holeDao.getHoleByCode(HoleEditActivity.this, code, hole.getProjectID());
                 if (list != null && list.size() > 0) {
                     holeCode.setError("勘察点编号重复");
                 }

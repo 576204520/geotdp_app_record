@@ -1,6 +1,5 @@
 package com.cj.record.baen;
 
-import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -38,7 +37,6 @@ public class Dictionary implements Serializable {
         this.relateID = relateID;
         this.form = form;
     }
-
 
     public String getForm() {
         return form;

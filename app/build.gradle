@@ -8,25 +8,21 @@ android {
         applicationId "com.cj.record"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 49
-        versionName "3.2.9"
+        versionCode 48
+        versionName "3.2.8"
         multiDexEnabled true
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "armeabi", "armeabi-v7a"
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "arm64-v8a", "x86_64"
         }
     }
     buildTypes {
         debug {
             //启用代码混淆
-            minifyEnabled true
+            minifyEnabled false
             //混淆规则配置文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            //去掉无用资源
-            shrinkResources true
-            //Zip代码压缩优化
-            zipAlignEnabled true
         }
         release {
             //启用代码混淆
@@ -86,6 +82,8 @@ dependencies {
     //网络请求 https://github.com/jeasonlzy/okhttp-OkGo
     compile 'com.lzy.net:okgo:3.0.4'
     implementation files('libs/gson-2.2.1.jar')
+    implementation files('libs/ormlite-android-4.48.jar')
+    implementation files('libs/ormlite-core-4.48.jar')
     //等待进度条
     compile 'com.pnikosis:materialish-progress:1.7'
     //对话框 project层的gradle需要加maven { url 'https://jitpack.io' }
@@ -105,7 +103,7 @@ dependencies {
     //图片加载框架，图片查看器需要
     compile 'com.github.bumptech.glide:glide:4.1.1'
     //视频录制压缩库
-    compile project(':SmallVideoLib2')
+    compile project(path: ':SmallVideoLib2')
     //视频播放器
     compile 'fm.jiecao:jiecaovideoplayer:5.5.2'
     //分割 Dex 文件解决方法限制
@@ -113,6 +111,4 @@ dependencies {
     implementation files('libs/AMap3DMap_5.7.0_AMapNavi_5.6.0_AMapLocation_3.7.0_20180109.jar')
     //https://github.com/yipianfengye/android-zxingLibrary
     compile 'cn.yipianfengye.android:zxing-library:2.2'
-    //ormlite + sqlcipher
-    compile project(':database')
 }

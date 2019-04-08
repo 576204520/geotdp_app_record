@@ -21,27 +21,67 @@ import java.util.List;
  * @author XuFeng
  *         2015/8/14.
  */
-public class MediaDao extends BaseDAO<Media> {
+public class MediaDao {
 
 
-    private static MediaDao instance;
+    private Context context;
+    private Dao<Media, String> mediaDao;
+    private DBHelper helper;
 
-    private MediaDao() {
-    }
-
-    public synchronized static MediaDao getInstance() {
-        if (instance == null) {
-            instance = new MediaDao();
+    public MediaDao(Context context) {
+        this.context = context;
+        try {
+            helper = DBHelper.getInstance(context);
+            mediaDao = helper.getDao(Media.class);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return instance;
     }
 
-    @Override
-    public Dao<Media, String> getDAO() throws SQLException {
-        return DBManager.getInstance().getDAO(Media.class);
+    /**
+     * 根据recordID获取media
+     */
+    public Media getMediaByRecordID(String recordID) {
+        try {
+            return mediaDao.queryBuilder().orderBy("createTime", false).where().eq("recordID", recordID).queryForFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
+    /**
+     * 增加一个媒体
+     *
+     * @param media
+     */
+    public void add(Media media) {
+        try {
+            mediaDao.create(media);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 获取所有未上传的媒体
+     *
+     * @param projectID
+     * @return
+     */
+    public List<Media> getNotUploadListByProjectID(String projectID) {
+        List<Media> list = new ArrayList<Media>();
+        try {
+            QueryBuilder<Media, String> qb = mediaDao.queryBuilder();
+            qb.where().eq("projectID", projectID).and().eq("state", "1");
+            list = qb.query();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     /**
      * 获取所有未上传的媒体
@@ -52,7 +92,7 @@ public class MediaDao extends BaseDAO<Media> {
     public List<Media> getNotUploadListByHoleID(String holeID) {
         List<Media> list = new ArrayList<Media>();
         try {
-            QueryBuilder<Media, String> qb = instance.getDAO().queryBuilder();
+            QueryBuilder<Media, String> qb = mediaDao.queryBuilder();
             qb.where().eq("holeID", holeID).and().eq("state", "1");
             qb.orderBy("createTime", true);
             list = qb.query();
@@ -62,6 +102,23 @@ public class MediaDao extends BaseDAO<Media> {
         return list;
     }
 
+    /**
+     * 获取所有未上传的媒体
+     *
+     * @param recordID
+     * @return
+     */
+    public List<Media> getNotUploadListByRecordID(String recordID) {
+        List<Media> list = new ArrayList<Media>();
+        try {
+            QueryBuilder<Media, String> qb = mediaDao.queryBuilder();
+            qb.where().eq("recordID", recordID).and().eq("state", "1").and().eq("isDelete", "0");
+            list = qb.query();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     /**
      * 获取某条记录的所有媒体
@@ -72,7 +129,7 @@ public class MediaDao extends BaseDAO<Media> {
     public List<Media> getMediaListByRecordID(String recordID) {
         List<Media> list = new ArrayList<Media>();
         try {
-            QueryBuilder<Media, String> qb = instance.getDAO().queryBuilder();
+            QueryBuilder<Media, String> qb = mediaDao.queryBuilder();
             qb.where().eq("recordID", recordID).and().eq("isDelete", "0");
             list = qb.query();
         } catch (Exception e) {
@@ -81,30 +138,13 @@ public class MediaDao extends BaseDAO<Media> {
         return list;
     }
 
-    public void getMediaListByRecordIDSave(String recordID) {
-        List<Media> list = new ArrayList<Media>();
-        try {
-            QueryBuilder<Media, String> qb = instance.getDAO().queryBuilder();
-            qb.where().eq("recordID", recordID).and().eq("state", "0");
-            list = qb.query();
-            if (list != null && list.size() > 0) {
-                for (Media media : list) {
-                    media.setState("1");
-                    instance.getDAO().update(media);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * 获取点的所有媒体
      */
 
     public List<Media> getMediaListByHoleID(String holeID) {
         try {
-            return instance.getDAO().queryBuilder().where().eq("holeID", holeID).query();
+            return mediaDao.queryBuilder().where().eq("holeID", holeID).query();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -138,7 +178,7 @@ public class MediaDao extends BaseDAO<Media> {
 //        list.add(new Media());
 //        list.add(new Media("jpg"));
         try {
-            GenericRawResults<Media> results = instance.getDAO().queryRaw("select id,localPath,state,name from media where recordID ='" + recordID + "' order by createTime desc", new RawRowMapper<Media>() {
+            GenericRawResults<Media> results = mediaDao.queryRaw("select id,localPath,state,name from media where recordID ='" + recordID + "' order by createTime desc", new RawRowMapper<Media>() {
                 @Override
                 public Media mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
                     Media media = new Media();
@@ -170,7 +210,7 @@ public class MediaDao extends BaseDAO<Media> {
      */
     public Media getMediaByID(String mediaID) {
         try {
-            return instance.getDAO().queryForId(mediaID);
+            return mediaDao.queryForId(mediaID);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -178,9 +218,47 @@ public class MediaDao extends BaseDAO<Media> {
     }
 
 
+    //得到所有媒体
+    public List<Media> getMediaList() {
+        try {
+            return mediaDao.queryForAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 更新媒体
+     *
+     * @param media
+     */
+    public void update(Media media) {
+        try {
+            mediaDao.update(media);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 删除媒体
+     *
+     * @param media
+     */
+    public boolean delete(Media media) {
+        try {
+            mediaDao.delete(media);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void updateState(String projectID) {
         try {
-            UpdateBuilder updateBuilder = instance.getDAO().updateBuilder();
+            UpdateBuilder updateBuilder = mediaDao.updateBuilder();
             updateBuilder.where().eq("projectID", projectID);
             updateBuilder.updateColumnValue("state", "1");
             updateBuilder.update();
@@ -198,7 +276,7 @@ public class MediaDao extends BaseDAO<Media> {
     public List<Media> getNotUploadListByHoleIDToZF(String holeID, String recordID) {
         List<Media> list = new ArrayList<Media>();
         try {
-            QueryBuilder<Media, String> qb = instance.getDAO().queryBuilder();
+            QueryBuilder<Media, String> qb = mediaDao.queryBuilder();
             qb.where().eq("holeID", holeID).and().eq("state", "1").and().eq("recordID", recordID);
             qb.orderBy("createTime", true);
             list = qb.query();

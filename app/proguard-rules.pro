@@ -190,9 +190,6 @@
 -keepclassmembers enum com.j256.** { *; }
 -keep interface com.j256.**
 -keepclassmembers interface com.j256.** { *; }
-#-sqlcipher
--dontwarn net.sqlcipher.**
--keep class net.sqlcipher.** {*;}
 # ButterKnife
 -keep class butterknife.** { *;}
 -dontwarn butterknife.internal.**

@@ -36,6 +36,7 @@ import com.cj.record.baen.LocalUser;
 import com.cj.record.baen.Media;
 import com.cj.record.baen.Project;
 import com.cj.record.baen.Record;
+import com.cj.record.db.DBHelper;
 import com.cj.record.db.GpsDao;
 import com.cj.record.db.HoleDao;
 import com.cj.record.db.MediaDao;
@@ -44,12 +45,16 @@ import com.cj.record.db.RecordDao;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
 import com.cj.record.utils.JsonUtils;
+import com.cj.record.utils.L;
+import com.cj.record.utils.MD5Utils;
 import com.cj.record.utils.ObsUtils;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
 import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialBetterSpinner;
 import com.cj.record.views.dialog.HoleInfoDialog;
+import com.cj.record.views.dialog.RecordInfoDialog;
 import com.google.gson.Gson;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
@@ -72,6 +77,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -94,8 +101,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
     EditText holeSearchEt;
 
     private Project project;
+    private ProjectDao projectDao;
     private List<Hole> dataList;
     private List<Hole> newList;
+    private HoleDao holeDao;
     private HoleAdapter holeAdapter;
     private int total = 0;//总条数
     private int size = 20;
@@ -107,7 +116,10 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
     private int deletePosition;
     private List<Hole> checkList;//关联多次的list
     private List<LocalUser> localUserList;//获取数据的userList
+    private RecordDao recordDao;
+    private GpsDao gpsDao;
     private Hole uploadHole;
+    private MediaDao mediaDao;
     private Dialog chooseDialog;
     private HoleInfoDialog holeInfoDialog;//详情
     private String jzTestType = "";
@@ -123,6 +135,11 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         project = (Project) getIntent().getSerializableExtra(MainActivity.PROJECT);
         dataList = new ArrayList<>();
         newList = new ArrayList<>();
+        holeDao = new HoleDao(this);
+        projectDao = new ProjectDao(this);
+        recordDao = new RecordDao(this);
+        gpsDao = new GpsDao(this);
+        mediaDao = new MediaDao(this);
         obsUtils = new ObsUtils();
         obsUtils.setObsLinstener(this);
         holeInfoDialog = new HoleInfoDialog();
@@ -132,13 +149,13 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
     public void onSubscribe(int type) {
         switch (type) {
             case 1:
-                total = HoleDao.getInstance().getHoleListByProjectIDUserDelete(project.getId()).size();
+                total = holeDao.getHoleListByProjectIDUserDelete(project.getId()).size();
                 dataList.addAll(getList(project.getId(), page, search));
                 break;
             case 2:
                 search = holeSearchEt.getText().toString().trim();
                 page = 1;
-                total = HoleDao.getInstance().getHoleListByProjectIDUserDelete(project.getId()).size();
+                total = holeDao.getHoleListByProjectIDUserDelete(project.getId()).size();
                 dataList.clear();
                 dataList.addAll(getList(project.getId(), page, search));
                 break;
@@ -149,7 +166,11 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 break;
             case 4:
                 Hole hole = dataList.get(deletePosition);
-                HoleDao.getInstance().delete(hole);
+                if (hole.delete(HoleListActivity.this)) {
+                    ToastUtil.showToastL(HoleListActivity.this, "删除勘探点成功");
+                } else {
+                    ToastUtil.showToastL(HoleListActivity.this, "删除勘探点失败");
+                }
                 break;
             case 5:
                 //上传的时候先校验身份
@@ -346,7 +367,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         }
         showPPW();
         //遍历数据库，查找是否关联
-        if (HoleDao.getInstance().checkRelatedNoHole(uploadHole.getId(), relateHole.getId(), project.getId())) {
+        if (holeDao.checkRelatedNoHole(uploadHole.getId(), relateHole.getId(), project.getId())) {
             Common.showMessage(this, "该发布点本地已经存在关联");
             return;
         }
@@ -391,9 +412,9 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                                 }
                                 uploadHole.setState("1");
                                 uploadHole.setStateGW("1");
-                                HoleDao.getInstance().addOrUpdate(uploadHole);
+                                holeDao.add(uploadHole);
                                 project.setUpdateTime(DateUtil.date2Str(new Date()) + "");
-                                ProjectDao.getInstance().addOrUpdate(project);
+                                projectDao.update(project);
                                 onRefresh();
                             }
                             Common.showMessage(HoleListActivity.this, jsonResult.getMessage());
@@ -423,7 +444,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         }
         for (Hole relateHole : checkList) {
             //遍历数据库，查找是否关联
-            if (HoleDao.getInstance().checkRelated(relateHole.getId(), project.getId())) {
+            if (holeDao.checkRelated(relateHole.getId(), project.getId())) {
                 Common.showMessage(this, relateHole.getCode() + "勘探点本地已经存在关联");
             } else {
                 showPPW();
@@ -453,13 +474,13 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                             JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
                             if (jsonResult.getStatus()) {
                                 //关联成功，再进行保存
-                                HoleDao.getInstance().addOrUpdate(newHole);
+                                holeDao.add(newHole);
                                 onRefresh();
                             } else {
                                 Common.showMessage(HoleListActivity.this, jsonResult.getMessage());
                             }
                         } else {
-                            HoleDao.getInstance().delete(newHole);
+                            holeDao.delete(newHole);
                             Common.showMessage(HoleListActivity.this, "关联勘探点，服务器异常，请联系客服");
                         }
                         dismissPPW();
@@ -468,7 +489,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     @Override
                     public void onError(Response<String> response) {
                         super.onError(response);
-                        HoleDao.getInstance().delete(newHole);
+                        holeDao.delete(newHole);
                         dismissPPW();
                         Common.showMessage(HoleListActivity.this, "关联勘探点，网络连接错误");
                     }
@@ -504,7 +525,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                             Hole hole = gson.fromJson(result.toString(), Hole.class);
                             //查询userid是否相同，查询项目下钻孔的relateID是否存在
                             //判断该项目下是否存在关联的勘探点 projectID、relateID
-                            if (HoleDao.getInstance().checkRelated(hole.getRelateID(), project.getId())) {
+                            if (holeDao.checkRelated(hole.getRelateID(), project.getId())) {
                                 Common.showMessage(HoleListActivity.this, hole.getRelateCode() + "(" + hole.getCode() + ")关联孔本地已经存在");
                                 return;
                             } else {
@@ -545,7 +566,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         hole.setRelateID("");
         hole.setRelateCode("");
         hole.setIsDelete("0");
-        HoleDao.getInstance().addOrUpdate(hole);
+        holeDao.add(hole);
         List<Record> recordList = hole.getRecordList();
         if (recordList != null && recordList.size() > 0) {
             for (Record record : recordList) {
@@ -558,7 +579,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 record.setState("1");
                 record.setIsDelete("0");
                 record.setUpdateId(record.getUpdateId() == null ? "" : record.getUpdateId());//这里有历史记录，不能情况updateID
-                RecordDao.getInstance().addOrUpdate(record);
+                recordDao.add(record);
                 List<Gps> gpsList = record.getGpsList();
                 if (gpsList != null && gpsList.size() > 0) {
                     for (Gps gps : gpsList) {
@@ -568,7 +589,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                         gps.setProjectID(project.getId());
                         gps.setHoleID(hole.getId());
                         gps.setRecordID(record.getId());
-                        GpsDao.getInstance().addOrUpdate(gps);
+                        gpsDao.add(gps);
                     }
                 }
             }
@@ -609,13 +630,13 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         //查看信息是否编录完整
         int complete;
         if ("探井".equals(hole.getType())) {
-            complete = RecordDao.getInstance().checkTJ(hole.getId());
+            complete = recordDao.checkTJ(hole.getId());
             if (complete < 2) {
                 showMsgDialog(hole, "勘探点数据不完整，请完善（描述员、场景）记录");
                 return;
             }
         } else {
-            complete = RecordDao.getInstance().checkZK(hole.getId());
+            complete = recordDao.checkZK(hole.getId());
             if (complete < 4) {
                 showMsgDialog(hole, "勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录");
                 return;
@@ -683,19 +704,19 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         //已经定位，但是数据不全
         int complete;
         if ("探井".equals(uploadHole.getType())) {
-            complete = RecordDao.getInstance().checkTJ(uploadHole.getId());
+            complete = recordDao.checkTJ(uploadHole.getId());
             if (complete < 2) {
                 Common.showMessage(this, "勘探点数据不完整，请完善（描述员、场景）记录");
                 return;
             }
         } else {
-            complete = RecordDao.getInstance().checkZK(uploadHole.getId());
+            complete = recordDao.checkZK(uploadHole.getId());
             if (complete < 4) {
                 Common.showMessage(this, "勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录");
                 return;
             }
 
-            Record jz = RecordDao.getInstance().getRecordByType(uploadHole.getId(), Record.TYPE_SCENE_OPERATEPERSON);
+            Record jz = recordDao.getRecordByType(uploadHole.getId(), Record.TYPE_SCENE_OPERATEPERSON);
             if (jz != null) {
                 if (!TextUtils.isEmpty(jz.getTestType())) {
                     jzTestType = jz.getTestType();
@@ -812,8 +833,8 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         final Map<String, String> map = new ConcurrentHashMap<>();
         map.putAll(uploadHole.getNameValuePairMap(project.getSerialNumber()));
         //获取record
-        final List<Record> recordList = RecordDao.getInstance().getNotUploadListByHoleID(uploadHole.getId());
-        List<Record> recordListScene = RecordDao.getInstance().getNotUploadListByHoleIDScene(uploadHole.getId());
+        final List<Record> recordList = recordDao.getNotUploadListByHoleID(uploadHole.getId());
+        List<Record> recordListScene = recordDao.getNotUploadListByHoleIDScene(uploadHole.getId());
         if (recordListScene != null && recordListScene.size() > 0) {
             recordList.addAll(recordListScene);
         }
@@ -822,14 +843,14 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
             map.putAll(Record.getMap(recordList, project.getSerialNumber()));
             //获取gps
             for (Record record : recordList) {
-                Gps gps = GpsDao.getInstance().getGpsByRecord(record.getId());
+                Gps gps = gpsDao.getGpsByRecord(record.getId());
                 if (gps != null) {
                     resultGpsList.add(gps);
                 }
             }
         }
         //获取media,先确定媒体文件存在，不存在删除media数据
-        final List<Media> mediaList = MediaDao.getInstance().getNotUploadListByHoleID(uploadHole.getId());
+        final List<Media> mediaList = mediaDao.getNotUploadListByHoleID(uploadHole.getId());
         List<Media> realMediaList = new ArrayList<>();
         if (mediaList != null && mediaList.size() > 0) {
             for (Media media : mediaList) {
@@ -846,7 +867,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     //添加媒体参数
                     realMediaList.add(media);
                     //添加对应媒体gps
-                    Gps gps = GpsDao.getInstance().getGpsByMedia(media.getId());
+                    Gps gps = gpsDao.getGpsByMedia(media.getId());
                     resultGpsList.add(gps);
                 } else {
                     media.delete(this);
@@ -903,17 +924,17 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     if (jsonResult.getStatus()) {
                         //上传企业平台成功
                         uploadHole.setState("2");
-                        HoleDao.getInstance().addOrUpdate(uploadHole);
+                        holeDao.update(uploadHole);
                         if (recordList != null && recordList.size() > 0) {
                             for (Record record : recordList) {
                                 record.setState("2");
-                                RecordDao.getInstance().addOrUpdate(record);
+                                recordDao.update(record);
                             }
                         }
                         if (realMediaList != null && realMediaList.size() > 0) {
                             for (Media media : realMediaList) {
                                 media.setState("2");
-                                MediaDao.getInstance().addOrUpdate(media);
+                                mediaDao.update(media);
                             }
                         }
                         onRefresh();
@@ -954,8 +975,8 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         uploadHoleZF.setSecretKey(Urls.C_KEY);
         uploadHoleZF.setRelateID(uploadHole.getUploadID());
         //获取record
-        List<Record> recordList = RecordDao.getInstance().getNotUploadListByHoleID(uploadHole.getId());
-        List<Record> recordListScene = RecordDao.getInstance().getNotUploadListByHoleIDScene(uploadHole.getId());
+        List<Record> recordList = recordDao.getNotUploadListByHoleID(uploadHole.getId());
+        List<Record> recordListScene = recordDao.getNotUploadListByHoleIDScene(uploadHole.getId());
         if (recordListScene != null && recordListScene.size() > 0) {
             recordList.addAll(recordListScene);
         }
@@ -963,7 +984,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
         List<Media> saveMediaList = new ArrayList<>();
         //获取gps,赋值给recordList
         for (Record record : recordList) {
-            List<Gps> gpsList = GpsDao.getInstance().getListGpsByRecord(record.getId());//
+            List<Gps> gpsList = gpsDao.getListGpsByRecord(record.getId());//
             record.setIds(record.getId());
             //title这个字段没用，清空
             record.setTitle("");
@@ -977,11 +998,11 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                 record.setGpsTime(gpsList.get(0).getGpsTime());
             }
             //查出记录下所有媒体数据
-            final List<Media> mediaList = MediaDao.getInstance().getNotUploadListByHoleIDToZF(uploadHole.getId(), record.getId());
+            final List<Media> mediaList = mediaDao.getNotUploadListByHoleIDToZF(uploadHole.getId(), record.getId());
             if (mediaList != null && mediaList.size() > 0) {
                 saveMediaList.addAll(mediaList);
                 for (Media media : mediaList) {
-                    Gps gps = GpsDao.getInstance().getGpsByMedia(media.getId());
+                    Gps gps = gpsDao.getGpsByMedia(media.getId());
                     if (null != gps) {
                         media.setProjectID(project.getProjectID());
                         media.setLongitude(gps.getLongitude());
@@ -1012,7 +1033,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     if (jsonResult.getStatus()) {
                         //上传监管成功
                         uploadHole.setStateGW("2");
-                        HoleDao.getInstance().addOrUpdate(uploadHole);
+                        holeDao.update(uploadHole);
                         //上传企业平台
                         getUploadData();
                     } else {
@@ -1067,7 +1088,9 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
 
     private List<Hole> getList(String projectID, int page, String code) {
         List<Hole> list = new ArrayList<Hole>();
+        DBHelper dbHelper = DBHelper.getInstance(this);
         try {
+            Dao<Hole, String> dao = dbHelper.getDao(Hole.class);
             //钻孔的记录数量要 排除机长等基本信息和原始记录信息、机长等信息type不同，原始记录update不为空
             String recordCount = "select count(id) from record r where state <> '0' and r.holeID=h.id and r.type<>'机长' and r.type<>'钻机'and r.type<>'描述员'and r.type<>'场景'and r.type<>'负责人'and r.type<>'工程师'and r.type<>'提钻录像' and r.updateID=''";
             String currentDepth = "select max(r1.endDepth) from record r1 where state <> '0' and updateID='' and r1.holeID=h.id";
@@ -1108,7 +1131,7 @@ public class HoleListActivity extends BaseActivity implements SwipeRefreshLayout
                     "from hole h " +
                     "where h.projectID='" + projectID + "' " + like + " order by " + sequence + pageSql;
 
-            GenericRawResults<Hole> results = HoleDao.getInstance().getDAO().queryRaw(sql, new RawRowMapper<Hole>() {
+            GenericRawResults<Hole> results = dao.queryRaw(sql, new RawRowMapper<Hole>() {
                 @Override
                 public Hole mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
                     Hole hole = new Hole();

@@ -14,7 +14,6 @@ import com.cj.record.R;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
-import com.cj.record.db.DictionaryDao;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
 
@@ -79,8 +78,8 @@ public class RecordEditGetEarthFragment extends RecordBaseFragment {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
                                     if (testStr.toString().trim().length() > 100) {
-                                        ToastUtil.showToastS(mActivity, "该字段最大100字符，请重新选择");
-                                    } else {
+                                        ToastUtil.showToastS(mActivity,"该字段最大100字符，请重新选择");
+                                    }else{
                                         sprTestType.setText(testStr.toString());
                                         dialog.dismiss();
                                     }
@@ -143,17 +142,17 @@ public class RecordEditGetEarthFragment extends RecordBaseFragment {
     };
 
     private List<DropItemVo> getEarthTypeList() {
-        earthTypeList = DictionaryDao.getInstance().getDropItemList(getSqlString("质量等级"));
+        earthTypeList = dictionaryDao.getDropItemList(getSqlString("质量等级"));
         addWord();
         return earthTypeList;
     }
 
     private List<DropItemVo> getEarthModeList() {
-        return DictionaryDao.getInstance().getDropItemList(getSqlString("取土工具和方法"));
+        return dictionaryDao.getDropItemList(getSqlString("取土工具和方法"));
     }
 
     private List<DropItemVo> getTestTypeList() {
-        testTypeList = DictionaryDao.getInstance().getDropItemList(getSqlString("试验类型"));
+        testTypeList = dictionaryDao.getDropItemList(getSqlString("试验类型"));
         return testTypeList;
     }
 
@@ -187,7 +186,7 @@ public class RecordEditGetEarthFragment extends RecordBaseFragment {
             dropItemVo.setName("岩石");
             dropItemVo.setValue("岩石");
             earthTypeList.add(dropItemVo);
-            DictionaryDao.getInstance().add(new Dictionary("0", "质量等级", "岩石", "4", "", Record.TYPE_GET_EARTH));
+            dictionaryDao.addDictionary(new Dictionary("0", "质量等级", "岩石", "4", "", Record.TYPE_GET_EARTH));
         }
     }
 
@@ -215,11 +214,11 @@ public class RecordEditGetEarthFragment extends RecordBaseFragment {
         boolean validator = true;
 
         if (sortNoMode > 0 && validator) {
-            DictionaryDao.getInstance().add(new Dictionary("1", "取土工具和方法", sprMode.getText().toString().trim(), "" + sortNoMode, userID, Record.TYPE_GET_EARTH));
+            dictionaryDao.addDictionary(new Dictionary("1", "取土工具和方法", sprMode.getText().toString().trim(), "" + sortNoMode, userID, Record.TYPE_GET_EARTH));
         }
 
         if (dictionaryList.size() > 0) {
-            DictionaryDao.getInstance().addDictionaryList(dictionaryList);
+            dictionaryDao.addDictionaryList(dictionaryList);
         }
         return validator;
     }

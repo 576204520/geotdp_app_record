@@ -13,7 +13,6 @@ import com.cj.record.R;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
-import com.cj.record.db.DictionaryDao;
 import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
@@ -71,12 +70,12 @@ public class LayerDescTtFragment extends RecordBaseFragment {
     @Override
     public void initData() {
         super.initData();
-        sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("填土_颜色"));
-        sprDjndList = DictionaryDao.getInstance().getDropItemList(getSqlString("填土_堆积年代"));
-        sprMsdList = DictionaryDao.getInstance().getDropItemList(getSqlString("填土_密实度"));
-        sprJyxList = DictionaryDao.getInstance().getDropItemList(getSqlString("填土_均匀性"));
-        sprZycyList = DictionaryDao.getInstance().getDropItemList(getSqlString("填土_主要成分"));                    // 主要成分
-        sprCycfList = DictionaryDao.getInstance().getDropItemList(getSqlString("填土_次要成分"));                    //次要成分
+        sprYsList = dictionaryDao.getDropItemList(getSqlString("填土_颜色"));
+        sprDjndList = dictionaryDao.getDropItemList(getSqlString("填土_堆积年代"));
+        sprMsdList = dictionaryDao.getDropItemList(getSqlString("填土_密实度"));
+        sprJyxList = dictionaryDao.getDropItemList(getSqlString("填土_均匀性"));
+        sprZycyList = dictionaryDao.getDropItemList(getSqlString("填土_主要成分"));                    // 主要成分
+        sprCycfList = dictionaryDao.getDropItemList(getSqlString("填土_次要成分"));                    //次要成分
 
         zycyList = DropItemVo.getStrList(sprZycyList);
         cycfList = DropItemVo.getStrList(sprCycfList);
@@ -289,7 +288,7 @@ public class LayerDescTtFragment extends RecordBaseFragment {
     @Override
     public boolean layerValidator() {
         if (dictionaryList.size() > 0) {
-            DictionaryDao.getInstance().addDictionaryList(dictionaryList);
+            dictionaryDao.addDictionaryList(dictionaryList);
         }
         return true;
     }

@@ -55,7 +55,7 @@ public class RecordTechnicianFragment extends RecordBaseFragment implements ObsU
 
     @Override
     public void onSubscribe(int type) {
-        recordList = RecordDao.getInstance().getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_TECHNICIAN);
+        recordList = new RecordDao(getActivity()).getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_TECHNICIAN);
     }
 
     @Override

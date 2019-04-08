@@ -123,7 +123,7 @@ public class RecordOperatePersionFragment extends RecordBaseFragment implements 
 
     @Override
     public void onSubscribe(int type) {
-        recordList = RecordDao.getInstance().getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_OPERATEPERSON);
+        recordList = new RecordDao(getActivity()).getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_OPERATEPERSON);
     }
 
     @Override

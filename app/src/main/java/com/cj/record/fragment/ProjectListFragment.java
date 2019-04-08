@@ -62,6 +62,7 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
     @BindView(R.id.project_search_et)
     EditText projectSearchEt;
 
+    private ProjectDao projectDao;
     private ProjectAdapter projectAdapter;
     private List<Project> dataList;
     private int page = 0;
@@ -85,6 +86,7 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
     public void initData() {
         super.initData();
         userID = (String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, "");
+        projectDao = new ProjectDao(mActivity);
         dataList = new ArrayList<>();
         newList = new ArrayList<>();
         obsUtils = new ObsUtils();
@@ -159,20 +161,20 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
     public void onSubscribe(int type) {
         switch (type) {
             case 1:
-                total = ProjectDao.getInstance().getAllCount(userID);
-                dataList.addAll(ProjectDao.getInstance().getAll(userID, page, size, search));
+                total = projectDao.getAllCount(userID);
+                dataList.addAll(projectDao.getAll(userID, page, size, search));
                 break;
             case 2:
                 search = projectSearchEt.getText().toString().trim();
                 page = 0;
-                total = ProjectDao.getInstance().getAllCount(userID);
+                total = projectDao.getAllCount(userID);
                 dataList.clear();
-                dataList.addAll(ProjectDao.getInstance().getAll(userID, page, size, search));
+                dataList.addAll(projectDao.getAll(userID, page, size, search));
                 break;
             case 3:
                 page++;
                 newList.clear();
-                newList = ProjectDao.getInstance().getAll(userID, page, size, search);
+                newList = projectDao.getAll(userID, page, size, search);
                 break;
             case 4:
                 showPPW();

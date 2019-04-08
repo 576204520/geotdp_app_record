@@ -59,7 +59,8 @@ public class PreviewShowFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frt_preview_show, container, false);
-        listRecord1 = RecordDao.getInstance().getRecordOne(hole.getId());
+        RecordDao recordDao = new RecordDao(context);
+        listRecord1 = recordDao.getRecordOne(hole.getId());
         preview_show_list1 = (RecyclerView) view.findViewById(R.id.preview_show_list1);
         preview_show_list1.setLayoutManager(new LinearLayoutManager(context));
         preview_show_list1.setAdapter(new ItemAdapter(context, listRecord1));

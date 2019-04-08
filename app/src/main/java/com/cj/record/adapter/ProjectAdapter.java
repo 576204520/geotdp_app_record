@@ -36,6 +36,7 @@ public class ProjectAdapter extends AbstractSlideExpandableListAdapter<ProjectAd
     private Context mContext;
     private LayoutInflater inflater;
     private List<MyHolder> holderList;
+    private HoleDao holeDao;
     public View view;
 
     public ProjectAdapter(Context context, List<Project> list) {
@@ -44,6 +45,7 @@ public class ProjectAdapter extends AbstractSlideExpandableListAdapter<ProjectAd
         inflater = LayoutInflater.from(mContext);
         holderList = new ArrayList<>();
         setItemExpandCollapseListener(this);
+        holeDao = new HoleDao(context);
     }
 
     @Override
@@ -60,7 +62,7 @@ public class ProjectAdapter extends AbstractSlideExpandableListAdapter<ProjectAd
         holderList.add(myHolder);
         myHolder.projectFullName.setText(project.getFullName());
         myHolder.projectUpdateTime.setText("创建时间:" + project.getCreateTime());
-        List<Hole> holes = HoleDao.getInstance().getHoleListByProjectID(project.getId());
+        List<Hole> holes = holeDao.getHoleListByProjectID(project.getId());
         myHolder.projectHoleNumber.setText("钻孔数:" + holes.size());
         //钻孔编号
         if (TextUtils.isEmpty(project.getCode())) {

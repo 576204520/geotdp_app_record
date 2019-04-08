@@ -55,7 +55,7 @@ public class RecordOperateCodeFragment extends RecordBaseFragment implements Obs
 
     @Override
     public void onSubscribe(int type) {
-        recordList = RecordDao.getInstance().getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_OPERATECODE);
+        recordList = new RecordDao(getActivity()).getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_OPERATECODE);
     }
 
     @Override

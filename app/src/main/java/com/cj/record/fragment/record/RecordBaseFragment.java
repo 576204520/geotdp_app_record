@@ -19,6 +19,7 @@ import java.util.List;
  */
 
 public class RecordBaseFragment extends BaseFragment {
+    public DictionaryDao dictionaryDao;
     public Record record;
     public String userID;
     public String userName;
@@ -37,6 +38,7 @@ public class RecordBaseFragment extends BaseFragment {
         super.initData();
         userID = (String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, "");
         userName = (String) SPUtils.get(mActivity, Urls.SPKey.USER_REALNAME, "");
+        dictionaryDao = new DictionaryDao(mActivity);
         if (getArguments().containsKey(MainActivity.RECORD)) {
             record = (Record) getArguments().getSerializable(MainActivity.RECORD);
         }

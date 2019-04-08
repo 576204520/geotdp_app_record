@@ -1,1 +1,1 @@
-include ':app', ':SmallVideoLib2',':database'
+include ':app', ':SmallVideoLib2'

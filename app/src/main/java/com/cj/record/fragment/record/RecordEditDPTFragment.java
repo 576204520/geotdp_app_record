@@ -171,12 +171,13 @@ public class RecordEditDPTFragment extends RecordBaseFragment {
     @Override
     public boolean validator() {
         boolean validator = true;
-        if (RecordDao.getInstance().validatorBeginDepth(record, Record.TYPE_DPT, edtBegin.getText().toString())) {
+        RecordDao recordDao = new RecordDao(mActivity);
+        if (recordDao.validatorBeginDepth(record, Record.TYPE_DPT, edtBegin.getText().toString())) {
             edtBegin.setError("与其他记录重叠");
             validator = false;
         }
 
-        if (RecordDao.getInstance().validatorEndDepth(record, Record.TYPE_DPT, edtEnd.getText().toString())) {
+        if (recordDao.validatorEndDepth(record, Record.TYPE_DPT, edtEnd.getText().toString())) {
             edtEnd.setError("与其他记录重叠");
             validator = false;
         }

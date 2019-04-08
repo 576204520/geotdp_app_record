@@ -13,7 +13,6 @@ import com.cj.record.R;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
-import com.cj.record.db.DictionaryDao;
 import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
@@ -63,11 +62,11 @@ public class LayerDescFnhcFragment extends RecordBaseFragment {
     @Override
     public void initData() {
         super.initData();
-        sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉黏互层_颜色"));
-        sprBhwList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉黏互层_包含物"));
-        sprZtList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉黏互层_状态"));
-        sprFtfchdList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉黏互层_粉土层厚"));
-        sprFzntfchdList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉黏互层_粉黏层厚"));
+        sprYsList = dictionaryDao.getDropItemList(getSqlString("粉黏互层_颜色"));
+        sprBhwList = dictionaryDao.getDropItemList(getSqlString("粉黏互层_包含物"));
+        sprZtList = dictionaryDao.getDropItemList(getSqlString("粉黏互层_状态"));
+        sprFtfchdList = dictionaryDao.getDropItemList(getSqlString("粉黏互层_粉土层厚"));
+        sprFzntfchdList = dictionaryDao.getDropItemList(getSqlString("粉黏互层_粉黏层厚"));
 
         bhwList = new ArrayList<>();
         bhwList = DropItemVo.getStrList(sprBhwList);
@@ -181,16 +180,16 @@ public class LayerDescFnhcFragment extends RecordBaseFragment {
     @Override
     public boolean layerValidator() {
         if (sortNoYs > 0) {
-            DictionaryDao.getInstance().add(new Dictionary("1", "粉黏互层_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "粉黏互层_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
         }
         if (sortNoFtfchd > 0) {
-            DictionaryDao.getInstance().add(new Dictionary("1", "粉黏互层_粉土层厚", sprFtfchd.getText().toString().trim(), "" + sortNoFtfchd, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "粉黏互层_粉土层厚", sprFtfchd.getText().toString().trim(), "" + sortNoFtfchd, userID, Record.TYPE_LAYER));
         }
         if (sortNoFzntfchd > 0) {
-            DictionaryDao.getInstance().add(new Dictionary("1", "粉黏互层_粉黏层厚", sprFzntfchd.getText().toString().trim(), "" + sortNoFzntfchd, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "粉黏互层_粉黏层厚", sprFzntfchd.getText().toString().trim(), "" + sortNoFzntfchd, userID, Record.TYPE_LAYER));
         }
         if (dictionaryList.size() > 0) {
-            DictionaryDao.getInstance().addDictionaryList(dictionaryList);
+            dictionaryDao.addDictionaryList(dictionaryList);
         }
         return true;
     }

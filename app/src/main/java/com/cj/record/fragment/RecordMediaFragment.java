@@ -6,8 +6,12 @@ import android.app.Dialog;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
@@ -16,7 +20,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.amap.api.location.AMapLocation;
 import com.cj.record.R;
@@ -25,11 +31,13 @@ import com.cj.record.activity.VideoPlayerActivity;
 import com.cj.record.activity.base.BaseFragment;
 import com.cj.record.adapter.MediaAdapter;
 import com.cj.record.baen.Gps;
+import com.cj.record.baen.Hole;
 import com.cj.record.baen.Media;
 import com.cj.record.baen.Record;
-import com.cj.record.db.GpsDao;
+import com.cj.record.db.DBHelper;
 import com.cj.record.db.MediaDao;
 import com.cj.record.utils.Common;
+import com.cj.record.utils.FileUtil;
 import com.cj.record.utils.GPSutils;
 import com.cj.record.utils.L;
 import com.cj.record.utils.ObsUtils;
@@ -37,16 +45,22 @@ import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;
 import com.j256.ormlite.dao.Dao;
+import com.mabeijianxi.smallvideorecord2.FileUtils;
 import com.mabeijianxi.smallvideorecord2.MediaRecorderActivity;
+import com.mabeijianxi.smallvideorecord2.StringUtils;
 import com.mabeijianxi.smallvideorecord2.model.MediaRecorderConfig;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import id.zelory.compressor.Compressor;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Action;
@@ -74,6 +88,7 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
     private RecordLocationFragment locationFragment;
     private File file;
     private List<String> photoPathList;
+    private MediaDao mediaDao;
     private Dialog dialog;
 
     @Override
@@ -128,6 +143,7 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
                 photoList = new ArrayList<>();
                 videoList = new ArrayList<>();
                 photoPathList = new ArrayList<>();
+                mediaDao = new MediaDao(mActivity);
                 getMediaList();
                 break;
             case 2:
@@ -161,7 +177,7 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
 
     private void getMediaList() {
         photoPathList.clear();
-        List<Media> list = MediaDao.getInstance().getMediaListByRecordID2(record.getId());
+        List<Media> list = mediaDao.getMediaListByRecordID2(record.getId());
         if (list != null && list.size() > 0) {
             for (Media media : list) {
                 if (media.getLocalPath().endsWith("jpg")) {
@@ -252,10 +268,13 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    MediaDao.getInstance().delete(media);
-                                    ToastUtil.showToastL(getActivity(), "删除图片成功");
-                                    photoList.remove(position);
-                                    refresh();
+                                    if (media.delete(mActivity)) {
+                                        ToastUtil.showToastL(getActivity(), "删除图片成功");
+                                        photoList.remove(position);
+                                        refresh();
+                                    } else {
+                                        ToastUtil.showToastL(getActivity(), "删除图片失败");
+                                    }
                                 }
                             })
                     .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)
@@ -345,9 +364,12 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
 
                     Gps gps = new Gps(media, amapLocation, "照片");
                     media.setGpsID(gps.getId());
+                    DBHelper dbHelper = DBHelper.getInstance(mActivity);
                     //写入数据库
-                    MediaDao.getInstance().addOrUpdate(media);
-                    GpsDao.getInstance().addOrUpdate(gps);
+                    Dao<Media, String> mediaDao = dbHelper.getDao(Media.class);
+                    mediaDao.create(media);
+                    Dao<Gps, String> gpsDao = dbHelper.getDao(Gps.class);
+                    gpsDao.create(gps);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -378,9 +400,12 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
                     Media media = new Media(mActivity, record, dirPath, amapLocation);
                     Gps gps = new Gps(media, amapLocation, "录像");
                     media.setGpsID(gps.getId());
+                    DBHelper dbHelper = DBHelper.getInstance(mActivity);
                     //写入数据库
-                    MediaDao.getInstance().addOrUpdate(media);
-                    GpsDao.getInstance().addOrUpdate(gps);
+                    Dao<Media, String> mediaDao = dbHelper.getDao(Media.class);
+                    mediaDao.create(media);
+                    Dao<Gps, String> gpsDao = dbHelper.getDao(Gps.class);
+                    gpsDao.create(gps);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

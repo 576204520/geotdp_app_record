@@ -57,6 +57,8 @@ public class TemplateActivity extends BaseActivity implements TemplateAdapter.On
     private TemplateAdapter templateAdapter;
     private List<Template> templateList;
     private ObsUtils obsUtils;
+    private TemplateDao templateDao;
+    private TemplateDetialDao templateDetialDao;
     private Record record;
     private Template deleteTemplate;
 
@@ -72,6 +74,8 @@ public class TemplateActivity extends BaseActivity implements TemplateAdapter.On
         ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.mipmap.ic_clear_white_24dp);
         ab.setDisplayHomeAsUpEnabled(true);
+        templateDao = new TemplateDao(this);
+        templateDetialDao = new TemplateDetialDao(this);
         obsUtils = new ObsUtils();
         obsUtils.setObsLinstener(this);
         obsUtils.execute(1);
@@ -199,10 +203,10 @@ public class TemplateActivity extends BaseActivity implements TemplateAdapter.On
         switch (type) {
             case 1:
                 //从数据库中获取模板信息
-                templateList = TemplateDao.getInstance().queryList(userID);
+                templateList = templateDao.queryList(userID);
                 if (templateList != null && templateList.size() > 0) {
                     for (Template template : templateList) {
-                        List<TemplateDetail> detailList = TemplateDetialDao.getInstance().queryList(template.getIds());
+                        List<TemplateDetail> detailList = templateDetialDao.queryList(template.getIds());
                         if (detailList != null && detailList.size() > 0) {
                             template.setDetailList(detailList);
                         }
@@ -213,21 +217,21 @@ public class TemplateActivity extends BaseActivity implements TemplateAdapter.On
                 //拿到模板数据，保存到数据库
                 for (Template template : templateList) {
                     if (template.getDetailList() != null && template.getDetailList().size() > 0) {
-                        TemplateDetialDao.getInstance().saveList(template.getDetailList());
+                        templateDetialDao.saveList(template.getDetailList());
                     }
                     //每个模板添加userid以标识
                     template.setUserID(userID);
                 }
-                TemplateDao.getInstance().saveList(templateList);
+                templateDao.saveList(templateList);
                 break;
             case 3:
                 List<TemplateDetail> detailList = deleteTemplate.getDetailList();
                 if (detailList != null && detailList.size() > 0) {
                     for (TemplateDetail detail : detailList) {
-                        TemplateDetialDao.getInstance().delete(detail);
+                        templateDetialDao.delete(detail);
                     }
                 }
-                TemplateDao.getInstance().delete(deleteTemplate);
+                templateDao.delete(deleteTemplate);
                 break;
         }
     }

@@ -56,7 +56,7 @@ public class RecordPrincipalFragment extends RecordBaseFragment implements ObsUt
 
     @Override
     public void onSubscribe(int type) {
-        recordList = RecordDao.getInstance().getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_PRINCIPAL);
+        recordList = new RecordDao(getActivity()).getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_PRINCIPAL);
     }
 
     @Override

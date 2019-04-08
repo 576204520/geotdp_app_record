@@ -13,7 +13,6 @@ import com.cj.record.R;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
-import com.cj.record.db.DictionaryDao;
 import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
@@ -66,12 +65,12 @@ public class LayerDescHtzFtFragment extends RecordBaseFragment {
     @Override
     public void initData() {
         super.initData();
-        sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("黄土状粉土_颜色"));
-        sprMsdList = DictionaryDao.getInstance().getDropItemList(getSqlString("黄土状粉土_密实度"));
-        sprKlzcList = DictionaryDao.getInstance().getDropItemList(getSqlString("黄土状粉土_颗粒组成"));
-        sprKxList = DictionaryDao.getInstance().getDropItemList(getSqlString("黄土状粉土_孔隙"));
-        sprCzjlList = DictionaryDao.getInstance().getDropItemList(getSqlString("黄土状粉土_垂直节理"));
-        sprBhwList = DictionaryDao.getInstance().getDropItemList(getSqlString("黄土状粉土_包含物"));
+        sprYsList = dictionaryDao.getDropItemList(getSqlString("黄土状粉土_颜色"));
+        sprMsdList = dictionaryDao.getDropItemList(getSqlString("黄土状粉土_密实度"));
+        sprKlzcList = dictionaryDao.getDropItemList(getSqlString("黄土状粉土_颗粒组成"));
+        sprKxList = dictionaryDao.getDropItemList(getSqlString("黄土状粉土_孔隙"));
+        sprCzjlList = dictionaryDao.getDropItemList(getSqlString("黄土状粉土_垂直节理"));
+        sprBhwList = dictionaryDao.getDropItemList(getSqlString("黄土状粉土_包含物"));
 
 
         bhwList = new ArrayList<>();
@@ -191,16 +190,16 @@ public class LayerDescHtzFtFragment extends RecordBaseFragment {
     @Override
     public boolean layerValidator() {
         if (sortNoYs > 0) {
-            DictionaryDao.getInstance().add(new Dictionary("1", "黄土状粉土_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "黄土状粉土_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
         }
         if (sortNoKlzc > 0) {
-            DictionaryDao.getInstance().add(new Dictionary("1", "黄土状粉土_颗粒组成", sprKlzc.getText().toString().trim(), "" + sortNoKlzc, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "黄土状粉土_颗粒组成", sprKlzc.getText().toString().trim(), "" + sortNoKlzc, userID, Record.TYPE_LAYER));
         }
         if (sortNoKx > 0) {
-            DictionaryDao.getInstance().add(new Dictionary("1", "黄土状粉土_孔隙", sprKx.getText().toString().trim(), "" + sortNoKx, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "黄土状粉土_孔隙", sprKx.getText().toString().trim(), "" + sortNoKx, userID, Record.TYPE_LAYER));
         }
         if (dictionaryList.size() > 0) {
-            DictionaryDao.getInstance().addDictionaryList(dictionaryList);
+            dictionaryDao.addDictionaryList(dictionaryList);
         }
         return true;
     }

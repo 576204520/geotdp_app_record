@@ -14,38 +14,56 @@ import java.util.List;
  * Created by Administrator on 2018/7/10.
  */
 
-public class TemplateDao extends BaseDAO<Template> {
+public class TemplateDao {
+    private Context context;
+    private Dao<Template, String> dao;
 
-    private static TemplateDao instance;
-
-    private TemplateDao() {
-    }
-
-    public synchronized static TemplateDao getInstance() {
-        if (instance == null) {
-            instance = new TemplateDao();
+    public TemplateDao(Context context) {
+        this.context = context;
+        try {
+            dao = DBHelper.getInstance(context).getDao(Template.class);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return instance;
     }
 
-    @Override
-    public Dao<Template, String> getDAO() throws SQLException {
-        return DBManager.getInstance().getDAO(Template.class);
+    public void save(Template template) {
+        try {
+            dao.createOrUpdate(template);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-
 
     public void saveList(List<Template> list) {
         for (Template template : list) {
-            addOrUpdate(template);
+            save(template);
         }
     }
 
     public List<Template> queryList(String userID) {
         try {
-            return instance.getDAO().queryBuilder().where().eq("userID", userID).query();
+            return dao.queryBuilder().where().eq("userID", userID).query();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Template queryByID(String id) {
+        try {
+            return dao.queryForId(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void delete(Template template) {
+        try {
+            dao.delete(template);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

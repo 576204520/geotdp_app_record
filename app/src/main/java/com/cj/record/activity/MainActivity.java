@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cj.record.R;
 import com.cj.record.activity.base.BaseActivity;
@@ -30,20 +29,16 @@ import com.cj.record.baen.LocalUser;
 import com.cj.record.baen.Project;
 import com.cj.record.baen.Record;
 import com.cj.record.baen.VersionVo;
-import com.cj.record.db.CipherDbHelper;
-import com.cj.record.db.DBManager;
 import com.cj.record.db.HoleDao;
 import com.cj.record.db.ProjectDao;
 import com.cj.record.db.RecordDao;
 import com.cj.record.fragment.ProjectListFragment;
 import com.cj.record.fragment.TestFragment;
 import com.cj.record.service.DownloadService;
-import com.cj.record.utils.Common;
 import com.cj.record.utils.FileUtil;
 import com.cj.record.utils.L;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
-import com.cj.record.utils.SqlcipherUtil;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
 import com.cj.record.utils.Urls;
@@ -83,7 +78,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
     private ObsUtils obsUtils;
-    private boolean isInit = true;
+    private ProjectDao projectDao;
+    private HoleDao holeDao;
+    private RecordDao recordDao;
 
     public static final String FROMTYPE = "fromtype";//区分编辑还是添加
     public static final int PROJECT_GO_EDIT = 101;
@@ -116,6 +113,20 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         return R.layout.activity_main;
     }
 
+    @Override
+    public void initData() {
+        super.initData();
+        //初始化数据库
+        initDB();
+        //初始化project布局
+        initProject();
+        //检查版本
+        UpdateUtil.checkVersion(MainActivity.this, false);
+        //子线程遍历所有数据库
+        obsUtils = new ObsUtils();
+        obsUtils.setObsLinstener(this);
+        obsUtils.execute(1);
+    }
 
     @Override
     public void initView() {
@@ -132,19 +143,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         name.setText((String) SPUtils.get(mContext, Urls.SPKey.USER_REALNAME, ""));
         email.setText((String) SPUtils.get(mContext, Urls.SPKey.USER_EMAIL, ""));
         headerView.setOnClickListener(headerViewListener);
-
-
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus && isInit) {
-            isInit = false;
-            obsUtils = new ObsUtils();
-            obsUtils.setObsLinstener(this);
-            obsUtils.execute(1);
-        }
     }
 
     View.OnClickListener headerViewListener = new View.OnClickListener() {
@@ -233,23 +231,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }
                 switchContent(mFragment, testFragment);
                 break;
-            case R.id.nav_decirpt:
-                try {
-                    L.e("Passphrase:" + getPassphrase());
-                    SqlcipherUtil.decrypt(Urls.DATABASE_BASE, getPassphrase());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                ToastUtil.showToastS(this, "解密完成");
-                break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private String getPassphrase() {
-//        return "geotdp" + Common.getDataBaseKey(this);
-        return "geotdp";
     }
 
     private void logoutDialog() {
@@ -389,15 +373,140 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public void onSubscribe(int type) {
         switch (type) {
             case 1:
-                showPPW();
-                //初始化数据库
-                initDB();
-                L.e("Passphrase:" + getPassphrase());
-                DBManager.init(this, Urls.DATABASE_BASE, getPassphrase());
-                break;
-            case 2:
-                L.e("遍历数据库开始:检查长度");
-                checkDB();
+                projectDao = new ProjectDao(MainActivity.this);
+                holeDao = new HoleDao(MainActivity.this);
+                recordDao = new RecordDao(MainActivity.this);
+                //遍历所有字段，检查长度
+                File newFile = new File(Urls.DATABASE_BASE);
+                boolean initData = (boolean) SPUtils.get(MainActivity.this, Urls.SPKey.DATA_INIT, false);
+                if (!initData && newFile.exists() && !TextUtils.isEmpty(userID)) {
+                    L.e("onSubscribe:遍历数据库开始");
+                    List<Project> projectList = projectDao.getAll(userID);
+                    if (projectList != null && projectList.size() > 0) {
+                        for (Project project : projectList) {
+                            //项目名称 200
+                            if (project.getFullName().length() > 200) {
+                                project.setFullName(project.getFullName().substring(0, 200));
+                                projectDao.update(project);
+                            }
+                            List<Hole> holeList = holeDao.getHoleListByProjectID(project.getId());
+                            if (holeList != null && holeList.size() > 0) {
+                                for (Hole hole : holeList) {
+                                    //勘探点编号 20
+                                    if (hole.getCode().length() > 20) {
+                                        hole.setCode(hole.getCode().substring(0, 20));
+                                        holeDao.update(hole);
+                                    }
+                                    List<Record> recordList = recordDao.getRecordListByHoleID(hole.getId());
+                                    if (recordList != null && recordList.size() > 0) {
+                                        for (Record record : recordList) {
+                                            /**
+                                             记录：编号（code）20、其他描述（description）50、
+                                             取土：试验类型（testType）100
+                                             岩土：地质成因（causes）150、
+                                             填土：主要成分（zycf）50、次要成分（cycf）50、颜色（ys）50、
+                                             黏性土：包含物（bhw）50、夹层（jc）50
+                                             粉土：包含物、夹层
+                                             砂土：矿物组成（kwzc）50、颜色、颗粒形状（klxz）50、湿度（sd）50、夹层
+                                             碎石土：母岩成分（mycf）50、夹层
+                                             冲填土：物质成分（wzcf）50、颜色
+                                             粉黏互层：包含物
+                                             黄土状粘性土：包含物
+                                             黄土状粉土：包含物
+                                             淤泥：包含物、状态（zt）50
+                                             */
+                                            int have = 0;
+                                            if (record.getCode().length() > 20) {
+                                                record.setCode(record.getCode().substring(0, 20));
+                                                have++;
+                                            }
+                                            if (record.getDescription().length() > 50) {
+                                                record.setDescription(record.getDescription().substring(0, 50));
+                                                have++;
+                                            }
+                                            if (record.getTestType().length() > 100) {
+                                                record.setTestType(record.getTestType().substring(0, 100));
+                                                have++;
+                                            }
+                                            if (record.getCauses().length() > 150) {
+                                                record.setCauses(record.getCauses().substring(0, 150));
+                                                have++;
+                                            }
+                                            if (record.getZycf().length() > 50) {
+                                                record.setZycf(record.getZycf().substring(0, 50));
+                                                have++;
+                                            }
+                                            if (record.getCycf().length() > 50) {
+                                                record.setCycf(record.getCycf().substring(0, 50));
+                                                have++;
+                                            }
+                                            if (record.getYs().length() > 50) {
+                                                record.setYs(record.getYs().substring(0, 50));
+                                                have++;
+                                            }
+                                            if (record.getBhw().length() > 50) {
+                                                record.setBhw(record.getBhw().substring(0, 50));
+                                                have++;
+                                            }
+                                            if (record.getJc().length() > 50) {
+                                                record.setJc(record.getJc().substring(0, 50));
+                                                have++;
+                                            }
+                                            if (record.getKwzc().length() > 50) {
+                                                record.setKwzc(record.getKwzc().substring(0, 50));
+                                                have++;
+                                            }
+                                            if (record.getKlxz().length() > 50) {
+                                                record.setKlxz(record.getKlxz().substring(0, 50));
+                                                have++;
+                                            }
+                                            if (record.getSd().length() > 50) {
+                                                record.setSd(record.getSd().substring(0, 50));
+                                                have++;
+                                            }
+                                            if (record.getMycf().length() > 50) {
+                                                record.setMycf(record.getMycf().substring(0, 50));
+                                                have++;
+                                            }
+                                            if (record.getWzcf().length() > 50) {
+                                                record.setWzcf(record.getWzcf().substring(0, 50));
+                                                have++;
+                                            }
+                                            if (record.getZt().length() > 50) {
+                                                record.setZt(record.getZt().substring(0, 50));
+                                                have++;
+                                            }
+                                            if (have > 0) {
+                                                recordDao.update(record);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    SPUtils.put(MainActivity.this, Urls.SPKey.DATA_INIT, true);
+                }
+                boolean initData2 = (boolean) SPUtils.get(MainActivity.this, Urls.SPKey.DATA_INIT2, false);
+                if (!initData2 && newFile.exists() && !TextUtils.isEmpty(userID)) {
+                    L.e("onSubscribe:遍历数据库开始---第二次");
+                    List<Project> projectList = projectDao.getAll(userID);
+                    if (projectList != null && projectList.size() > 0) {
+                        for (Project project : projectList) {
+                            List<Record> recordList = recordDao.getRecordListByProjectIDAndType(project.getId(), Record.TYPE_SCENE_OPERATEPERSON);
+                            if (recordList != null && recordList.size() > 0) {
+                                for (Record record : recordList) {
+                                    if (record.getTestType().length() > 50) {
+                                        record.setTestType(record.getTestType().substring(0, 50));
+                                        recordDao.update(record);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    SPUtils.put(MainActivity.this, Urls.SPKey.DATA_INIT2, true);
+                }
                 break;
         }
     }
@@ -406,150 +515,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public void onComplete(int type) {
         switch (type) {
             case 1:
-                dismissPPW();
-                //初始化project布局
-                initProject();
-                //检查版本
-                UpdateUtil.checkVersion(MainActivity.this, false);
-                obsUtils.execute(2);
+                L.e("onComplete:遍历数据库结束");
                 break;
-            case 2:
-                L.e("遍历数据库结束:检查长度");
-                break;
-        }
-    }
-
-    private void checkDB() {
-        //遍历所有字段，检查长度
-        File newFile = new File(Urls.DATABASE_BASE);
-        boolean initData = (boolean) SPUtils.get(MainActivity.this, Urls.SPKey.DATA_INIT, false);
-        if (!initData && newFile.exists() && !TextUtils.isEmpty(userID)) {
-            L.e("遍历数据库开始:检查长度-开始遍历");
-            List<Project> projectList = ProjectDao.getInstance().getAll(userID);
-            if (projectList != null && projectList.size() > 0) {
-                for (Project project : projectList) {
-                    //项目名称 200
-                    if (project.getFullName().length() > 200) {
-                        project.setFullName(project.getFullName().substring(0, 200));
-                        ProjectDao.getInstance().addOrUpdate(project);
-                    }
-                    List<Hole> holeList = HoleDao.getInstance().getHoleListByProjectID(project.getId());
-                    if (holeList != null && holeList.size() > 0) {
-                        for (Hole hole : holeList) {
-                            //勘探点编号 20
-                            if (hole.getCode().length() > 20) {
-                                hole.setCode(hole.getCode().substring(0, 20));
-                                HoleDao.getInstance().addOrUpdate(hole);
-                            }
-                            List<Record> recordList = RecordDao.getInstance().getRecordListByHoleID(hole.getId());
-                            if (recordList != null && recordList.size() > 0) {
-                                for (Record record : recordList) {
-                                    /**
-                                     记录：编号（code）20、其他描述（description）50、
-                                     取土：试验类型（testType）100
-                                     岩土：地质成因（causes）150、
-                                     填土：主要成分（zycf）50、次要成分（cycf）50、颜色（ys）50、
-                                     黏性土：包含物（bhw）50、夹层（jc）50
-                                     粉土：包含物、夹层
-                                     砂土：矿物组成（kwzc）50、颜色、颗粒形状（klxz）50、湿度（sd）50、夹层
-                                     碎石土：母岩成分（mycf）50、夹层
-                                     冲填土：物质成分（wzcf）50、颜色
-                                     粉黏互层：包含物
-                                     黄土状粘性土：包含物
-                                     黄土状粉土：包含物
-                                     淤泥：包含物、状态（zt）50
-                                     */
-                                    int have = 0;
-                                    if (record.getCode().length() > 20) {
-                                        record.setCode(record.getCode().substring(0, 20));
-                                        have++;
-                                    }
-                                    if (record.getDescription().length() > 50) {
-                                        record.setDescription(record.getDescription().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getTestType().length() > 100) {
-                                        record.setTestType(record.getTestType().substring(0, 100));
-                                        have++;
-                                    }
-                                    if (record.getCauses().length() > 150) {
-                                        record.setCauses(record.getCauses().substring(0, 150));
-                                        have++;
-                                    }
-                                    if (record.getZycf().length() > 50) {
-                                        record.setZycf(record.getZycf().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getCycf().length() > 50) {
-                                        record.setCycf(record.getCycf().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getYs().length() > 50) {
-                                        record.setYs(record.getYs().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getBhw().length() > 50) {
-                                        record.setBhw(record.getBhw().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getJc().length() > 50) {
-                                        record.setJc(record.getJc().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getKwzc().length() > 50) {
-                                        record.setKwzc(record.getKwzc().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getKlxz().length() > 50) {
-                                        record.setKlxz(record.getKlxz().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getSd().length() > 50) {
-                                        record.setSd(record.getSd().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getMycf().length() > 50) {
-                                        record.setMycf(record.getMycf().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getWzcf().length() > 50) {
-                                        record.setWzcf(record.getWzcf().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getZt().length() > 50) {
-                                        record.setZt(record.getZt().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (have > 0) {
-                                        RecordDao.getInstance().addOrUpdate(record);
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
-            SPUtils.put(MainActivity.this, Urls.SPKey.DATA_INIT, true);
-        }
-        boolean initData2 = (boolean) SPUtils.get(MainActivity.this, Urls.SPKey.DATA_INIT2, false);
-        if (!initData2 && newFile.exists() && !TextUtils.isEmpty(userID)) {
-            L.e("onSubscribe:遍历数据库开始---第二次");
-            List<Project> projectList = ProjectDao.getInstance().getAll(userID);
-            if (projectList != null && projectList.size() > 0) {
-                for (Project project : projectList) {
-                    List<Record> recordList = RecordDao.getInstance().getRecordListByProjectIDAndType(project.getId(), Record.TYPE_SCENE_OPERATEPERSON);
-                    if (recordList != null && recordList.size() > 0) {
-                        for (Record record : recordList) {
-                            if (record.getTestType().length() > 50) {
-                                record.setTestType(record.getTestType().substring(0, 50));
-                                RecordDao.getInstance().addOrUpdate(record);
-                            }
-                        }
-                    }
-                }
-            }
-            SPUtils.put(MainActivity.this, Urls.SPKey.DATA_INIT2, true);
         }
     }
 }

@@ -67,7 +67,6 @@ public class Gps implements Serializable {
     String distance = "";
     @DatabaseField
     String downloadID = "";         //下载数据的id
-
     public Gps() {
 
     }
@@ -112,6 +111,17 @@ public class Gps implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    //删除
+    public boolean delete(Context context) {
+        try {
+            return new GpsDao(context).delete(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 

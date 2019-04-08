@@ -36,6 +36,7 @@ import okhttp3.Request;
 public class PreviewActivity extends AppCompatActivity {
     public static final String EXTRA_HOLE = "hole";
     private Hole hole;
+    private HoleDao holeDao;
     private PreviewCountFragment CountFragment;
     private PreviewShowFragment ShowFragment;
 
@@ -48,8 +49,9 @@ public class PreviewActivity extends AppCompatActivity {
         //接收传递的信息
         Bundle bundle = this.getIntent().getExtras();
         hole = (Hole) bundle.getSerializable(EXTRA_HOLE);
+        holeDao = new HoleDao(this);
         //由于传来的hole不完整，所有再次查询完整的hole
-        hole = HoleDao.getInstance().queryById(hole.getId());
+        hole = holeDao.queryForId(hole.getId());
         setContentView(R.layout.act_preview);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.preview_toolBar);
         mToolbar.setTitle("预览相关");

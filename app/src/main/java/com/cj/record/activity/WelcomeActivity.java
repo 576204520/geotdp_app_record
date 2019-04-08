@@ -86,7 +86,6 @@ public class WelcomeActivity extends BaseActivity {
         rxPermissions.requestEach(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA)
                 .subscribe(new io.reactivex.functions.Consumer<Permission>() {

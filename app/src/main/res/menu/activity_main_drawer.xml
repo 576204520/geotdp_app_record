@@ -33,11 +33,6 @@
                 android:id="@+id/nav_quit"
                 android:icon="@mipmap/ai_icon_quit"
                 android:title="退出" />
-            <item
-                android:id="@+id/nav_decirpt"
-                android:icon="@mipmap/ai_icon_quit"
-                android:visible="false"
-                android:title="解密数据库" />
         </menu>
     </item>
 

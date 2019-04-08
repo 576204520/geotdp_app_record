@@ -11,7 +11,6 @@ import com.cj.record.R;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
-import com.cj.record.db.DictionaryDao;
 import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.views.MaterialBetterSpinner;
 
@@ -61,13 +60,13 @@ public class LayerDescYsFragment extends RecordBaseFragment {
     @Override
     public void initData() {
         super.initData();
-        sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("岩石_颜色"));
-        sprJycdList = DictionaryDao.getInstance().getDropItemList(getSqlString("岩石_坚硬程度"));
-        sprWzcdList = DictionaryDao.getInstance().getDropItemList(getSqlString("岩石_完整程度"));
-        sprJbzldjList = DictionaryDao.getInstance().getDropItemList(getSqlString("岩石_基本质量等级"));
-        sprFhcdList = DictionaryDao.getInstance().getDropItemList(getSqlString("岩石_风化程度"));
-        sprKwxList = DictionaryDao.getInstance().getDropItemList(getSqlString("岩石_可挖性"));
-        sprJglxList = DictionaryDao.getInstance().getDropItemList(getSqlString("岩石_结构类型"));
+        sprYsList = dictionaryDao.getDropItemList(getSqlString("岩石_颜色"));
+        sprJycdList = dictionaryDao.getDropItemList(getSqlString("岩石_坚硬程度"));
+        sprWzcdList = dictionaryDao.getDropItemList(getSqlString("岩石_完整程度"));
+        sprJbzldjList = dictionaryDao.getDropItemList(getSqlString("岩石_基本质量等级"));
+        sprFhcdList = dictionaryDao.getDropItemList(getSqlString("岩石_风化程度"));
+        sprKwxList = dictionaryDao.getDropItemList(getSqlString("岩石_可挖性"));
+        sprJglxList = dictionaryDao.getDropItemList(getSqlString("岩石_结构类型"));
 
         sprYs.setAdapter(mActivity, sprYsList, MaterialBetterSpinner.MODE_CLEAR_CUSTOM);
         sprYs.setOnItemClickListener(ysListener);
@@ -122,10 +121,10 @@ public class LayerDescYsFragment extends RecordBaseFragment {
     @Override
     public boolean layerValidator() {
         if (sortNoYs > 0) {
-            DictionaryDao.getInstance().add(new Dictionary("1", "岩石_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "岩石_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
         }
         if (sortNOKwx > 0) {
-            DictionaryDao.getInstance().add(new Dictionary("1", "岩石_可挖性", sprKwx.getText().toString().trim(), "" + sortNOKwx, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "岩石_可挖性", sprKwx.getText().toString().trim(), "" + sortNOKwx, userID, Record.TYPE_LAYER));
         }
         return true;
     }

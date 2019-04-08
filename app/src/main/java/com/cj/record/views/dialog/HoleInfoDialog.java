@@ -57,6 +57,7 @@ public class HoleInfoDialog extends DialogFragment {
     private Project project;
     private Hole hole;
     private Record jRecord, zRecord;
+    private RecordDao recordDao;
 
     public HoleInfoDialog() {
 
@@ -66,8 +67,9 @@ public class HoleInfoDialog extends DialogFragment {
         this.hole = hole;
         this.context = context;
         this.project = project;
-        jRecord = RecordDao.getInstance().getRecordByType(hole.getId(), Record.TYPE_SCENE_OPERATEPERSON);
-        zRecord = RecordDao.getInstance().getRecordByType(hole.getId(), Record.TYPE_SCENE_OPERATECODE);
+        recordDao = new RecordDao(context);
+        jRecord = recordDao.getRecordByType(hole.getId(), Record.TYPE_SCENE_OPERATEPERSON);
+        zRecord = recordDao.getRecordByType(hole.getId(), Record.TYPE_SCENE_OPERATECODE);
         show(context.getSupportFragmentManager(), "FOLDER_SELECTOR");
     }
 

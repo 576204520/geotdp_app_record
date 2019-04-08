@@ -14,7 +14,6 @@ import com.cj.record.R;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
-import com.cj.record.db.DictionaryDao;
 import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
@@ -64,10 +63,10 @@ public class LayerDescNxtFragment extends RecordBaseFragment {
     @Override
     public void initData() {
         super.initData();
-        sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("黏性土_颜色"));
-        sprZtList = DictionaryDao.getInstance().getDropItemList(getSqlString("黏性土_状态"));
-        sprBhwList = DictionaryDao.getInstance().getDropItemList(getSqlString("黏性土_包含物"));
-        sprJcList = DictionaryDao.getInstance().getDropItemList(getSqlString("黏性土_夹层"));
+        sprYsList = dictionaryDao.getDropItemList(getSqlString("黏性土_颜色"));
+        sprZtList = dictionaryDao.getDropItemList(getSqlString("黏性土_状态"));
+        sprBhwList = dictionaryDao.getDropItemList(getSqlString("黏性土_包含物"));
+        sprJcList = dictionaryDao.getDropItemList(getSqlString("黏性土_夹层"));
 
 
         bhwList = new ArrayList<>();
@@ -229,10 +228,10 @@ public class LayerDescNxtFragment extends RecordBaseFragment {
     @Override
     public boolean layerValidator() {
         if (sortNoYs > 0) {
-            DictionaryDao.getInstance().add(new Dictionary("1", "黏性土_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
+            dictionaryDao.addDictionary(new Dictionary("1", "黏性土_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
         }
         if (dictionaryList.size() > 0) {
-            DictionaryDao.getInstance().addDictionaryList(dictionaryList);
+            dictionaryDao.addDictionaryList(dictionaryList);
         }
         return true;
     }

@@ -77,6 +77,10 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
     EditText projecEditLaborUnit;
 
     private boolean isEdit;//true编辑、false添加
+    private ProjectDao projectDao;
+    private HoleDao holeDao;
+    private RecordDao recordDao;
+    private MediaDao mediaDao;
     private Project project;
     private ObsUtils obsUtils;
     private String oldNumber;
@@ -148,7 +152,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
             Common.showMessage(this, "用户信息丢失，请尝试重新登陆");
             return;
         }
-        boolean isHave = ProjectDao.getInstance().checkNumber(userID, number, project.getId());
+        boolean isHave = projectDao.checkNumber(userID, number, project.getId());
         if (isHave) {
             Common.showMessage(this, "该序列号本地已经存在");
             return;
@@ -227,7 +231,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                     return true;
                 }
                 project.setFullName(projecEditName.getText().toString());
-                ProjectDao.getInstance().addOrUpdate(project);
+                projectDao.update(project);
                 setResult(RESULT_OK);
                 finish();
                 return true;
@@ -238,7 +242,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
     @Override
     public void onBackPressed() {
         if (!isEdit && TextUtils.isEmpty(project.getSerialNumber())) {
-            ProjectDao.getInstance().delete(project);
+            projectDao.delete(project);
         }
         setResult(RESULT_OK);
         //该方法自动调用finish()
@@ -250,6 +254,10 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
         switch (type) {
             case 1:
                 isEdit = getIntent().getBooleanExtra(MainActivity.FROMTYPE, false);
+                projectDao = new ProjectDao(mContext);
+                holeDao = new HoleDao(this);
+                recordDao = new RecordDao(this);
+                mediaDao = new MediaDao(this);
                 if (isEdit) {
                     //true编辑
                     project = (Project) getIntent().getSerializableExtra(MainActivity.PROJECT);
@@ -257,7 +265,7 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                 } else {
                     //false添加
                     project = new Project(mContext);
-                    ProjectDao.getInstance().addOrUpdate(project);
+                    projectDao.add(project);
                 }
 
                 break;
@@ -265,13 +273,13 @@ public class ProjectEditActiity extends BaseActivity implements ObsUtils.ObsLins
                 if (isEdit) {
                     if (!TextUtils.isEmpty(oldNumber) && !oldNumber.equals(project.getSerialNumber())) {
                         project.setState("1");
-                        HoleDao.getInstance().updateState(project.getId());
-                        RecordDao.getInstance().updateState(project.getId());
-                        MediaDao.getInstance().updateState(project.getId());
+                        holeDao.updateState(project.getId());
+                        recordDao.updateState(project.getId());
+                        mediaDao.updateState(project.getId());
                     }
-                    ProjectDao.getInstance().addOrUpdate(project);
+                    projectDao.update(project);
                 } else {
-                    ProjectDao.getInstance().addOrUpdate(project);
+                    projectDao.add(project);
                 }
                 break;
         }

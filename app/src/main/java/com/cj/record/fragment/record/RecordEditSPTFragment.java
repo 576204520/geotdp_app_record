@@ -382,7 +382,8 @@ public class RecordEditSPTFragment extends RecordBaseFragment {
     public boolean validator() {
         boolean validator = true;
         validator = validator(edtBegin1, edtEnd1) || validator(edtBegin2, edtEnd2) || validator(edtBegin3, edtEnd3) || validator(edtBegin4, edtEnd4);
-        if (RecordDao.getInstance().validatorBeginDepth(record, Record.TYPE_DPT, edtBegin1.getText().toString())) {
+        RecordDao recordDao = new RecordDao(mActivity);
+        if (recordDao.validatorBeginDepth(record, Record.TYPE_DPT, edtBegin1.getText().toString())) {
             edtBegin1.setError("与其他记录重叠");
             validator = false;
         }
@@ -394,7 +395,7 @@ public class RecordEditSPTFragment extends RecordBaseFragment {
         } else {
             edtEnd = edtEnd2;
         }
-        if (RecordDao.getInstance().validatorEndDepth(record, Record.TYPE_DPT, edtEnd.getText().toString())) {
+        if (recordDao.validatorEndDepth(record, Record.TYPE_DPT, edtEnd.getText().toString())) {
             edtEnd.setError("与其他记录重叠");
             validator = false;
         }

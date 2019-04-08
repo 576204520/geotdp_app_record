@@ -20,21 +20,27 @@ package com.cj.record.baen;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.amap.api.location.AMapLocation;
+import com.cj.record.db.DBHelper;
 import com.cj.record.db.GpsDao;
 import com.cj.record.db.MediaDao;
 import com.cj.record.db.RecordDao;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
+import com.cj.record.utils.L;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -348,8 +354,9 @@ public class Record implements Serializable, Cloneable {
     public Record(Context context, Hole hole, String recordType) {
         try {
             this.id = Common.getUUID();
+            RecordDao recordDao = new RecordDao(context);
             DecimalFormat df = new DecimalFormat("000");
-            List<Record> recordList = RecordDao.getInstance().getCodeMapNew(hole.getId(), recordType);
+            List<Record> recordList = recordDao.getCodeMapNew(hole.getId(), recordType);
             String codeStr = "";
 
             if (recordList != null && recordList.size() > 0) {
@@ -371,7 +378,7 @@ public class Record implements Serializable, Cloneable {
                     codeStr = str + df.format(codeInt);
                 }
             } else {
-                HashMap codeMap = RecordDao.getInstance().getCodeMap(hole.getId());
+                HashMap codeMap = recordDao.getCodeMap(hole.getId());
                 int codeInt = 1;
                 String typeStr = getTypeCode(recordType);
                 codeStr = typeStr + "-" + df.format(codeInt);
@@ -448,8 +455,10 @@ public class Record implements Serializable, Cloneable {
 
     public Record getRecord(Context context, String holeID, String recordType) {
         Record record = null;
+        DBHelper dbHelper = DBHelper.getInstance(context);
         try {
-            GenericRawResults<Record> results = RecordDao.getInstance().getDAO().queryRaw("select id,code,type,updateTime,beginDepth,endDepth,title from record where holeID='" + holeID + "' and updateID='' and state !='0' and type='" + recordType + "' order by endDepth desc limit 0,1", new RawRowMapper<Record>() {
+            Dao<Record, String> dao = dbHelper.getDao(Record.class);
+            GenericRawResults<Record> results = dao.queryRaw("select id,code,type,updateTime,beginDepth,endDepth,title from record where holeID='" + holeID + "' and updateID='' and state !='0' and type='" + recordType + "' order by endDepth desc limit 0,1", new RawRowMapper<Record>() {
                 @Override
                 public Record mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
                     Record record = new Record();
@@ -466,7 +475,7 @@ public class Record implements Serializable, Cloneable {
             });
             record = results.getFirstResult();
             if (null != record) {
-                record = RecordDao.getInstance().getDAO().queryForId(record.getId());
+                record = dao.queryForId(record.getId());
             }
 
 
@@ -481,19 +490,25 @@ public class Record implements Serializable, Cloneable {
      *
      * @param context
      */
-    public void delete(Context context) {
-        //先删除所有的照片.
-        List<Media> medias = MediaDao.getInstance().getMediaListByRecordID(id);
-        for (Media media : medias) {
-            media.delete(context);
+    public boolean delete(Context context) {
+        try {
+            //先删除所有的照片.
+            List<Media> medias = new MediaDao(context).getMediaListByRecordID(id);
+            for (Media media : medias) {
+                media.delete(context);
+            }
+            //删除对应的GPS.
+            Gps gps = new GpsDao(context).getGpsByRecord(getId());
+            if (gps == null || gps.delete(context)) {
+                //再删记录本身.
+                if (new RecordDao(context).delete(this)) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        //删除对应的GPS.
-        Gps gps = GpsDao.getInstance().getGpsByRecord(getId());
-        if (gps != null) {
-            GpsDao.getInstance().delete(gps);
-            //再删记录本身.
-            RecordDao.getInstance().delete(this);
-        }
+        return false;
     }
 
     public void setValue(Record record) {
