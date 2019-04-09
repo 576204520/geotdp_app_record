@@ -1,88 +1,63 @@
 package com.cj.record.db;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
+import com.alibaba.idst.nls.internal.utils.L;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.LocalUser;
 import com.cj.record.baen.Template;
 import com.cj.record.baen.TemplateDetail;
-import com.cj.record.utils.L;
+import com.cj.record.utils.SqlcipherUtil;
 import com.cj.record.utils.Urls;
-import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
-import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.sqlcipher.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
+import net.sqlcipher.database.SQLiteDatabase;
+
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Created by
- *
- * @author XuFeng
- *         2015/8/14.
+ * Created by Stay on 29/10/15.
+ * Powered by www.stay4it.com
  */
-public class DBHelper extends OrmLiteSqliteOpenHelper {
-    public static final String DB_NAME = Urls.DATABASE_BASE;//完整路径
-    public static final int DB_VERSION = 9;
+public class CipherDbHelper extends OrmLiteSqliteOpenHelper {
+    public static final int databaseVersion = 10;
 
-    public DBHelper(Context context) {
-        super(context, DB_NAME, null, DB_VERSION);
+    private String databaseName;
+    private String password;
+
+    public CipherDbHelper(Context context, String databaseName, String password) {
+        super(context, databaseName, null, databaseVersion);
+        this.databaseName = databaseName;
+        this.password = password;
+        getWritableDatabase();
     }
 
-    private static DBHelper instance;
-    private Map<String, Dao> daos = new HashMap<String, Dao>();
-
-    /**
-     * 单例获取该Helper
-     *
-     * @param context
-     * @return
-     */
-    public static synchronized DBHelper getInstance(Context context) {
-        if (instance == null) {
-            synchronized (DBHelper.class) {
-                if (instance == null)
-                    instance = new DBHelper(context);
-            }
-        }
-        return instance;
-    }
-
-
-    public synchronized Dao getDao(Class clazz) throws SQLException {
-        Dao dao = null;
-        String className = clazz.getSimpleName();
-        if (daos.containsKey(className)) {
-            dao = daos.get(className);
-        }
-        if (dao == null) {
-            dao = super.getDao(clazz);
-            daos.put(className, dao);
-        }
-        return dao;
-    }
-
-
-    /**
-     * 释放资源
-     */
-    @Override
-    public void close() {
-        super.close();
-        for (String key : daos.keySet()) {
-            Dao dao = daos.get(key);
-            dao = null;
-        }
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
-        L.e("TAG", "DBHelper>>>>>onCreate");
+    public synchronized SQLiteDatabase getWritableDatabase() {
         try {
-            //老测试版没有这个表，就创建它
+            return super.getWritableDatabase(password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //尝试加密后再打开
+            encrypt();
+            return super.getWritableDatabase(password);
+        }
+    }
+
+    private void encrypt() {
+        try {
+            SqlcipherUtil.encrypt(databaseName, password);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
+        L.e("CipherDbHelper:onCreate:");
+        try {
             TableUtils.createTableIfNotExists(connectionSource, LocalUser.class);
             TableUtils.createTableIfNotExists(connectionSource, Dictionary.class);
             TableUtils.createTableIfNotExists(connectionSource, Template.class);
@@ -90,8 +65,8 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
+
 
     private String ALTER_RECORD_UPDATEID = "ALTER TABLE `record` ADD COLUMN updateID VARCHAR(45) default '';";
     private String UPDATE_DICTIONARY_LAYERNAME = "update dictionary set sort = dictionary.type  where sort = '土的名称'";
@@ -203,9 +178,10 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     private String ADD_UPLOADID = "ALTER TABLE `hole` ADD COLUMN uploadID char(32) default '';";
     private String ADD_STATEGW = "ALTER TABLE `hole` ADD COLUMN stateGW tinyint(1);";
     private String ADD_STATEGW_UD = "update `hole` set stateGW=state;";
+
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-        L.e("TAG", "DBHelper>>>>>onUpgrade--old=" + oldVersion + "--new=" + newVersion);
+        L.e("CipherDbHelper:onUpgrade:old=" + oldVersion + "  new=" + newVersion);
         if (oldVersion < 2) {
             //record添加updateID字段
             sqLiteDatabase.execSQL(ALTER_RECORD_UPDATEID);
@@ -288,7 +264,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             sqLiteDatabase.execSQL(ADD_DOWNLOADID_R);
             sqLiteDatabase.execSQL(ADD_DOWNLOADID_G);
         }
-        if (oldVersion < 9){
+        if (oldVersion < 9) {
             sqLiteDatabase.execSQL(ADD_ISUPLOAD);
             sqLiteDatabase.execSQL(ADD_PROJECTID);
             sqLiteDatabase.execSQL(ADD_LABORUNIT);
@@ -297,12 +273,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             sqLiteDatabase.execSQL(ADD_STATEGW);
             sqLiteDatabase.execSQL(ADD_STATEGW_UD);
         }
+
     }
 
-
-    @Override
-    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        super.onDowngrade(db, oldVersion, newVersion);
-        L.e("TAG", "DBHelper>>>>>onDowngrade--old=" + oldVersion + "--new=" + newVersion);
-    }
 }

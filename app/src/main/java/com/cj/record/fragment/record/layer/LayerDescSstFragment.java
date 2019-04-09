@@ -13,6 +13,7 @@ import com.cj.record.R;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
+import com.cj.record.db.DictionaryDao;
 import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
@@ -93,21 +94,21 @@ public class LayerDescSstFragment extends RecordBaseFragment {
     @Override
     public void initData() {
         super.initData();
-        sprYsList = dictionaryDao.getDropItemList(getSqlString("碎石土_颜色"));        //颜色
-        sprMsdList = dictionaryDao.getDropItemList(getSqlString("碎石土_密实度"));        //密实度
-        sprTcwList = dictionaryDao.getDropItemList(getSqlString("碎石土_充填物"));        //充填物
-        sprKlxzList = dictionaryDao.getDropItemList(getSqlString("碎石土_颗粒形状"));      //颗粒形状
-        sprKlplList = dictionaryDao.getDropItemList(getSqlString("碎石土_颗粒排列"));      //颗粒排列
-        sprYbljxList = dictionaryDao.getDropItemList(getSqlString("碎石土_一般粒径小"));     //一般粒径小
-        sprYbljdList = dictionaryDao.getDropItemList(getSqlString("碎石土_一般粒径大"));     //一般粒径大
-        sprJdljxList = dictionaryDao.getDropItemList(getSqlString("碎石土_较大粒径小"));     //较大粒径小
-        sprJdljdList = dictionaryDao.getDropItemList(getSqlString("碎石土_较大粒径大"));     //较大粒径大
-        sprZdljList = dictionaryDao.getDropItemList(getSqlString("碎石土_最大粒径"));      //最大粒径
-        sprMycfList = dictionaryDao.getDropItemList(getSqlString("碎石土_母岩成份"));      //岩母成份
-        sprFhcdList = dictionaryDao.getDropItemList(getSqlString("碎石土_风化程度"));      //风化程度
-        sprKljpList = dictionaryDao.getDropItemList(getSqlString("碎石土_颗粒级配"));      //颗粒级配
-        sprSdList = dictionaryDao.getDropItemList(getSqlString("碎石土_湿度"));        //湿度
-        sprJcList = dictionaryDao.getDropItemList(getSqlString("碎石土_夹层"));        //夹层
+        sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_颜色"));        //颜色
+        sprMsdList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_密实度"));        //密实度
+        sprTcwList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_充填物"));        //充填物
+        sprKlxzList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_颗粒形状"));      //颗粒形状
+        sprKlplList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_颗粒排列"));      //颗粒排列
+        sprYbljxList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_一般粒径小"));     //一般粒径小
+        sprYbljdList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_一般粒径大"));     //一般粒径大
+        sprJdljxList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_较大粒径小"));     //较大粒径小
+        sprJdljdList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_较大粒径大"));     //较大粒径大
+        sprZdljList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_最大粒径"));      //最大粒径
+        sprMycfList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_母岩成份"));      //岩母成份
+        sprFhcdList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_风化程度"));      //风化程度
+        sprKljpList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_颗粒级配"));      //颗粒级配
+        sprSdList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_湿度"));        //湿度
+        sprJcList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_夹层"));        //夹层
 
         sprYs.setAdapter(mActivity, sprYsList, MaterialBetterSpinner.MODE_CLEAR_CUSTOM);
         sprYs.setOnItemClickListener(ysListener);
@@ -155,8 +156,8 @@ public class LayerDescSstFragment extends RecordBaseFragment {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
                                     if (mycfStr.toString().trim().length() > 50) {
-                                        ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
-                                    }else{
+                                        ToastUtil.showToastS(mActivity, "该字段最大50字符，请重新选择");
+                                    } else {
                                         sprMycf.setText(mycfStr.toString().trim());
                                         dialog.dismiss();
                                     }
@@ -218,8 +219,8 @@ public class LayerDescSstFragment extends RecordBaseFragment {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
                                     if (jcStr.toString().trim().length() > 50) {
-                                        ToastUtil.showToastS(mActivity,"该字段最大50字符，请重新选择");
-                                    }else{
+                                        ToastUtil.showToastS(mActivity, "该字段最大50字符，请重新选择");
+                                    } else {
                                         sprJc.setText(jcStr.toString().trim());
                                         dialog.dismiss();
                                     }
@@ -281,31 +282,31 @@ public class LayerDescSstFragment extends RecordBaseFragment {
     @Override
     public boolean layerValidator() {
         if (sortNoYs > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
+            DictionaryDao.getInstance().add(new Dictionary("1", "碎石土_颜色", sprYs.getText().toString().trim(), "" + sortNoYs, userID, Record.TYPE_LAYER));
         }
         if (sortNoTcw > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_充填物", sprTcw.getText().toString().trim(), "" + sortNoTcw, userID, Record.TYPE_LAYER));
+            DictionaryDao.getInstance().add(new Dictionary("1", "碎石土_充填物", sprTcw.getText().toString().trim(), "" + sortNoTcw, userID, Record.TYPE_LAYER));
         }
         if (sortNoKlxz > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_颗粒形状", sprKlxz.getText().toString().trim(), "" + sortNoKlxz, userID, Record.TYPE_LAYER));
+            DictionaryDao.getInstance().add(new Dictionary("1", "碎石土_颗粒形状", sprKlxz.getText().toString().trim(), "" + sortNoKlxz, userID, Record.TYPE_LAYER));
         }
         if (sortNoYbljx > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_一般粒径小", sprYbljx.getText().toString().trim(), "" + sortNoYbljx, userID, Record.TYPE_LAYER));
+            DictionaryDao.getInstance().add(new Dictionary("1", "碎石土_一般粒径小", sprYbljx.getText().toString().trim(), "" + sortNoYbljx, userID, Record.TYPE_LAYER));
         }
         if (sortNoYbljd > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_一般粒径大", sprYbljd.getText().toString().trim(), "" + sortNoYbljd, userID, Record.TYPE_LAYER));
+            DictionaryDao.getInstance().add(new Dictionary("1", "碎石土_一般粒径大", sprYbljd.getText().toString().trim(), "" + sortNoYbljd, userID, Record.TYPE_LAYER));
         }
         if (sortNoJdljx > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_较大粒径小", sprJdljx.getText().toString().trim(), "" + sortNoJdljx, userID, Record.TYPE_LAYER));
+            DictionaryDao.getInstance().add(new Dictionary("1", "碎石土_较大粒径小", sprJdljx.getText().toString().trim(), "" + sortNoJdljx, userID, Record.TYPE_LAYER));
         }
         if (sortNoJdljd > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_较大粒径大", sprJdljd.getText().toString().trim(), "" + sortNoJdljd, userID, Record.TYPE_LAYER));
+            DictionaryDao.getInstance().add(new Dictionary("1", "碎石土_较大粒径大", sprJdljd.getText().toString().trim(), "" + sortNoJdljd, userID, Record.TYPE_LAYER));
         }
         if (sortNoZdlj > 0) {
-            dictionaryDao.addDictionary(new Dictionary("1", "碎石土_最大粒径", sprZdlj.getText().toString().trim(), "" + sortNoZdlj, userID, Record.TYPE_LAYER));
+            DictionaryDao.getInstance().add(new Dictionary("1", "碎石土_最大粒径", sprZdlj.getText().toString().trim(), "" + sortNoZdlj, userID, Record.TYPE_LAYER));
         }
         if (dictionaryList.size() > 0) {
-            dictionaryDao.addDictionaryList(dictionaryList);
+            DictionaryDao.getInstance().addDictionaryList(dictionaryList);
         }
         return true;
     }

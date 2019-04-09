@@ -13,6 +13,7 @@ import com.cj.record.adapter.DropListAdapter;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
+import com.cj.record.db.DictionaryDao;
 import com.cj.record.views.MaterialBetterSpinner;
 import com.cj.record.views.MaterialEditTextMillimeter;
 
@@ -84,12 +85,12 @@ public class RecordEditFrequencyFragment extends RecordBaseFragment {
 
 
     private List<DropItemVo> getLayerTypeList() {
-        typeList = dictionaryDao.getDropItemList(getSqlString("钻进方法"));
+        typeList = DictionaryDao.getInstance().getDropItemList(getSqlString("钻进方法"));
         return typeList;
     }
 
     private List<DropItemVo> getModeList() {
-        modeList = dictionaryDao.getDropItemList(getSqlString("护壁方法"));
+        modeList = DictionaryDao.getInstance().getDropItemList(getSqlString("护壁方法"));
         return modeList;
     }
 
@@ -116,10 +117,10 @@ public class RecordEditFrequencyFragment extends RecordBaseFragment {
     public boolean validator() {
         boolean validator = true;
         if (sortNoType > 0 && validator) {
-            dictionaryDao.addDictionary(new Dictionary("1", "钻进方法", sprType.getText().toString().trim(), "" + sortNoType, userID, Record.TYPE_FREQUENCY));
+            DictionaryDao.getInstance().add(new Dictionary("1", "钻进方法", sprType.getText().toString().trim(), "" + sortNoType, userID, Record.TYPE_FREQUENCY));
         }
         if (sortNoMode > 0 && validator) {
-            dictionaryDao.addDictionary(new Dictionary("1", "护壁方法", sprMode.getText().toString().trim(), "" + sortNoMode, userID, Record.TYPE_FREQUENCY));
+            DictionaryDao.getInstance().add(new Dictionary("1", "护壁方法", sprMode.getText().toString().trim(), "" + sortNoMode, userID, Record.TYPE_FREQUENCY));
         }
         return validator;
     }

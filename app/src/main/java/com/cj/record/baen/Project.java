@@ -142,14 +142,13 @@ public class Project implements Serializable {
     public Project(Context context) {
         this.serialNumber = "";
         this.id = Common.getUUID();
-        ProjectDao projectDao = new ProjectDao(context);
-        HashMap codeMap = projectDao.getCodeMap();
+        HashMap codeMap = ProjectDao.getInstance().getCodeMap();
         DecimalFormat df = new DecimalFormat("000");
         int codeInt = 1;
         String codeStr0 = "XM-";
         String codeStr = codeStr0 + df.format(codeInt);
 
-        HashMap fullNameMap = projectDao.getFullNameMap();
+        HashMap fullNameMap = ProjectDao.getInstance().getFullNameMap();
         String fullNameStr1 = "号项目";
         String fullNameStr = df.format(codeInt) + fullNameStr1;
 
@@ -184,6 +183,7 @@ public class Project implements Serializable {
         //到添加项目这里，必定是登录过了 这里添加的的userid
         this.recordPerson = (String) SPUtils.get(context, Urls.SPKey.USER_ID, "");
     }
+
     /**
      * 删除项目
      *
@@ -192,13 +192,11 @@ public class Project implements Serializable {
     public boolean delete(Context context) {
         try {
             //先删除所有勘探点.
-            List<Hole> holes = new HoleDao(context).getHoleListByProjectID(id);
+            List<Hole> holes = HoleDao.getInstance().getHoleListByProjectID(id);
             for (Hole hole : holes) {
                 hole.delete(context);
             }
-            if (new ProjectDao(context).delete(this)) {
-                return true;
-            }
+            ProjectDao.getInstance().delete(this);
         } catch (Exception e) {
             e.printStackTrace();
         }

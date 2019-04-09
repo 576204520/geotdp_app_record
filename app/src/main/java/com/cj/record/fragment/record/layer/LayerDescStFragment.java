@@ -13,6 +13,7 @@ import com.cj.record.R;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
+import com.cj.record.db.DictionaryDao;
 import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
@@ -82,13 +83,13 @@ public class LayerDescStFragment extends RecordBaseFragment {
     @Override
     public void initData() {
         super.initData();
-        sprYsList = dictionaryDao.getDropItemList(getSqlString("砂土_颜色"));                    //颜色
-        sprKljpList = dictionaryDao.getDropItemList(getSqlString("砂土_颗粒级配"));                //颗粒级配
-        sprKlxzList = dictionaryDao.getDropItemList(getSqlString("砂土_颗粒形状"));                //颗粒形状
-        sprSdList = dictionaryDao.getDropItemList(getSqlString("砂土_湿度"));                    //湿度
-        sprMsdList = dictionaryDao.getDropItemList(getSqlString("砂土_密实度"));                //密实度
-        sprKwzcList = dictionaryDao.getDropItemList(getSqlString("砂土_矿物组成"));             //矿物组成
-        sprJcList = dictionaryDao.getDropItemList(getSqlString("砂土_夹层"));        //夹层
+        sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("砂土_颜色"));                    //颜色
+        sprKljpList = DictionaryDao.getInstance().getDropItemList(getSqlString("砂土_颗粒级配"));                //颗粒级配
+        sprKlxzList = DictionaryDao.getInstance().getDropItemList(getSqlString("砂土_颗粒形状"));                //颗粒形状
+        sprSdList = DictionaryDao.getInstance().getDropItemList(getSqlString("砂土_湿度"));                    //湿度
+        sprMsdList = DictionaryDao.getInstance().getDropItemList(getSqlString("砂土_密实度"));                //密实度
+        sprKwzcList = DictionaryDao.getInstance().getDropItemList(getSqlString("砂土_矿物组成"));             //矿物组成
+        sprJcList = DictionaryDao.getInstance().getDropItemList(getSqlString("砂土_夹层"));        //夹层
 
         kwzcList = new ArrayList<>();
         kwzcList = DropItemVo.getStrList(sprKwzcList);
@@ -427,7 +428,7 @@ public class LayerDescStFragment extends RecordBaseFragment {
     @Override
     public boolean layerValidator() {
         if (dictionaryList.size() > 0) {
-            dictionaryDao.addDictionaryList(dictionaryList);
+            DictionaryDao.getInstance().addDictionaryList(dictionaryList);
         }
         return true;
     }

@@ -129,33 +129,30 @@ public class PreviewCountFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                RecordDao recordDao = new RecordDao(context);
                 //每条记录的个数
-                countMap = recordDao.getSortCountMap(hole.getId());
+                countMap = RecordDao.getInstance().getSortCountMap(hole.getId());
                 //四条 特殊记录
-                person = recordDao.getRecordByType(hole.getId(), Record.TYPE_SCENE_RECORDPERSON);
-                op = recordDao.getRecordByType(hole.getId(), Record.TYPE_SCENE_OPERATEPERSON);
-                oc = recordDao.getRecordByType(hole.getId(), Record.TYPE_SCENE_OPERATECODE);
-                scene = recordDao.getRecordByType(hole.getId(), Record.TYPE_SCENE_SCENE);
-                MediaDao mediaDao = new MediaDao(context);
+                person = RecordDao.getInstance().getRecordByType(hole.getId(), Record.TYPE_SCENE_RECORDPERSON);
+                op = RecordDao.getInstance().getRecordByType(hole.getId(), Record.TYPE_SCENE_OPERATEPERSON);
+                oc = RecordDao.getInstance().getRecordByType(hole.getId(), Record.TYPE_SCENE_OPERATECODE);
+                scene = RecordDao.getInstance().getRecordByType(hole.getId(), Record.TYPE_SCENE_SCENE);
                 //照片总数
-                photoNumber = mediaDao.getMediaCountByHoleID(hole.getId());
+                photoNumber = MediaDao.getInstance().getMediaCountByHoleID(hole.getId());
                 //四条 特殊记录的照片数
                 if (person != null) {
-                    person_num = mediaDao.getMediaCountByrdcordID(person.getId());
+                    person_num = MediaDao.getInstance().getMediaCountByrdcordID(person.getId());
                 }
                 if (op != null) {
-                    op_num = mediaDao.getMediaCountByrdcordID(op.getId());
+                    op_num = MediaDao.getInstance().getMediaCountByrdcordID(op.getId());
                 }
                 if (oc != null) {
-                    oc_num = mediaDao.getMediaCountByrdcordID(oc.getId());
+                    oc_num = MediaDao.getInstance().getMediaCountByrdcordID(oc.getId());
                 }
                 if (scene != null) {
-                    scene_num = mediaDao.getMediaCountByrdcordID(scene.getId());
+                    scene_num = MediaDao.getInstance().getMediaCountByrdcordID(scene.getId());
                 }
-                GpsDao gpsDao = new GpsDao(context);
                 //找出所有的gps的偏移，并计算个数和所占比例
-                List<Gps> gpsList = gpsDao.getGpsListByHoleID(hole.getId());
+                List<Gps> gpsList = GpsDao.getInstance().getGpsListByHoleID(hole.getId());
                 int p1 = 0;
                 int p2 = 0;
                 int p3 = 0;
@@ -184,8 +181,8 @@ public class PreviewCountFragment extends Fragment {
                 }
 
                 //找出最后一个gps的时间
-                Gps lastGps = gpsDao.getGpsByHoleID(hole.getId());
-                Gps firstGps = gpsDao.getGpsByHoleIDFrist(hole.getId());
+                Gps lastGps = GpsDao.getInstance().getGpsByHoleID(hole.getId());
+                Gps firstGps = GpsDao.getInstance().getGpsByHoleIDFrist(hole.getId());
                 if (lastGps != null && firstGps != null) {
                     String lastTime = lastGps.getGpsTime();
                     totalTime = hole.getCreateTime() + " ~ " + lastTime;

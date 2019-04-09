@@ -86,7 +86,6 @@ public class HoleSceneFragment extends BaseFragment implements ObsUtils.ObsLinst
 
     private Hole hole;
     private String type;//区分钻孔还是钻井的类别
-    private RecordDao recordDao;
     private List<Record> recordList;
     private ObsUtils obsUtils;
     private Drawable drawableBottom;
@@ -102,7 +101,6 @@ public class HoleSceneFragment extends BaseFragment implements ObsUtils.ObsLinst
         super.initData();
         hole = (Hole) getArguments().getSerializable(MainActivity.HOLE);
         type = getArguments().getString(MainActivity.EXTRA_HOLE_TYPE);
-        recordDao = new RecordDao(mActivity);
         recordList = new ArrayList<>();
         drawableBottom = getResources().getDrawable(R.mipmap.ic_keyboard_arrow_down_black_36dp);
         drawableRight = getResources().getDrawable(R.mipmap.ic_keyboard_arrow_right_black_36dp);
@@ -161,7 +159,7 @@ public class HoleSceneFragment extends BaseFragment implements ObsUtils.ObsLinst
     }
 
     private void checkRecord(String type) {
-        Record record = recordDao.getRecordByType(hole.getId(), type);
+        Record record = RecordDao.getInstance().getRecordByType(hole.getId(), type);
         if (record == null) {
             goAdd(type);
         } else {
@@ -189,7 +187,7 @@ public class HoleSceneFragment extends BaseFragment implements ObsUtils.ObsLinst
     public void onSubscribe(int type) {
         switch (type) {
             case 1:
-                recordList = recordDao.getSceneRecord(hole.getId());
+                recordList = RecordDao.getInstance().getSceneRecord(hole.getId());
                 break;
         }
     }

@@ -3,10 +3,7 @@ package com.cj.record.db;
 import android.content.Context;
 
 import com.cj.record.baen.Gps;
-import com.cj.record.baen.Record;
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -18,34 +15,24 @@ import java.util.List;
  * @author XuFeng
  *         2015/8/14.
  */
-public class GpsDao {
+public class GpsDao extends BaseDAO<Gps> {
 
 
-    private Context context;
-    private Dao<Gps, String> gpsDao;
-    private DBHelper helper;
+    private static GpsDao instance;
 
-    public GpsDao(Context context) {
-        this.context = context;
-        try {
-            helper = DBHelper.getInstance(context);
-            gpsDao = helper.getDao(Gps.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private GpsDao() {
     }
 
-    /**
-     * 增加一个勘探点
-     *
-     * @param gps
-     */
-    public void add(Gps gps) {
-        try {
-            gpsDao.createOrUpdate(gps);
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public synchronized static GpsDao getInstance() {
+        if (instance == null) {
+            instance = new GpsDao();
         }
+        return instance;
+    }
+
+    @Override
+    public Dao<Gps, String> getDAO() throws SQLException {
+        return DBManager.getInstance().getDAO(Gps.class);
     }
 
     /**
@@ -53,7 +40,7 @@ public class GpsDao {
      */
     public List<Gps> getGpsListByHoleID(String holeID) {
         try {
-            return gpsDao.queryBuilder().where().eq("holeID", holeID).query();
+            return instance.getDAO().queryBuilder().where().eq("holeID", holeID).query();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -68,7 +55,7 @@ public class GpsDao {
      */
     public Gps getGpsByRecord(String recordID) {
         try {
-            return gpsDao.queryBuilder().orderBy("gpsTime", false).where().eq("recordID", recordID).and().eq("mediaID", "").or().isNull("mediaID").queryForFirst();
+            return instance.getDAO().queryBuilder().orderBy("gpsTime", false).where().eq("recordID", recordID).and().eq("mediaID", "").or().isNull("mediaID").queryForFirst();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,7 +64,7 @@ public class GpsDao {
 
     public List<Gps> getListGpsByRecord(String recordID) {
         try {
-            return gpsDao.queryBuilder().orderBy("gpsTime", true).where().eq("recordID", recordID).and().eq("mediaID", "").query();
+            return instance.getDAO().queryBuilder().orderBy("gpsTime", true).where().eq("recordID", recordID).and().eq("mediaID", "").query();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,7 +77,7 @@ public class GpsDao {
      */
     public Gps getGpsByHoleID(String holeID) {
         try {
-            return gpsDao.queryBuilder().orderBy("gpsTime", false).where().eq("holeID", holeID).queryForFirst();
+            return instance.getDAO().queryBuilder().orderBy("gpsTime", false).where().eq("holeID", holeID).queryForFirst();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,7 +89,7 @@ public class GpsDao {
      */
     public Gps getGpsByHoleIDFrist(String holeID) {
         try {
-            return gpsDao.queryBuilder().orderBy("gpsTime", true).where().eq("holeID", holeID).queryForFirst();
+            return instance.getDAO().queryBuilder().orderBy("gpsTime", true).where().eq("holeID", holeID).queryForFirst();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -118,7 +105,7 @@ public class GpsDao {
     public Gps getGpsByMedia(String mediaID) {
         Gps gps = null;
         try {
-            gps = gpsDao.queryBuilder().where().eq("mediaID", mediaID).queryForFirst();
+            gps = instance.getDAO().queryBuilder().where().eq("mediaID", mediaID).queryForFirst();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -126,52 +113,4 @@ public class GpsDao {
     }
 
 
-    /**
-     * 更新勘探点
-     *
-     * @param gps
-     */
-    public void update(Gps gps) {
-        try {
-            gpsDao.update(gps);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 删除勘探点
-     *
-     * @param gps
-     */
-    public boolean delete(Gps gps) {
-        try {
-            gpsDao.delete(gps);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean checkByID(String id, String recordID, String holeID, String projectID) {
-        try {
-            List<Gps> gpsList = gpsDao.queryBuilder().where().eq("id", id).and().eq("recordID", recordID).and().eq("holeID", holeID).and().eq("projectID", projectID).query();
-            if (gpsList != null && gpsList.size() > 0) {
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public Gps checkByDownloadID(String DownloadID, String recordID, String holeID, String projectID) {
-        try {
-            return gpsDao.queryBuilder().where().eq("DownloadID", DownloadID).and().eq("recordID", recordID).and().eq("holeID", holeID).and().eq("projectID", projectID).queryForFirst();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

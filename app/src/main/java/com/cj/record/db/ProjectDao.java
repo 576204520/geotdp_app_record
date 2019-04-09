@@ -22,83 +22,24 @@ import java.util.List;
  * @author XuFeng
  *         2015/8/14.
  */
-public class ProjectDao {
+public class ProjectDao extends BaseDAO<Project> {
+    private static ProjectDao instance;
 
-
-    private Dao<Project, String> projectDao;
-
-    public ProjectDao(Context context) {
-        try {
-            projectDao = DBHelper.getInstance(context).getDao(Project.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private ProjectDao() {
     }
 
-    /**
-     * 增加一个项目
-     *
-     * @param project
-     */
-    public void add(Project project) {
-        try {
-            projectDao.createOrUpdate(project);
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public synchronized static ProjectDao getInstance() {
+        if (instance == null) {
+            instance = new ProjectDao();
         }
+        return instance;
     }
 
-    /**
-     * 修改一个项目
-     */
-    public void update(Project project) {
-        try {
-            projectDao.update(project);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public Dao<Project, String> getDAO() throws SQLException {
+        return DBManager.getInstance().getDAO(Project.class);
     }
 
-    /**
-     * 获取一个项目
-     *
-     * @param projectID
-     */
-    public Project queryForId(String projectID) {
-        try {
-            return projectDao.queryForId(projectID);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 获取项目序列号
-     */
-    public String queryStrForId(String projectID) {
-        try {
-            return projectDao.queryForId(projectID).getSerialNumber();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    /**
-     * 删除项目
-     *
-     * @param project
-     */
-    public boolean delete(Project project) {
-        try {
-            projectDao.delete(project);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
     /**
      * 获取项目列表
@@ -108,7 +49,7 @@ public class ProjectDao {
      */
     public List<Project> getAll(String userID, int page, int size, String search) {
         try {
-            QueryBuilder queryBuilder = projectDao.queryBuilder();
+            QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
             queryBuilder.where().eq("recordPerson", "").or().eq("recordPerson", userID);
             if (!TextUtils.isEmpty(search)) {
                 queryBuilder.where().like("code", "%" + search + "%").or().like("fullName", "%" + search + "%");
@@ -130,10 +71,10 @@ public class ProjectDao {
      */
     public int getAllCount(String userID) {
         try {
-            QueryBuilder queryBuilder = projectDao.queryBuilder();
+            QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
             queryBuilder.setCountOf(true);
             queryBuilder.where().eq("recordPerson", "").or().eq("recordPerson", userID);
-            return (int) projectDao.countOf(queryBuilder.prepare());
+            return (int) instance.getDAO().countOf(queryBuilder.prepare());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -145,7 +86,7 @@ public class ProjectDao {
      */
     public boolean checkNumber(String userID, String number, String id) {
         try {
-            QueryBuilder queryBuilder = projectDao.queryBuilder();
+            QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
             queryBuilder.where().eq("recordPerson", "").or().eq("recordPerson", userID).and().eq("serialNumber", number).and().ne("id", id);
             List<Project> list = queryBuilder.query();
             int size = list.size();
@@ -162,7 +103,7 @@ public class ProjectDao {
     public HashMap getCodeMap() {
         HashMap hashmap = new HashMap();
         try {
-            GenericRawResults<String> results = projectDao.queryRaw("select code from project where code like '__-___'", new RawRowMapper<String>() {
+            GenericRawResults<String> results = instance.getDAO().queryRaw("select code from project where code like '__-___'", new RawRowMapper<String>() {
                 @Override
                 public String mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
                     String s = resultColumns[0];
@@ -183,7 +124,7 @@ public class ProjectDao {
     public HashMap getFullNameMap() {
         HashMap hashmap = new HashMap();
         try {
-            GenericRawResults<String> results = projectDao.queryRaw("select fullName from project where fullName like '___号项目'", new RawRowMapper<String>() {
+            GenericRawResults<String> results = instance.getDAO().queryRaw("select fullName from project where fullName like '___号项目'", new RawRowMapper<String>() {
                 @Override
                 public String mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
                     String s = resultColumns[0];
@@ -208,7 +149,7 @@ public class ProjectDao {
 
     public List<Project> getAll(String userID) {
         try {
-            QueryBuilder queryBuilder = projectDao.queryBuilder();
+            QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
             queryBuilder.where().eq("recordPerson", "").or().eq("recordPerson", userID);
             return queryBuilder.query();
         } catch (SQLException e) {

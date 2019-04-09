@@ -15,6 +15,7 @@ import com.cj.record.adapter.DropListAdapter;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
+import com.cj.record.db.DictionaryDao;
 import com.cj.record.fragment.RecordLocationFragment;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.ToastUtil;
@@ -67,7 +68,7 @@ public class RecordEditWaterFragment extends RecordBaseFragment {
     @Override
     public void initData() {
         super.initData();
-        typeList = dictionaryDao.getDropItemList(getSqlString("地下水类型"));
+        typeList = DictionaryDao.getInstance().getDropItemList(getSqlString("地下水类型"));
         typeListAdapter = new DropListAdapter(mActivity, R.layout.drop_item, typeList);
         waterType.setAdapter(typeListAdapter);
         //设置可自定义和可清空
@@ -180,7 +181,7 @@ public class RecordEditWaterFragment extends RecordBaseFragment {
         }
 
         if (sortNoType > 0 && validator) {
-            dictionaryDao.addDictionary(new Dictionary("1", "地下水类型", waterType.getText().toString().trim(), "" + sortNoType, userID, Record.TYPE_WATER));
+            DictionaryDao.getInstance().addOrUpdate(new Dictionary("1", "地下水类型", waterType.getText().toString().trim(), "" + sortNoType, userID, Record.TYPE_WATER));
         }
         return validator;
     }
