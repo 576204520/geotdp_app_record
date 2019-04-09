@@ -8,13 +8,13 @@ android {
         applicationId "com.cj.record"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 48
-        versionName "3.2.8"
+        versionCode 49
+        versionName "3.2.9"
         multiDexEnabled true
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "arm64-v8a", "x86_64"
+            abiFilters "armeabi", "armeabi-v7a"
         }
     }
     buildTypes {
@@ -108,7 +108,7 @@ dependencies {
     compile 'fm.jiecao:jiecaovideoplayer:5.5.2'
     //分割 Dex 文件解决方法限制
     compile 'com.android.support:multidex:1.0.1'
-    implementation files('libs/AMap3DMap_5.7.0_AMapNavi_5.6.0_AMapLocation_3.7.0_20180109.jar')
+    implementation files('libs/AMap3DMap_6.8.0_AMapNavi_6.7.0_AMapLocation_4.5.1_20190402.jar')
     //https://github.com/yipianfengye/android-zxingLibrary
     compile 'cn.yipianfengye.android:zxing-library:2.2'
 }

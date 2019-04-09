@@ -111,7 +111,7 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
             myHolder.holeDepth.setText("深度:0m");
         }
         myHolder.holeType.setText("类型:" + hole.getType());
-        myHolder.holeCreateTime.setText("开始时间:" + hole.getCreateTime());
+//        myHolder.holeCreateTime.setText("开始时间:" + hole.getCreateTime());
         myHolder.holeUpdateTime.setText("修改时间:" + hole.getUpdateTime());
         //判断是否是获取的数据
         if (TextUtils.isEmpty(hole.getUserID())) {
