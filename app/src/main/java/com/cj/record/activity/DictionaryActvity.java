@@ -1,7 +1,5 @@
 package com.cj.record.activity;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -12,36 +10,32 @@ import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.cj.record.R;
-import com.cj.record.activity.base.BaseActivity;
 import com.cj.record.adapter.DictionaryAdapter;
+import com.cj.record.base.App;
+import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.Dictionary;
-import com.cj.record.baen.JsonResult;
+import com.cj.record.base.BaseMvpActivity;
+import com.cj.record.contract.DictionaryContract;
 import com.cj.record.db.DictionaryDao;
+import com.cj.record.presenter.DictionaryPresenter;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.JsonUtils;
-import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
-import com.cj.record.utils.Urls;
-import com.google.gson.Gson;
+import com.cj.record.views.ProgressDialog;
 import com.google.gson.reflect.TypeToken;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.Response;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import okhttp3.Call;
 
 /**
  * 字典管理
  */
-public class DictionaryActvity extends BaseActivity {
+public class DictionaryActvity extends BaseMvpActivity<DictionaryPresenter> implements DictionaryContract.View {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.dictionary_recycler)
@@ -60,42 +54,40 @@ public class DictionaryActvity extends BaseActivity {
 
     private boolean isSelectAll;
 
-    private Map<String, String> map;
-
     @Override
     public int getLayoutId() {
         return R.layout.act_setting_dictionary;
     }
 
-    @Override
-    public void initData() {
-        super.initData();
-        toolbar.setTitle("字典库管理");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        dictionaryRecycler.setLayoutManager(new LinearLayoutManager(this));
-        map = new HashMap<>();
-        dictionaryList = new ArrayList<>();
-        list = new ArrayList<>();
-        initList();
-    }
 
     @Override
     public void initView() {
-    }
-
-
-    private void initList() {
+        mPresenter = new DictionaryPresenter();
+        mPresenter.attachView(this);
+        toolbar.setTitle(R.string.dictionary_title);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         isSelectAll = false;
-        dictionaryList.clear();
-        list.clear();
-        dictionaryList = DictionaryDao.getInstance().getDictionary();
-        if (dictionaryList != null) {
-            adapter = new DictionaryAdapter(this, dictionaryList);
-            dictionaryRecycler.setAdapter(adapter);
-            setListener();
-        }
+        initRecycleView();
+        resetData();
     }
+
+    private void initRecycleView() {
+        list = new ArrayList<>();
+        dictionaryList = new ArrayList<>();
+        dictionaryRecycler.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new DictionaryAdapter(this, dictionaryList);
+        dictionaryRecycler.setAdapter(adapter);
+        setListener();
+    }
+
+    private void resetData() {
+        list.clear();
+        dictionaryList.clear();
+        dictionaryList.addAll(DictionaryDao.getInstance().getDictionary());
+        adapter.notifyDataSetChanged();
+    }
+
 
     private void setListener() {
         adapter.setOnItemListener(new DictionaryAdapter.OnItemListener() {
@@ -196,7 +188,7 @@ public class DictionaryActvity extends BaseActivity {
             @Override
             public void onPositive(MaterialDialog dialog) {
                 DictionaryDao.getInstance().deleteByDicList(list);
-                initList();
+                resetData();
             }
         }).show();
     }
@@ -206,125 +198,86 @@ public class DictionaryActvity extends BaseActivity {
      */
 
     private void downloadDialog() {
-        if (!TextUtils.isEmpty(userID)) {
-            new MaterialDialog.Builder(this).content("下载关联词库，将删除本地词库，是否下载？").positiveText(R.string.agree).negativeText(R.string.disagree).callback(new MaterialDialog.ButtonCallback() {
-                @Override
-                public void onPositive(MaterialDialog dialog) {
-                    if (TextUtils.isEmpty(userID)) {
-                        ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
-                        return;
-                    }
-                    downloadDictionary(userID);
+        new MaterialDialog.Builder(this).content(R.string.dictionary_download_please).positiveText(R.string.agree).negativeText(R.string.disagree).callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog dialog) {
+                if (TextUtils.isEmpty(App.userID)) {
+                    ToastUtil.showToastS(DictionaryActvity.this, getString(R.string.project_edit_hint_user));
+                    return;
                 }
-            }).show();
-        } else {
-            ToastUtil.showToastS(this, "请先登陆");
-        }
+                mPresenter.downloadDictionary(App.userID, UpdateUtil.getVerCode(DictionaryActvity.this) + "");
+            }
+        }).show();
     }
 
     /**
      * 上传词库确认
      */
     private void uploadDialog() {
-        new MaterialDialog.Builder(this).content("上传本地词库，将覆盖云端备份，是否上传？").positiveText(R.string.agree).negativeText(R.string.disagree).callback(new MaterialDialog.ButtonCallback() {
+        new MaterialDialog.Builder(this).content(R.string.dictionary_upload_please).positiveText(R.string.agree).negativeText(R.string.disagree).callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog dialog) {
-                uploadDictionary(list);
+                if (TextUtils.isEmpty(App.userID)) {
+                    ToastUtil.showToastS(DictionaryActvity.this, getString(R.string.project_edit_hint_user));
+                    return;
+                }
+                mPresenter.uploadDictionary(getMap(list));
             }
         }).show();
     }
 
 
-    public void downloadDictionary(final String userID) {
-        if (TextUtils.isEmpty(userID)) {
-            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
-            return;
-        }
-        showPPW();
-        map.clear();
-        map.put("relateID", userID);
-        map.put("verCode", UpdateUtil.getVerCode(this) + "");
-        OkGo.<String>post(Urls.DICTIONARY_DOWNLOAD).params(map).execute(new StringCallback() {
-            @Override
-            public void onSuccess(Response<String> response) {
-                String data = response.body();
-                if (JsonUtils.isGoodJson(data)) {
-                    Gson gson = new Gson();
-                    JsonResult jsonResult = gson.fromJson(data.toString(), JsonResult.class);
-                    if (jsonResult.getStatus()) {
-                        try {
-                            List<Dictionary> list = gson.fromJson(jsonResult.getResult(), new TypeToken<List<Dictionary>>() {
-                            }.getType());
-                            DictionaryDao.getInstance().deleteAll();
-                            DictionaryDao.getInstance().addDictionaryList(list);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        ToastUtil.showToastS(DictionaryActvity.this, "数据为空");
-                    }
-                    initList();
-                } else {
-                    ToastUtil.showToastS(DictionaryActvity.this, "服务器异常，请联系客服");
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                super.onFinish();
-                dismissPPW();
-            }
-
-            @Override
-            public void onError(Response<String> response) {
-                super.onError(response);
-                ToastUtil.showToastS(DictionaryActvity.this, "下载失败");
-            }
-        });
-    }
-
-    public void uploadDictionary(List<Dictionary> list) {
-        if (TextUtils.isEmpty(userID)) {
-            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
-            return;
-        }
-        map.clear();
-        map = getMap(list);
-        map.put("userID", userID);
-        map.put("verCode", UpdateUtil.getVerCode(this) + "");
-        showPPW();
-        OkGo.<String>post(Urls.DICTIONARY_UPLOAD).params(map).execute(new StringCallback() {
-            @Override
-            public void onSuccess(Response<String> response) {
-                ToastUtil.showToastS(DictionaryActvity.this, "上传成功");
-                initList();
-            }
-
-            @Override
-            public void onFinish() {
-                dismissPPW();
-                super.onFinish();
-            }
-
-            @Override
-            public void onError(Response<String> response) {
-                super.onError(response);
-                ToastUtil.showToastS(DictionaryActvity.this, "上传失败");
-            }
-
-        });
-    }
-
-
     private Map<String, String> getMap(List<Dictionary> list) {
+        Map<String, String> params = new ConcurrentHashMap<>();
         for (int i = 0; i < list.size(); i++) {
-            map.put("dictionary[" + i + "].name", list.get(i).getName());
-            map.put("dictionary[" + i + "].relateID", list.get(i).getRelateID());
-            map.put("dictionary[" + i + "].type", list.get(i).getType());
-            map.put("dictionary[" + i + "].sort", list.get(i).getSort());
-            map.put("dictionary[" + i + "].sortNo", list.get(i).getSortNo());
-            map.put("dictionary[" + i + "].form", list.get(i).getForm());
+            params.put("dictionary[" + i + "].name", list.get(i).getName());
+            params.put("dictionary[" + i + "].name", list.get(i).getName());
+            params.put("dictionary[" + i + "].relateID", list.get(i).getRelateID());
+            params.put("dictionary[" + i + "].type", list.get(i).getType());
+            params.put("dictionary[" + i + "].sort", list.get(i).getSort());
+            params.put("dictionary[" + i + "].sortNo", list.get(i).getSortNo());
+            params.put("dictionary[" + i + "].form", list.get(i).getForm());
         }
-        return map;
+        return params;
+    }
+
+    @Override
+    public void showLoading() {
+        ProgressDialog.getInstance().show(this);
+    }
+
+    @Override
+    public void hideLoading() {
+        ProgressDialog.getInstance().dismiss();
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        ToastUtil.showToastS(this, throwable.toString());
+    }
+
+    @Override
+    public void onSuccessUpload(BaseObjectBean<String> bean) {
+        Common.showMessage(this, bean.getMessage());
+    }
+
+    @Override
+    public void onSuccessDownload(BaseObjectBean<String> bean) {
+        if (bean.isStatus()) {
+            List<Dictionary> list = JsonUtils.getInstance().fromJson(bean.getResult(), new TypeToken<List<Dictionary>>() {
+            }.getType());
+            if (list != null && list.size() > 0) {
+                DictionaryDao.getInstance().deleteAll();
+                DictionaryDao.getInstance().addDictionaryList(list);
+                dictionaryList.clear();
+                dictionaryList.addAll(list);
+                adapter.notifyDataSetChanged();
+            } else {
+                ToastUtil.showToastS(this, getString(R.string.dictionary_download_nodata));
+            }
+
+        } else {
+            Common.showMessage(this, bean.getMessage());
+        }
     }
 }

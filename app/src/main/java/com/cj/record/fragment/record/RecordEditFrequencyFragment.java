@@ -47,8 +47,8 @@ public class RecordEditFrequencyFragment extends RecordBaseFragment {
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         typeListAdapter = new DropListAdapter(mActivity, R.layout.drop_item, getLayerTypeList());
         sprType.setAdapter(typeListAdapter);
         sprType.setOnItemClickListener(typeListener);
@@ -60,11 +60,7 @@ public class RecordEditFrequencyFragment extends RecordBaseFragment {
         //设置可自定义和可清空
         sprType.setCustom().setClear();
         sprMode.setCustom().setClear();
-    }
 
-    @Override
-    public void initView() {
-        super.initView();
         sprType.setText(record.getFrequencyType());
         sprMode.setText(record.getFrequencyMode());
         edtAperture.setText(record.getAperture());

@@ -65,8 +65,8 @@ public class LayerDescHtznxtFragment extends RecordBaseFragment {
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("黄土_颜色"));
         sprZtList = DictionaryDao.getInstance().getDropItemList(getSqlString("黄土_状态"));
         sprKxList = DictionaryDao.getInstance().getDropItemList(getSqlString("黄土_孔隙"));
@@ -141,17 +141,13 @@ public class LayerDescHtznxtFragment extends RecordBaseFragment {
                 bhwDialog.show();
             }
         });
-    }
-
-    @Override
-    public void initView() {
-        super.initView();
         sprYs.setText(record.getYs());
         sprZt.setText(record.getZt());
         sprKx.setText(record.getKx());
         sprCzjl.setText(record.getCzjl());
         sprBhw.setText(record.getBhw());
     }
+
 
 
     MaterialBetterSpinner.OnItemClickListener ysListener = new MaterialBetterSpinner.OnItemClickListener() {

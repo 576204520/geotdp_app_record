@@ -1,9 +1,9 @@
 package com.cj.record.fragment.record;
 
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -86,15 +86,11 @@ public class RecordEditLayerFragment extends RecordBaseFragment {
         return R.layout.frt_record_layer_edit;
     }
 
-    @Override
-    public void initData() {
-        super.initData();
-
-    }
 
     @Override
-    public void initView() {
-        super.initView();
+    protected void initView(View view) {
+        super.initView(view);
+
         sprType.setText(record.getLayerType());
         sprName.setText(record.getLayerName());
         edtCauses.setText(record.getCauses());

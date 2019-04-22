@@ -1,8 +1,14 @@
 package com.cj.record.utils;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
+
+import com.cj.record.R;
 
 /**
  * @author cj 判断网络工具类
@@ -35,5 +41,29 @@ public class NetUtil {
             return NETWORK_NONE;
         }
         return NETWORK_NONE;
+    }
+
+    /**
+     * 检查网络
+     */
+    public static boolean haveNet(Context context) {
+        if (NetUtil.getNetWorkState(context.getApplicationContext()) < 0) {
+            new AlertDialog.Builder(context.getApplicationContext())
+                    .setTitle(R.string.hint)
+                    .setMessage(R.string.net_no_work)
+                    .setNegativeButton(R.string.go_setting,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    context.startActivity(new Intent(Settings.ACTION_SETTINGS));
+                                }
+                            })
+                    .setPositiveButton(R.string.disagree, null)
+                    .setCancelable(false)
+                    .show();
+            return false;
+        } else {
+            return true;
+        }
     }
 }

@@ -1,15 +1,26 @@
 package com.cj.record.fragment.record;
 
+import android.arch.lifecycle.Lifecycle;
+import android.view.View;
+
 import com.cj.record.activity.MainActivity;
-import com.cj.record.activity.base.BaseFragment;
 import com.cj.record.baen.Dictionary;
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.Record;
+import com.cj.record.base.BaseActivity;
+import com.cj.record.base.BaseFragment;
+import com.cj.record.base.BaseMvpFragment;
+import com.cj.record.base.BasePresenter;
+import com.cj.record.base.BaseView;
 import com.cj.record.db.DictionaryDao;
 import com.cj.record.db.RecordDao;
+import com.cj.record.presenter.UserPresenter;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.Urls;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.AutoDisposeConverter;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +29,7 @@ import java.util.List;
  * Created by Administrator on 2018/6/7.
  */
 
-public class RecordBaseFragment extends BaseFragment {
+public abstract class RecordBaseFragment<T extends BasePresenter> extends BaseFragment implements BaseView {
     public Record record;
     public String userID;
     public String userName;
@@ -26,15 +37,45 @@ public class RecordBaseFragment extends BaseFragment {
      * 存放自定义的字典的集合
      */
     protected List<Dictionary> dictionaryList = new ArrayList<>();
+    protected T mPresenter;
 
     @Override
-    public int getLayoutId() {
-        return 0;
+    public void showLoading() {
+
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mPresenter != null) {
+            mPresenter.detachView();
+        }
+        super.onDestroyView();
+    }
+
+    /**
+     * 绑定生命周期 防止MVP内存泄漏
+     *
+     * @param <T>
+     * @return
+     */
+    @Override
+    public <T> AutoDisposeConverter<T> bindAutoDispose() {
+        return AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(mActivity, Lifecycle.Event.ON_DESTROY));
+    }
+
+    @Override
+    protected void initView(View view) {
         userID = (String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, "");
         userName = (String) SPUtils.get(mActivity, Urls.SPKey.USER_REALNAME, "");
         if (getArguments().containsKey(MainActivity.RECORD)) {
@@ -43,8 +84,8 @@ public class RecordBaseFragment extends BaseFragment {
     }
 
     @Override
-    public void initView() {
-
+    public int getLayoutId() {
+        return 0;
     }
 
     public Record getRecord() {
@@ -84,4 +125,5 @@ public class RecordBaseFragment extends BaseFragment {
     public boolean layerValidator() {
         return true;
     }
+
 }

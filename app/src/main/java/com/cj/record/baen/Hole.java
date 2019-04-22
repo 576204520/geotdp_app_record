@@ -7,6 +7,7 @@ import com.cj.record.db.HoleDao;
 import com.cj.record.db.RecordDao;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
+import com.cj.record.utils.RxPartMapUtils;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
@@ -16,12 +17,17 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * 本地用户
@@ -31,8 +37,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @DatabaseTable(tableName = "hole")//"井孔规则表")
 public class Hole implements Serializable, Cloneable {
-
     private static final long serialVersionUID = 1L;
+
+    public static final String TYPE_ZK = "钻孔";
+    public static final String TYPE_TJ = "探井";
+    public static final String TYPE_XJHZ = "先井后钻";
+
     @DatabaseField(columnName = "id", id = true)
     String id = "";                //勘探点ID
     @DatabaseField
@@ -192,69 +202,69 @@ public class Hole implements Serializable, Cloneable {
     }
 
     //生成map类型参数
-    public Map<String, String> getNameValuePairMap(String serialNumber) {
-        Map<String, String> params = new ConcurrentHashMap<>();
-        params.put("hole.projectID", serialNumber);
-        params.put("hole.relateID", relateID);
-        params.put("hole.id", id);
-        params.put("hole.code", code);
+    public Map<String, RequestBody> getNameValuePairMap(String serialNumber) {
+        Map<String, RequestBody> params = new ConcurrentHashMap<>();
+        params.put("hole.projectID", RxPartMapUtils.toRequestBodyOfText(serialNumber));
+        params.put("hole.relateID", RxPartMapUtils.toRequestBodyOfText(relateID));
+        params.put("hole.id", RxPartMapUtils.toRequestBodyOfText(id));
+        params.put("hole.code", RxPartMapUtils.toRequestBodyOfText(code));
         if (!TextUtils.isEmpty(attribute)) {
-            params.put("hole.attribute", attribute);
+            params.put("hole.attribute", RxPartMapUtils.toRequestBodyOfText(attribute));
         }
         if (!TextUtils.isEmpty(createTime)) {
-            params.put("hole.createTime", createTime);
+            params.put("hole.createTime", RxPartMapUtils.toRequestBodyOfText(createTime));
         }
         if (!TextUtils.isEmpty(updateTime)) {
-            params.put("hole.updateTime", updateTime);
+            params.put("hole.updateTime", RxPartMapUtils.toRequestBodyOfText(updateTime));
         }
         if (!TextUtils.isEmpty(type)) {
-            params.put("hole.type", type);
+            params.put("hole.type", RxPartMapUtils.toRequestBodyOfText(type));
         }
         if (!TextUtils.isEmpty(elevation)) {
-            params.put("hole.elevation", elevation);
+            params.put("hole.elevation", RxPartMapUtils.toRequestBodyOfText(elevation));
         }
         if (!TextUtils.isEmpty(beginTime)) {
-            params.put("hole.beginTime", beginTime);
+            params.put("hole.beginTime", RxPartMapUtils.toRequestBodyOfText(beginTime));
         }
         if (!TextUtils.isEmpty(endTime)) {
-            params.put("hole.endTime", endTime);
+            params.put("hole.endTime", RxPartMapUtils.toRequestBodyOfText(endTime));
         }
         if (!TextUtils.isEmpty(inputPerson)) {
-            params.put("hole.inputPerson", inputPerson);
+            params.put("hole.inputPerson", RxPartMapUtils.toRequestBodyOfText(inputPerson));
         }
         if (!TextUtils.isEmpty(operatePerson)) {
-            params.put("hole.operatePerson", operatePerson);
+            params.put("hole.operatePerson", RxPartMapUtils.toRequestBodyOfText(operatePerson));
         }
         if (!TextUtils.isEmpty(operateCode)) {
-            params.put("hole.operateCode", operateCode);
+            params.put("hole.operateCode", RxPartMapUtils.toRequestBodyOfText(operateCode));
         }
         if (!TextUtils.isEmpty(longitude)) {
-            params.put("hole.longitude", longitude);
+            params.put("hole.longitude", RxPartMapUtils.toRequestBodyOfText(longitude));
         }
         if (!TextUtils.isEmpty(latitude)) {
-            params.put("hole.latitude", latitude);
+            params.put("hole.latitude", RxPartMapUtils.toRequestBodyOfText(latitude));
         }
         if (!TextUtils.isEmpty(radius)) {
-            params.put("hole.radius", radius);
+            params.put("hole.radius", RxPartMapUtils.toRequestBodyOfText(radius));
         }
         if (!TextUtils.isEmpty(locationState)) {
-            params.put("hole.locationState", locationState);
+            params.put("hole.locationState", RxPartMapUtils.toRequestBodyOfText(locationState));
         }
         if (!TextUtils.isEmpty(projectName)) {
-            params.put("hole.projectName", projectName);
+            params.put("hole.projectName", RxPartMapUtils.toRequestBodyOfText(projectName));
         }
         if (!TextUtils.isEmpty(recordsCount)) {
-            params.put("hole.recordsCount", recordsCount);
+            params.put("hole.recordsCount", RxPartMapUtils.toRequestBodyOfText(recordsCount));
         }
 
         if (!TextUtils.isEmpty(mapLatitude)) {
-            params.put("hole.mapLatitude", mapLatitude);
+            params.put("hole.mapLatitude", RxPartMapUtils.toRequestBodyOfText(mapLatitude));
         }
         if (!TextUtils.isEmpty(mapLongitude)) {
-            params.put("hole.mapLongitude", mapLongitude);
+            params.put("hole.mapLongitude", RxPartMapUtils.toRequestBodyOfText(mapLongitude));
         }
         if (!TextUtils.isEmpty(mapTime)) {
-            params.put("hole.mapTime", mapTime);
+            params.put("hole.mapTime", RxPartMapUtils.toRequestBodyOfText(mapTime));
         }
 //        DateUtil.traversal(params);
         return params;

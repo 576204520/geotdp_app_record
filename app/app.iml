@@ -92,18 +92,17 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/javaPrecompile" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/merged-not-compiled-resources" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/multi-dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/prebuild" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/proguard-rules" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res_stripped" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/shaders" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/splits-support" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
+      <excludeFolder url="file://$MODULE_DIR$/build/reports" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 27 Platform" jdkType="Android SDK" />
@@ -111,16 +110,20 @@
     <orderEntry type="library" name="com.android.support:multidex-1.0.2" level="project" />
     <orderEntry type="library" name="com.android.support:animated-vector-drawable-27.0.2" level="project" />
     <orderEntry type="library" scope="TEST" name="com.android.support:multidex-1.0.1" level="project" />
+    <orderEntry type="library" name="com.squareup.okhttp3:okhttp:3.10.0@jar" level="project" />
+    <orderEntry type="library" name="com.squareup.okio:okio:1.14.0@jar" level="project" />
     <orderEntry type="library" name="net.qiujuer.genius:ui-2.0.0-beta4" level="project" />
+    <orderEntry type="library" name="com.squareup.okhttp3:logging-interceptor:3.4.1@jar" level="project" />
     <orderEntry type="library" name="com.nineoldandroids:library:2.4.0@jar" level="project" />
     <orderEntry type="library" name="id.zelory:compressor-2.1.0" level="project" />
     <orderEntry type="library" name="com.android.support.constraint:constraint-layout-solver:1.1.0@jar" level="project" />
-    <orderEntry type="library" name="__local_aars__:D.\Workspaces\geotdp_app_record\app\libs\gson-2.2.1.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="com.google.code.gson:gson:2.8.2@jar" level="project" />
     <orderEntry type="library" name="android.arch.lifecycle:runtime-1.0.3" level="project" />
     <orderEntry type="library" name="com.android.support:support-vector-drawable-27.0.2" level="project" />
     <orderEntry type="library" name="fm.jiecao:jiecaovideoplayer-5.5.2" level="project" />
     <orderEntry type="library" name="com.android.support:cardview-v7-27.0.2" level="project" />
     <orderEntry type="library" scope="TEST" name="org.hamcrest:hamcrest-core:1.3@jar" level="project" />
+    <orderEntry type="library" name="com.jakewharton:butterknife-annotations:8.8.1@jar" level="project" />
     <orderEntry type="library" name="android.arch.core:common:1.0.0@jar" level="project" />
     <orderEntry type="library" name="com.android.support:support-core-ui-27.0.2" level="project" />
     <orderEntry type="library" name="com.android.support:support-compat-27.0.2" level="project" />
@@ -133,6 +136,7 @@
     <orderEntry type="library" name="com.github.bumptech.glide:gifdecoder:4.1.1@jar" level="project" />
     <orderEntry type="library" name="com.pnikosis:materialish-progress-1.7" level="project" />
     <orderEntry type="library" name="com.android.support:support-v4-27.0.2" level="project" />
+    <orderEntry type="library" name="com.squareup.retrofit2:adapter-rxjava2:2.4.0@jar" level="project" />
     <orderEntry type="library" name="com.github.bumptech.glide:disklrucache:4.1.1@jar" level="project" />
     <orderEntry type="library" name="com.android.support:appcompat-v7-27.0.2" level="project" />
     <orderEntry type="library" name="com.google.guava:guava:19.0-rc2@jar" level="project" />
@@ -140,28 +144,30 @@
     <orderEntry type="library" name="com.android.support:design-27.0.2" level="project" />
     <orderEntry type="library" name="com.github.razerdp:BasePopup-v1.8.0" level="project" />
     <orderEntry type="library" scope="TEST" name="junit:junit:4.12@jar" level="project" />
+    <orderEntry type="library" name="com.jpeng:JPTabBar-1.4.0" level="project" />
+    <orderEntry type="library" name="com.uber.autodispose:autodispose-android-archcomponents-0.7.0" level="project" />
     <orderEntry type="library" name="com.android.support:transition-27.0.2" level="project" />
     <orderEntry type="library" name="net.zetetic:android-database-sqlcipher-3.5.7" level="project" />
     <orderEntry type="library" name="com.android.support:recyclerview-v7-27.0.2" level="project" />
-    <orderEntry type="library" name="com.squareup.okhttp3:okhttp:3.8.1@jar" level="project" />
+    <orderEntry type="library" name="com.uber.autodispose:autodispose-android-0.7.0" level="project" />
     <orderEntry type="library" name="com.afollestad.material-dialogs:core-0.8.5.9" level="project" />
-    <orderEntry type="library" name="com.lzy.net:okgo-3.0.4" level="project" />
     <orderEntry type="library" name="com.rengwuxian.materialedittext:library-2.1.4" level="project" />
     <orderEntry type="library" name="me.zhanghai.android.materialprogressbar:library-1.1.5" level="project" />
     <orderEntry type="library" name="com.android.support.constraint:constraint-layout-1.1.0" level="project" />
-    <orderEntry type="library" name="com.squareup.okio:okio:1.13.0@jar" level="project" />
     <orderEntry type="library" name="com.tbruyelle.rxpermissions2:rxpermissions-0.9.5" level="project" />
+    <orderEntry type="library" name="io.reactivex.rxjava2:rxjava:2.1.12@jar" level="project" />
     <orderEntry type="library" name="cn.yipianfengye.android:zxing-library-2.2" level="project" />
     <orderEntry type="library" name="android.arch.lifecycle:common:1.0.3@jar" level="project" />
+    <orderEntry type="library" name="com.jakewharton:butterknife-8.8.1" level="project" />
     <orderEntry type="library" name="io.reactivex.rxjava2:rxandroid-2.0.2" level="project" />
     <orderEntry type="library" name="com.github.bumptech.glide:glide:4.1.1@jar" level="project" />
-    <orderEntry type="library" name="com.jakewharton:butterknife-8.6.0" level="project" />
+    <orderEntry type="library" name="com.squareup.retrofit2:retrofit:2.4.0@jar" level="project" />
     <orderEntry type="library" name="org.reactivestreams:reactive-streams:1.0.2@jar" level="project" />
+    <orderEntry type="library" name="com.squareup.retrofit2:converter-gson:2.4.0@jar" level="project" />
     <orderEntry type="library" name="com.github.bumptech.glide:annotations:4.1.1@jar" level="project" />
     <orderEntry type="library" name="com.android.support:support-core-utils-27.0.2" level="project" />
+    <orderEntry type="library" name="com.uber.autodispose:autodispose:0.7.0@jar" level="project" />
     <orderEntry type="library" name="__local_aars__:D.\Workspaces\geotdp_app_record\app\libs\AMap3DMap_6.8.0_AMapNavi_6.7.0_AMapLocation_4.5.1_20190402.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="com.jakewharton:butterknife-annotations:8.6.0@jar" level="project" />
-    <orderEntry type="library" name="io.reactivex.rxjava2:rxjava:2.1.10@jar" level="project" />
     <orderEntry type="module" module-name="SmallVideoLib2" />
     <orderEntry type="module" module-name="database" />
   </component>

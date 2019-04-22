@@ -1,6 +1,5 @@
 package com.cj.record.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.text.TextUtils;
@@ -10,33 +9,27 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import com.cj.record.R;
-import com.cj.record.activity.base.BaseActivity;
-import com.cj.record.baen.JsonResult;
+import com.cj.record.base.App;
+import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.LocalUser;
-import com.cj.record.baen.Project;
-import com.cj.record.utils.Common;
+import com.cj.record.base.BaseMvpActivity;
+import com.cj.record.contract.UserContract;
+import com.cj.record.presenter.UserPresenter;
 import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.MD5Utils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;
-import com.google.gson.Gson;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.Response;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.cj.record.views.ProgressDialog;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by Administrator on 2018/5/23.
  */
 
-public class LoginActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
+public class LoginActivity extends BaseMvpActivity<UserPresenter> implements UserContract.View, CompoundButton.OnCheckedChangeListener {
 
     @BindView(R.id.login_email)
     EditText loginEmail;
@@ -55,24 +48,19 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
     }
 
     @Override
-    public void initData() {
-        super.initData();
-//        loginEmail.setText("576204520@qq.com");
-//        loginPassword.setText("123456");
-    }
-
-    @Override
     public void initView() {
+        mPresenter = new UserPresenter();
+        mPresenter.attachView(this);
         loginRemember.setOnCheckedChangeListener(this);
         loginAuto.setOnCheckedChangeListener(this);
-        String pwd = (String) SPUtils.get(mContext, Urls.SPKey.USER_PWD, "");
-        String username = (String) SPUtils.get(mContext, Urls.SPKey.USER_EMAIL, "");
+        String username = (String) SPUtils.get(this, Urls.SPKey.USER_EMAIL, "");
+        String pwd = (String) SPUtils.get(this, Urls.SPKey.USER_PWD, "");
+        boolean isAuto = (boolean) SPUtils.get(this, Urls.SPKey.USER_AUTO, false);
         loginEmail.setText(username);
+        loginAuto.setChecked(isAuto);
         if (!TextUtils.isEmpty(pwd)) {
             loginPassword.setText(pwd);
             loginRemember.setChecked(true);
-            boolean isAuto = (boolean) SPUtils.get(mContext, Urls.SPKey.USER_AUTO, false);
-            loginAuto.setChecked(isAuto);
         }
 
     }
@@ -81,97 +69,20 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.login:
-                doLogin();
+                String email = loginEmail.getText().toString().trim();
+                String password = loginPassword.getText().toString().trim();
+                if (TextUtils.isEmpty(email)) {
+                    ToastUtil.showToastS(this, getString(R.string.user_hint_email));
+                    return;
+                }
+                if (TextUtils.isEmpty(password)) {
+                    ToastUtil.showToastS(this, getString(R.string.user_hint_password));
+                    return;
+                }
+                mPresenter.login(this, email, MD5Utils.MD5(password));
                 break;
         }
     }
-
-    private void doLogin() {
-        String email = loginEmail.getText().toString().trim();
-        String password = loginPassword.getText().toString().trim();
-        if (TextUtils.isEmpty(email)) {
-            ToastUtil.showToastS(mContext, "请输入邮箱账号");
-            return;
-        }
-        if (TextUtils.isEmpty(password)) {
-            ToastUtil.showToastS(mContext, "请输入密码");
-            return;
-        }
-        //检查网络
-        if (!haveNet()) {
-            return;
-        }
-        showPPW();
-        Map<String, String> map = new HashMap<>();
-        map.put("email", email);
-        map.put("password", MD5Utils.MD5(password));
-        OkGo.<String>post(Urls.LOGIN_POST)
-                .params(map)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(Response<String> response) {
-                        //注意这里已经是在主线程了
-                        String data = response.body();//这个就是返回来的结果
-                        if (JsonUtils.isGoodJson(data)) {
-                            Gson gson = new Gson();
-                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
-                            ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
-                            //如果登陆成功，保存用户名和密码到数据库,并保存到baen
-                            if (jsonResult.getStatus()) {
-                                String result = jsonResult.getResult();
-                                LocalUser localUser = gson.fromJson(result.toString(), LocalUser.class);
-                                if (loginRemember.isChecked()) {
-                                    SPUtils.put(mContext, Urls.SPKey.USER_PWD, password);
-                                } else {
-                                    SPUtils.put(mContext, Urls.SPKey.USER_PWD, "");
-                                }
-                                if (loginAuto.isChecked()) {
-                                    SPUtils.put(mContext, Urls.SPKey.USER_AUTO, true);
-                                } else {
-                                    SPUtils.put(mContext, Urls.SPKey.USER_AUTO, false);
-                                }
-                                SPUtils.put(mContext, Urls.SPKey.USER_ID, localUser.getId());
-                                SPUtils.put(mContext, Urls.SPKey.USER_EMAIL, localUser.getEmail());
-                                SPUtils.put(mContext, Urls.SPKey.USER_REALNAME, localUser.getRealName());
-                                SPUtils.put(mContext, Urls.SPKey.USER_IDCARD, localUser.getIdCard());
-                                SPUtils.put(mContext, Urls.SPKey.USER_CERTIFICATENUMBER3, localUser.getCertificateNumber3());
-                                BaseActivity.userID = localUser.getId();
-                                startActivity(MainActivity.class);
-                                finish();
-                            } else {
-                                String result = jsonResult.getResult();
-                                if (!TextUtils.isEmpty(result)) {
-                                    LocalUser localUser = gson.fromJson(result.toString(), LocalUser.class);
-                                    SPUtils.put(mContext, Urls.SPKey.USER_ID, localUser.getId());
-                                    SPUtils.put(mContext, Urls.SPKey.USER_EMAIL, localUser.getEmail());
-                                    SPUtils.put(mContext, Urls.SPKey.USER_REALNAME, localUser.getRealName());
-                                    SPUtils.put(mContext, Urls.SPKey.USER_IDCARD, TextUtils.isEmpty(localUser.getIdCard()) ? "" : localUser.getIdCard());
-                                    SPUtils.put(mContext, Urls.SPKey.USER_CERTIFICATENUMBER3, TextUtils.isEmpty(localUser.getCertificateNumber3()) ? "" : localUser.getCertificateNumber3());
-                                    Intent intent = new Intent(LoginActivity.this, UpdateInfoActivity.class);
-                                    intent.putExtra(MainActivity.HINT, jsonResult.getMessage());
-                                    startActivity(intent);
-                                }
-                            }
-
-                        } else {
-                            Common.showMessage(LoginActivity.this, "服务器异常，请联系客服");
-                        }
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        super.onFinish();
-                        dismissPPW();
-                    }
-
-                    @Override
-                    public void onError(Response<String> response) {
-                        super.onError(response);
-                        Common.showMessage(LoginActivity.this, "网络连接错误");
-                    }
-                });
-    }
-
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -187,6 +98,85 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
                 }
                 break;
         }
+    }
+
+    @Override
+    public void showLoading() {
+        ProgressDialog.getInstance().show(this);
+    }
+
+    @Override
+    public void hideLoading() {
+        ProgressDialog.getInstance().dismiss();
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        ToastUtil.showToastS(this, throwable.toString());
+    }
+
+    @Override
+    public void onSuccess(BaseObjectBean<String> bean) {
+        ToastUtil.showToastS(this, bean.getMessage());
+        if (bean.isStatus()) {
+            LocalUser localUser = JsonUtils.getInstance().fromJson(bean.getResult(), LocalUser.class);
+            if (loginRemember.isChecked()) {
+                SPUtils.put(this, Urls.SPKey.USER_PWD, loginPassword.getText().toString().trim());
+            } else {
+                SPUtils.put(this, Urls.SPKey.USER_PWD, "");
+            }
+            if (loginAuto.isChecked()) {
+                SPUtils.put(this, Urls.SPKey.USER_AUTO, true);
+            } else {
+                SPUtils.put(this, Urls.SPKey.USER_AUTO, false);
+            }
+            saveUserToSP(localUser);
+            startActivity(MainActivity.class);
+            finish();
+        } else {
+            LocalUser localUser = JsonUtils.getInstance().fromJson(bean.getResult(), LocalUser.class);
+            if (localUser != null) {
+                saveUserToSP(localUser);
+                Bundle bundle = new Bundle();
+                bundle.putString(MainActivity.HINT, bean.getMessage());
+                startActivity(UpdateInfoActivity.class, bundle);
+            }
+        }
+    }
+
+    @Override
+    public void onSuccessUpdateVersion(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessUpdateInfo(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessResetPassword(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessCheckOperate(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessInitDB() {
+
+    }
+
+
+    private void saveUserToSP(LocalUser localUser) {
+        App.userID = localUser.getId();
+        SPUtils.put(this, Urls.SPKey.USER_ID, localUser.getId());
+        SPUtils.put(this, Urls.SPKey.USER_EMAIL, localUser.getEmail());
+        SPUtils.put(this, Urls.SPKey.USER_REALNAME, localUser.getRealName());
+        SPUtils.put(this, Urls.SPKey.USER_IDCARD, TextUtils.isEmpty(localUser.getIdCard()) ? "" : localUser.getIdCard());
+        SPUtils.put(this, Urls.SPKey.USER_CERTIFICATENUMBER3, TextUtils.isEmpty(localUser.getCertificateNumber3()) ? "" : localUser.getCertificateNumber3());
     }
 
 }

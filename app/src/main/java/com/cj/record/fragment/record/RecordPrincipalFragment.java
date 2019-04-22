@@ -39,19 +39,14 @@ public class RecordPrincipalFragment extends RecordBaseFragment implements ObsUt
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         obsUtils = new ObsUtils();
         obsUtils.setObsLinstener(this);
-
-    }
-
-    @Override
-    public void initView() {
-        super.initView();
         principalName.setText(record.getOperatePerson());
         obsUtils.execute(1);
     }
+
 
 
     @Override

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +19,8 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 
 import com.cj.record.R;
-import com.cj.record.activity.base.BaseActivity;
+import com.cj.record.base.App;
+import com.cj.record.base.BaseActivity;
 import com.cj.record.adapter.RecordAdapter;
 import com.cj.record.adapter.SpacesItemDecoration;
 import com.cj.record.baen.DropItemVo;
@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Administrator on 2018/6/5.
@@ -77,16 +76,12 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
         return R.layout.activity_record_list;
     }
 
-    @Override
-    public void initData() {
-        super.initData();
-        obsUtils = new ObsUtils();
-        obsUtils.setObsLinstener(this);
-        obsUtils.execute(1);
-    }
 
     @Override
     public void initView() {
+        obsUtils = new ObsUtils();
+        obsUtils.setObsLinstener(this);
+        obsUtils.execute(1);
         toolbar.setTitle(hole.getCode());
         toolbar.setSubtitle("记录列表");
         setSupportActionBar(toolbar);
@@ -264,7 +259,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                 finish();
                 return true;
             case R.id.act_add:
-                if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals(userID)) {
+                if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals(App.userID)) {
                     showChooseDialog();
                 } else {
                     ToastUtil.showToastS(this, "不可以编辑他人数据");
@@ -292,7 +287,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
 
     @Override
     public void editClick(int position) {
-        if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals(userID)) {
+        if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals(App.userID)) {
             Bundle bundle = new Bundle();
             bundle.putBoolean(MainActivity.FROMTYPE, true);
             bundle.putSerializable(MainActivity.HOLE, hole);

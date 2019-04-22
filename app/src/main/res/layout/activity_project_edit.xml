@@ -19,7 +19,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="项目序列号"
+                android:text="@string/project_edit_num"
                 android:textColor="@color/colorPrimary" />
 
             <EditText
@@ -28,7 +28,7 @@
                 android:layout_height="40dp"
                 android:background="@null"
                 android:drawableBottom="@drawable/editview_line"
-                android:hint="项目序列号"
+                android:hint="@string/project_edit_num"
                 android:maxLines="1" />
 
             <RelativeLayout
@@ -41,11 +41,11 @@
                     android:layout_height="30dp"
                     android:layout_marginRight="100dp"
                     android:layout_marginTop="10dp"
-                    android:visibility="gone"
                     android:background="@drawable/textview_stroke_btn"
-                    android:text="二维码扫描"
+                    android:text="@string/project_edit_zxing"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/projec_edit_relevance"
@@ -55,14 +55,14 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/textview_normal_btn"
                     android:gravity="center"
-                    android:text="关联"
+                    android:text="@string/project_edit_relate"
                     android:textColor="@color/colorWhite" />
             </RelativeLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="项目名称"
+                android:text="@string/project_edit_name"
                 android:textColor="@color/colorPrimary" />
 
             <EditText
@@ -70,15 +70,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:maxLength="200"
                 android:drawableBottom="@drawable/editview_line"
+                android:maxLength="200"
                 android:textColor="@color/colorBlack" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="项目编号"
+                android:text="@string/project_edit_code"
                 android:textColor="@color/colorPrimary" />
 
             <EditText
@@ -94,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="项目负责人"
+                android:text="@string/project_edit_leader"
                 android:textColor="@color/colorPrimary" />
 
             <EditText
@@ -110,7 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="勘察单位"
+                android:text="@string/projec_edit_company"
                 android:textColor="@color/colorPrimary" />
 
             <EditText
@@ -121,11 +121,12 @@
                 android:drawableBottom="@drawable/editview_line"
                 android:enabled="false"
                 android:textColor="@color/colorBlack" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="劳务单位"
+                android:text="@string/projec_edit_laborUnit"
                 android:textColor="@color/colorPrimary" />
 
             <EditText
@@ -136,11 +137,12 @@
                 android:drawableBottom="@drawable/editview_line"
                 android:enabled="false"
                 android:textColor="@color/colorBlack" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="业主"
+                android:text="@string/projec_edit_owner"
                 android:textColor="@color/colorPrimary" />
 
             <EditText
@@ -156,7 +158,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="地址"
+                android:text="@string/projec_edit_address"
                 android:textColor="@color/colorPrimary" />
 
             <EditText
@@ -172,7 +174,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="勘察大纲"
+                android:text="@string/projec_edit_describe"
                 android:textColor="@color/colorPrimary" />
 
             <EditText

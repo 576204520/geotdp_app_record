@@ -10,8 +10,13 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
+import com.cj.record.R;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public abstract class FileUtil {
 
@@ -220,5 +225,67 @@ public abstract class FileUtil {
             }
         }
     }
+
+    /**
+     * 检查数据库文件是否存在
+     */
+    public static void initDB(Context context) {
+        File newFile = new File(Urls.DATABASE_BASE);
+        if (!newFile.exists()) {
+            try {
+                //在指定的文件夹中创建文件
+                FileUtil.CreateText(Urls.DATABASE_PATH);
+                //查看老版数据库是否存在
+                File oldFile = new File(Urls.DATABASE_BASE_OLD);
+                if (!oldFile.exists()) {
+                    copyDB(context, Urls.DATABASE_BASE);
+                } else {
+                    copyDBForOld(Urls.DATABASE_BASE_OLD, Urls.DATABASE_BASE);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    /**
+     * 从资源文件里复制
+     */
+    private static void copyDB(Context context, String path) {
+        try {
+            InputStream is = context.getResources().openRawResource(R.raw.gcdz);
+            FileOutputStream fos = new FileOutputStream(path);
+            byte[] buffer = new byte[8192];
+            int count;
+            while ((count = is.read(buffer)) >= 0) {
+                fos.write(buffer, 0, count);
+            }
+            fos.close();
+            is.close();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    /**
+     * 从老地址中复制
+     */
+    private static void copyDBForOld(String oldPath, String path) {
+        try {
+            FileInputStream fis = new FileInputStream(oldPath);
+            FileOutputStream fos = new FileOutputStream(path);
+            byte[] buffer = new byte[8192];
+            int count;
+            while ((count = fis.read(buffer)) >= 0) {
+                fos.write(buffer, 0, count);
+            }
+            fis.close();
+            fos.close();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.cj.record.utils;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,13 +18,13 @@ import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
 
 import com.cj.record.R;
-import com.cj.record.activity.base.BaseActivity;
+import com.cj.record.activity.MainActivity;
+import com.cj.record.service.DownloadService;
 
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.UUID;
 
-import static com.cj.record.activity.base.BaseActivity.userID;
 
 /**
  * Created by Administrator on 2018/5/25.
@@ -159,23 +160,30 @@ public class Common {
                 .show();
     }
 
-    public static final String getDataBaseKey(Context context) {
-        try {
-            //实例化TelephonyManager对象
-            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            //获取IMEI号
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                return "";
+    public static void showViesionDialog(Activity activity, String con, final boolean isMust) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(R.string.hint);
+        builder.setMessage(con);
+        builder.setNegativeButton(R.string.record_camera_cancel_dialog_yes,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //更新
+                        activity.startService(new Intent(activity, DownloadService.class));
+                    }
+                });
+        builder.setPositiveButton(R.string.record_camera_cancel_dialog_no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //强制更新，取消了会关闭程序
+                if (isMust) {
+                    activity.finish();
+                }
             }
-            String imei = telephonyManager.getDeviceId();
-            //在次做个验证，也不是什么时候都能获取到的啊
-            if (imei == null) {
-                imei = "";
-            }
-            return imei;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
+        });
+        builder.setCancelable(false);
+        builder.show();
     }
+
+
 }

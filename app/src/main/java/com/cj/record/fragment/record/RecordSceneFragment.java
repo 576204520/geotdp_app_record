@@ -21,14 +21,10 @@ public class RecordSceneFragment extends RecordBaseFragment {
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
     }
 
-    @Override
-    public void initView() {
-        super.initView();
-    }
 
     @Override
     public Record getRecord() {

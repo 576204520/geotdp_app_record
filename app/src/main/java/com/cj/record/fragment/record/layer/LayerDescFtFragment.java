@@ -66,8 +66,8 @@ public class LayerDescFtFragment extends RecordBaseFragment {
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉土_颜色"));
         sprBhwList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉土_包含物"));
         sprJcList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉土_夹层"));
@@ -202,17 +202,14 @@ public class LayerDescFtFragment extends RecordBaseFragment {
         sprYs.setOnItemClickListener(ysListener);
         sprSd.setAdapter(mActivity, sprSdList, MaterialBetterSpinner.MODE_CLEAR);
         sprMsd.setAdapter(mActivity, sprMsdList, MaterialBetterSpinner.MODE_CLEAR);
-    }
 
-    @Override
-    public void initView() {
-        super.initView();
         sprYs.setText(record.getYs());
         sprBhw.setText(record.getBhw());
         sprJc.setText(record.getJc());
         sprSd.setText(record.getSd());
         sprMsd.setText(record.getMsd());
     }
+
 
     MaterialBetterSpinner.OnItemClickListener ysListener = new MaterialBetterSpinner.OnItemClickListener() {
         @Override

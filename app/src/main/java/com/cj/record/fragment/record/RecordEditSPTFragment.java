@@ -66,13 +66,8 @@ public class RecordEditSPTFragment extends RecordBaseFragment {
     }
 
     @Override
-    public void initData() {
-        super.initData();
-    }
-
-    @Override
-    public void initView() {
-        super.initView();
+    protected void initView(View view) {
+        super.initView(view);
         setValue();
         edtBegin1.addTextChangedListener(beginTextWatcher);
         edtEnd1.addTextChangedListener(endCountTextWatcher1);
@@ -83,6 +78,7 @@ public class RecordEditSPTFragment extends RecordBaseFragment {
         edtBlow3.addTextChangedListener(blowCountTextWatcher);
         edtBlow4.addTextChangedListener(blowCountTextWatcher);
     }
+
     private void setValue() {
         try {
             edtDrillLength.setText(record.getDrillLength());

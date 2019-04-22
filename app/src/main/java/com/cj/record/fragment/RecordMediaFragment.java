@@ -3,13 +3,13 @@ package com.cj.record.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,11 +22,11 @@ import com.amap.api.location.AMapLocation;
 import com.cj.record.R;
 import com.cj.record.activity.MainActivity;
 import com.cj.record.activity.VideoPlayerActivity;
-import com.cj.record.activity.base.BaseFragment;
 import com.cj.record.adapter.MediaAdapter;
 import com.cj.record.baen.Gps;
 import com.cj.record.baen.Media;
 import com.cj.record.baen.Record;
+import com.cj.record.base.BaseFragment;
 import com.cj.record.db.GpsDao;
 import com.cj.record.db.MediaDao;
 import com.cj.record.utils.Common;
@@ -77,15 +77,15 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
     private Dialog dialog;
 
     @Override
-    public int getLayoutId() {
-        return R.layout.fragment_record_media;
-    }
-
-    @Override
-    public void initView() {
+    protected void initView(View view) {
         obsUtils = new ObsUtils();
         obsUtils.setObsLinstener(this);
         obsUtils.execute(1);
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.fragment_record_media;
     }
 
     private void initRecycleView() {
@@ -144,7 +144,7 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
             case 1:
                 initRecycleView();
                 //实例化位置fragment
-                FragmentManager fragmentManager = mActivity.getFragmentManager();
+                FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
                 locationFragment = (RecordLocationFragment) fragmentManager.findFragmentByTag("locationFragment");
                 initRecyclerByType();
                 break;

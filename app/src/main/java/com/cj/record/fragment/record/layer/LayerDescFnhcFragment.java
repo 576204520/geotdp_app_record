@@ -60,9 +60,11 @@ public class LayerDescFnhcFragment extends RecordBaseFragment {
         return R.layout.frt_dcms_fnhc;
     }
 
+
+
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉黏互层_颜色"));
         sprBhwList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉黏互层_包含物"));
         sprZtList = DictionaryDao.getInstance().getDropItemList(getSqlString("粉黏互层_状态"));
@@ -136,11 +138,7 @@ public class LayerDescFnhcFragment extends RecordBaseFragment {
         sprFtfchd.setOnItemClickListener(FtfchdListener);
         sprFzntfchd.setAdapter(mActivity, sprFzntfchdList, MaterialBetterSpinner.MODE_CLEAR_CUSTOM);
         sprFzntfchd.setOnItemClickListener(FzntfchdListener);
-    }
 
-    @Override
-    public void initView() {
-        super.initView();
         sprYs.setText(record.getYs());
         sprBhw.setText(record.getBhw());
         sprZt.setText(record.getZt());

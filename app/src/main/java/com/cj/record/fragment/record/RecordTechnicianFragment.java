@@ -39,19 +39,16 @@ public class RecordTechnicianFragment extends RecordBaseFragment implements ObsU
         return R.layout.frt_scene_technician;
     }
 
-    @Override
-    public void initData() {
-        super.initData();
-        obsUtils = new ObsUtils();
-        obsUtils.setObsLinstener(this);
-    }
 
     @Override
-    public void initView() {
-        super.initView();
+    protected void initView(View view) {
+        super.initView(view);
+        obsUtils = new ObsUtils();
+        obsUtils.setObsLinstener(this);
         technicianName.setText(record.getOperatePerson());
         obsUtils.execute(1);
     }
+
 
     @Override
     public void onSubscribe(int type) {

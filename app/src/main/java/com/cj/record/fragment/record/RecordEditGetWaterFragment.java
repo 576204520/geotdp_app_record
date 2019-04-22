@@ -43,15 +43,11 @@ public class RecordEditGetWaterFragment extends RecordBaseFragment {
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         modeListAdapter = new DropListAdapter(mActivity, R.layout.drop_item, getModeList());
         sprMode.setAdapter(modeListAdapter);
-    }
 
-    @Override
-    public void initView() {
-        super.initView();
         edtWaterDepth.setText(record.getWaterDepth());
         sprMode.setText(record.getGetMode());
     }

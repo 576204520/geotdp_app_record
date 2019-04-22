@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00000000">
+
+
+    <RelativeLayout
+        android:id="@+id/chat_edit_rl"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorWhite">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/login_logo_rl"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="90dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/textview_stroke_btn"
+            android:clickable="false"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <com.cj.record.views.MaterialEditTextNoEmoji
+                android:id="@+id/chat_msg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+
+                android:layout_centerVertical="true"
+                android:layout_margin="2dp"
+                android:layout_toEndOf="@+id/imageView"
+                android:enabled="true"
+                android:textSize="14sp"
+                app:met_baseColor="@color/colorBlack"
+                app:met_hideUnderline="true"
+                app:met_textColor="@color/colorBlack" />
+        </RelativeLayout>
+
+        <net.qiujuer.genius.ui.widget.Button
+            android:id="@+id/chat_send"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/textview_normal_btn"
+            android:gravity="center"
+            android:text="发送"
+            android:textColor="@color/colorWhite" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/chat_title_rl"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/chat_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@mipmap/ic_clear_white_24dp" />
+
+
+        <TextView
+            android:id="@+id/chat_friend_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/chat_back"
+            android:text="好友"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/chat_friend_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:text="取消关注"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/chat_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/chat_edit_rl"
+        android:layout_below="@id/chat_title_rl"
+        android:background="@color/colorTexthintGrey"></android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

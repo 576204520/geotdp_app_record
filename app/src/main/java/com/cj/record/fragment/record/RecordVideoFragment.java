@@ -19,10 +19,9 @@ public class RecordVideoFragment extends RecordBaseFragment {
         return R.layout.frt_scene_video;
     }
 
-
     @Override
-    public void initView() {
-        super.initView();
+    protected void initView(View view) {
+        super.initView(view);
     }
 
     @Override

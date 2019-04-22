@@ -21,16 +21,10 @@ public class LayerDescZdyFragment extends RecordBaseFragment {
         return R.layout.frt_dcms_zdy;
     }
 
-    @Override
-    public void initData() {
-        super.initData();
-
-    }
 
     @Override
-    public void initView() {
-        super.initView();
-
+    protected void initView(View view) {
+        super.initView(view);
     }
 
     @Override

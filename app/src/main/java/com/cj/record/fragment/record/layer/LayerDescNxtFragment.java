@@ -61,9 +61,10 @@ public class LayerDescNxtFragment extends RecordBaseFragment {
         return R.layout.frt_dcms_nxt;
     }
 
+
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("黏性土_颜色"));
         sprZtList = DictionaryDao.getInstance().getDropItemList(getSqlString("黏性土_状态"));
         sprBhwList = DictionaryDao.getInstance().getDropItemList(getSqlString("黏性土_包含物"));
@@ -196,11 +197,7 @@ public class LayerDescNxtFragment extends RecordBaseFragment {
         sprYs.setAdapter(mActivity, sprYsList, MaterialBetterSpinner.MODE_CLEAR_CUSTOM);
         sprYs.setOnItemClickListener(ysListener);
         sprZt.setAdapter(mActivity, sprZtList, MaterialBetterSpinner.MODE_CLEAR);
-    }
 
-    @Override
-    public void initView() {
-        super.initView();
         sprYs.setText(record.getYs());
         sprZt.setText(record.getZt());
         sprBhw.setText(record.getBhw());

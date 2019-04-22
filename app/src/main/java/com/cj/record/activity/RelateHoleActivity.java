@@ -17,44 +17,39 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.alibaba.idst.nls.internal.utils.L;
 import com.cj.record.R;
-import com.cj.record.activity.base.BaseActivity;
+import com.cj.record.base.App;
 import com.cj.record.adapter.RelateHoleAdapter;
+import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.Hole;
-import com.cj.record.baen.JsonResult;
 import com.cj.record.baen.LocalUser;
+import com.cj.record.baen.PageBean;
+import com.cj.record.baen.Record;
+import com.cj.record.base.BaseMvpActivity;
+import com.cj.record.contract.HoleContract;
+import com.cj.record.presenter.HolePresenter;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.JsonUtils;
-import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
-import com.cj.record.utils.Urls;
-import com.cj.record.views.MaterialEditTextNoEmoji;
-import com.google.gson.Gson;
+import com.cj.record.views.ProgressDialog;
 import com.google.gson.reflect.TypeToken;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.Response;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Administrator on 2018/6/12.
  */
 
-public class RelateHoleActivity extends BaseActivity {
+public class RelateHoleActivity extends BaseMvpActivity<HolePresenter> implements HoleContract.View {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.relate_hole_search)
@@ -70,38 +65,35 @@ public class RelateHoleActivity extends BaseActivity {
     private List<Hole> checkList;
     private List<LocalUser> localUserList;
     private List<Hole> holeList;
-    private String path;
 
     @Override
     public int getLayoutId() {
         return R.layout.activity_relate_hole;
     }
 
+
     @Override
-    public void initData() {
-        super.initData();
+    public void initView() {
+        mPresenter = new HolePresenter();
+        mPresenter.attachView(this);
         serialNumber = (String) getIntent().getExtras().get(MainActivity.SERIALNUMBER);
         relateType = (int) getIntent().getExtras().get(MainActivity.RELATE_TYPE);
         checkList = new ArrayList<>();
         relateList = new ArrayList<>();
         localUserList = new ArrayList<>();
         holeList = new ArrayList<>();
-    }
-
-    @Override
-    public void initView() {
         switch (relateType) {
             case 1:
-                path = Urls.GET_RELATE_HOLE;
-                toolbar.setTitle("选择关联勘探点");
+                toolbar.setTitle(R.string.hole_relate_title1);
+                mPresenter.getRelateList(App.userID, serialNumber, UpdateUtil.getVerCode(this) + "");
                 break;
             case 2:
-                path = Urls.GET_RELATE_HOLE;
-                toolbar.setTitle("选择关联勘探点");
+                toolbar.setTitle(R.string.hole_relate_title2);
+                mPresenter.getRelateList(App.userID, serialNumber, UpdateUtil.getVerCode(this) + "");
                 break;
             case 3:
-                path = Urls.GET_RELATE_HOLEWITHRECORD;
-                toolbar.setTitle("选择获取数据");
+                toolbar.setTitle(R.string.hole_relate_title3);
+                mPresenter.getDownLoadList(App.userID, serialNumber, UpdateUtil.getVerCode(this) + "");
                 break;
         }
         relateHoleSearch.addTextChangedListener(textWatcher);
@@ -109,64 +101,7 @@ public class RelateHoleActivity extends BaseActivity {
         ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.mipmap.ic_clear_white_24dp);
         ab.setDisplayHomeAsUpEnabled(true);
-        getRelateList();
-    }
-
-    private void getRelateList() {
-        //检查网络
-        if (!haveNet()) {
-            return;
-        }
-        if (TextUtils.isEmpty(userID)) {
-            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
-            return;
-        }
-        showPPW();
-        Map<String, String> map = new HashMap<>();
-        map.put("serialNumber", serialNumber);
-        map.put("userID", userID);
-        map.put("verCode", UpdateUtil.getVerCode(this) + "");
-        OkGo.<String>post(path)
-                .params(map)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(Response<String> response) {
-                        //注意这里已经是在主线程了
-                        String data = response.body();//这个就是返回来的结果
-                        if (JsonUtils.isGoodJson(data)) {
-                            Gson gson = new Gson();
-                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
-                            if (jsonResult.getStatus()) {
-                                relateList.addAll(gson.fromJson(jsonResult.getResult(), new TypeToken<List<Hole>>() {
-                                }.getType()));
-                                if (relateList != null && relateList.size() > 0) {
-                                    sort();
-                                    holeList.clear();
-                                    holeList.addAll(relateList);
-                                    initRecycleView();
-                                } else {
-                                    ToastUtil.showToastS(RelateHoleActivity.this, "服务端未创建勘察点，无法关联");
-                                }
-                            } else {
-                                ToastUtil.showToastS(RelateHoleActivity.this, jsonResult.getMessage());
-                            }
-                        } else {
-                            ToastUtil.showToastS(RelateHoleActivity.this, "服务器异常，请联系客服");
-                        }
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        super.onFinish();
-                        dismissPPW();
-                    }
-
-                    @Override
-                    public void onError(Response<String> response) {
-                        super.onError(response);
-                        ToastUtil.showToastS(mContext, "网络连接错误");
-                    }
-                });
+        initRecycleView();
     }
 
     //根据每条hole的userCount进行排序
@@ -202,8 +137,8 @@ public class RelateHoleActivity extends BaseActivity {
     }
 
     private void initRecycleView() {
-        relateHoleRecycler.setLayoutManager(new LinearLayoutManager(mContext));
-        relateHoleAdapter = new RelateHoleAdapter(mContext, relateList, relateType);
+        relateHoleRecycler.setLayoutManager(new LinearLayoutManager(this));
+        relateHoleAdapter = new RelateHoleAdapter(this, relateList, relateType);
         relateHoleRecycler.setNestedScrollingEnabled(false);
         relateHoleRecycler.setAdapter(relateHoleAdapter);
         relateHoleAdapter.setOnItemListener(onItemListener);
@@ -329,8 +264,8 @@ public class RelateHoleActivity extends BaseActivity {
                 if (holeList.size() > 0) {
                     relateHoleRecycler.setVisibility(View.VISIBLE);
                     prompt.setVisibility(View.GONE);
-                    relateHoleRecycler.setLayoutManager(new LinearLayoutManager(mContext));
-                    relateHoleAdapter = new RelateHoleAdapter(mContext, holeList, relateType);
+                    relateHoleRecycler.setLayoutManager(new LinearLayoutManager(RelateHoleActivity.this));
+                    relateHoleAdapter = new RelateHoleAdapter(RelateHoleActivity.this, holeList, relateType);
                     relateHoleRecycler.setNestedScrollingEnabled(false);
                     relateHoleRecycler.setAdapter(relateHoleAdapter);
                     relateHoleAdapter.setOnItemListener(onItemListener);
@@ -343,8 +278,8 @@ public class RelateHoleActivity extends BaseActivity {
                 holeList.addAll(relateList);
                 relateHoleRecycler.setVisibility(View.VISIBLE);
                 prompt.setVisibility(View.GONE);
-                relateHoleRecycler.setLayoutManager(new LinearLayoutManager(mContext));
-                relateHoleAdapter = new RelateHoleAdapter(mContext, holeList, relateType);
+                relateHoleRecycler.setLayoutManager(new LinearLayoutManager(RelateHoleActivity.this));
+                relateHoleAdapter = new RelateHoleAdapter(RelateHoleActivity.this, holeList, relateType);
                 relateHoleRecycler.setNestedScrollingEnabled(false);
                 relateHoleRecycler.setAdapter(relateHoleAdapter);
                 relateHoleAdapter.setOnItemListener(onItemListener);
@@ -397,5 +332,109 @@ public class RelateHoleActivity extends BaseActivity {
             return list;
         }
     }
+
+    @Override
+    public void showLoading() {
+        ProgressDialog.getInstance().show(this);
+    }
+
+    @Override
+    public void hideLoading() {
+        ProgressDialog.getInstance().dismiss();
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        ToastUtil.showToastS(this, throwable.toString());
+    }
+
+    @Override
+    public void onSuccessAddOrUpdate() {
+
+    }
+
+    @Override
+    public void onSuccessDelete() {
+
+    }
+
+    @Override
+    public void onSuccessList(PageBean<Hole> pageBean) {
+
+    }
+
+    @Override
+    public void onSuccessRelate(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessRelateMore(BaseObjectBean<String> bean, Hole newHole) {
+
+    }
+
+    @Override
+    public void onSuccessNoRelateList(List<Hole> noRelateList) {
+
+    }
+
+    @Override
+    public void onSuccessDownloadHole(BaseObjectBean<String> bean, LocalUser localUser) {
+
+    }
+
+
+    @Override
+    public void onSuccessRelateList(BaseObjectBean<String> bean) {
+        if (bean.isStatus()) {
+            relateList.addAll(JsonUtils.getInstance().fromJson(bean.getResult(), new TypeToken<List<Hole>>() {
+            }.getType()));
+            if (relateList != null && relateList.size() > 0) {
+                sort();
+                holeList.clear();
+                holeList.addAll(relateList);
+                relateHoleAdapter.notifyDataSetChanged();
+            } else {
+                ToastUtil.showToastS(RelateHoleActivity.this, getString(R.string.hole_relate_no_data));
+            }
+        } else {
+            ToastUtil.showToastS(RelateHoleActivity.this, bean.getMessage());
+            Common.showMessage(this, bean.getMessage());
+        }
+    }
+
+    @Override
+    public void onSuccessDownloadList(BaseObjectBean<String> bean) {
+        if (bean.isStatus()) {
+            relateList.addAll(JsonUtils.getInstance().fromJson(bean.getResult(), new TypeToken<List<Hole>>() {
+            }.getType()));
+            if (relateList != null && relateList.size() > 0) {
+                sort();
+                holeList.clear();
+                holeList.addAll(relateList);
+                relateHoleAdapter.notifyDataSetChanged();
+            } else {
+                Common.showMessage(this, getString(R.string.hole_relate_no_data_download));
+            }
+        } else {
+            Common.showMessage(this, bean.getMessage());
+        }
+    }
+
+    @Override
+    public void onSuccessCheckUser(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessGetScene(List<Record> recordList) {
+
+    }
+
+    @Override
+    public void onSuccessUpload(BaseObjectBean<Integer> bean) {
+
+    }
+
 
 }

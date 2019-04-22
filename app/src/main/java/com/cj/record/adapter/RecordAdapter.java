@@ -26,8 +26,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.cj.record.activity.base.BaseActivity.userID;
-
 /**
  * Created by Administrator on 2018/6/7.
  */

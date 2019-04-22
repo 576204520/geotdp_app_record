@@ -30,9 +30,10 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.LocationSource;
 import com.cj.record.R;
 import com.cj.record.activity.MainActivity;
-import com.cj.record.activity.base.BaseFragment;
 import com.cj.record.baen.Hole;
+import com.cj.record.base.BaseFragment;
 import com.cj.record.utils.Common;
+import com.cj.record.utils.GPSutils;
 import com.cj.record.views.MaterialEditTextNoEmoji;
 
 import java.text.ParseException;
@@ -58,19 +59,19 @@ public class RecordLocationFragment extends BaseFragment implements LocationSour
     public AMapLocation aMapLocation = null;
     private Hole hole;
 
+
     @Override
     public int getLayoutId() {
         return R.layout.fragment_record_location;
     }
 
     @Override
-    public void initView() {
+    protected void initView(View view) {
         if (getArguments().containsKey(MainActivity.HOLE)) {
             hole = (Hole) getArguments().getSerializable(MainActivity.HOLE);
         }
         location();
     }
-
 
     public void location() {
         //初始化定位
@@ -125,11 +126,8 @@ public class RecordLocationFragment extends BaseFragment implements LocationSour
                 this.aMapLocation = aMapLocation;
                 //定位时间
                 if (null != hole) {
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    Date date = new Date(aMapLocation.getTime());
                     try {
-                        String totalTime = stringDaysBetween(hole.getCreateTime(), df.format(date));
-                        edtTime.setText(totalTime);
+                        edtTime.setText(stringDaysBetween(hole.getMapTime(), GPSutils.utcToTimeZoneDate(aMapLocation.getTime())));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }

@@ -1,8 +1,8 @@
 package com.cj.record.fragment.record;
 
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,8 +66,8 @@ public class RecordEditWaterFragment extends RecordBaseFragment {
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         typeList = DictionaryDao.getInstance().getDropItemList(getSqlString("地下水类型"));
         typeListAdapter = new DropListAdapter(mActivity, R.layout.drop_item, typeList);
         waterType.setAdapter(typeListAdapter);
@@ -75,19 +75,16 @@ public class RecordEditWaterFragment extends RecordBaseFragment {
         waterType.setCustom();
         waterType.setOnItemClickListener(typeListener);
         //实例化位置fragment
-        FragmentManager fragmentManager = mActivity.getFragmentManager();
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         locationFragment = (RecordLocationFragment) fragmentManager.findFragmentByTag("locationFragment");
-    }
 
-    @Override
-    public void initView() {
-        super.initView();
         waterType.setText(record.getWaterType());
         edtWaterShow.setText(record.getShownWaterLevel());
         edtWaterShowTime.setText(record.getShownTime());
         edtWaterStable.setText(record.getStillWaterLevel());
         edtWaterStableTime.setText(record.getStillTime());
     }
+
 
     @OnClick({R.id.btnAddWaterShow, R.id.btnAddWaterStable})
     public void onViewClicked(View view) {

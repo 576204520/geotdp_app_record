@@ -3,13 +3,15 @@ package com.cj.record.baen;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Json结果
  * 定义该对象,是希望所有的请求返回的格式能正规一点.
  * @author XuFeng
  * @version 1.0
  */
-public class JsonResult {
+public class JsonResult implements Serializable {
 
     // 请求是否成功
     private boolean status;

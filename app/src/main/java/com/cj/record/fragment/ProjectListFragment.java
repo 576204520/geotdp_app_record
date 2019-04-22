@@ -1,22 +1,19 @@
 package com.cj.record.fragment;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -25,24 +22,23 @@ import com.cj.record.activity.HoleListActivity;
 import com.cj.record.activity.MainActivity;
 import com.cj.record.activity.ProjectEditActiity;
 import com.cj.record.activity.ReleteLocationActivity;
-import com.cj.record.activity.base.BaseFragment;
+import com.cj.record.base.App;
 import com.cj.record.adapter.ProjectAdapter;
 import com.cj.record.adapter.SpacesItemDecoration;
+import com.cj.record.baen.BaseObjectBean;
+import com.cj.record.baen.PageBean;
 import com.cj.record.baen.Project;
-import com.cj.record.db.ProjectDao;
+import com.cj.record.base.BaseMvpFragment;
+import com.cj.record.contract.ProjectContract;
+import com.cj.record.presenter.ProjectPresenter;
 import com.cj.record.utils.Common;
-import com.cj.record.utils.ObsUtils;
-import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
-import com.cj.record.utils.Urls;
+import com.cj.record.views.ProgressDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -51,8 +47,7 @@ import static android.app.Activity.RESULT_OK;
  * Created by Administrator on 2018/5/24.
  */
 
-public class ProjectListFragment extends BaseFragment implements View.OnClickListener,
-        SwipeRefreshLayout.OnRefreshListener, ProjectAdapter.OnItemListener, ObsUtils.ObsLinstener {
+public class ProjectListFragment extends BaseMvpFragment<ProjectPresenter> implements ProjectContract.View, SwipeRefreshLayout.OnRefreshListener, ProjectAdapter.OnItemListener {
     @BindView(R.id.recycler)
     RecyclerView recycler;
     @BindView(R.id.refresh)
@@ -61,20 +56,15 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
     ImageView projectSearchIv;
     @BindView(R.id.project_search_et)
     EditText projectSearchEt;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private ProjectAdapter projectAdapter;
     private List<Project> dataList;
     private int page = 0;
     private int size = 20;
     private int total = 0;
-    private String userID;
-    private Dialog dialog;
-    private int longClickPosition;
     private LinearLayoutManager linearLayoutManager;
-    private ObsUtils obsUtils;
-    private List<Project> newList;
-    private int deletePosition;
-    private String search = "";
 
     @Override
     public int getLayoutId() {
@@ -82,20 +72,42 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
     }
 
     @Override
-    public void initData() {
-        super.initData();
-        userID = (String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, "");
+    protected void initView(View view) {
+        mPresenter = new ProjectPresenter();
+        mPresenter.attachView(this);
         dataList = new ArrayList<>();
-        newList = new ArrayList<>();
-        obsUtils = new ObsUtils();
-        obsUtils.setObsLinstener(this);
+        projectSearchEt.addTextChangedListener(textWatcher);
+        initRecycleView();
+        onRefresh();
     }
 
     @Override
-    public void initView() {
-        obsUtils.execute(1);
-        projectSearchEt.addTextChangedListener(textWatcher);
+    public void inCreate() {
+        setHasOptionsMenu(true);
     }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        toolbar.inflateMenu(R.menu.menu_main);
+        toolbar.setTitle(R.string.app_name);
+        toolbar.setOnMenuItemClickListener(onMenuItemClickListener);
+    }
+
+    Toolbar.OnMenuItemClickListener onMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.act_add:
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(MainActivity.FROMTYPE, false);
+                    startActivityForResult(ProjectEditActiity.class, bundle, MainActivity.PROJECT_GO_EDIT);
+                    return true;
+            }
+            return true;
+        }
+    };
+
 
     TextWatcher textWatcher = new TextWatcher() {
         @Override
@@ -147,60 +159,13 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public void onRefresh() {
-        obsUtils.execute(2);
+        page = 0;
+        mPresenter.loadData(App.userID, page, size, projectSearchEt.getText().toString().trim());
     }
 
     public void onLoadMore() {
-        obsUtils.execute(3);
-    }
-
-
-    @Override
-    public void onSubscribe(int type) {
-        switch (type) {
-            case 1:
-                total = ProjectDao.getInstance().getAllCount(userID);
-                dataList.addAll(ProjectDao.getInstance().getAll(userID, page, size, search));
-                break;
-            case 2:
-                search = projectSearchEt.getText().toString().trim();
-                page = 0;
-                total = ProjectDao.getInstance().getAllCount(userID);
-                dataList.clear();
-                dataList.addAll(ProjectDao.getInstance().getAll(userID, page, size, search));
-                break;
-            case 3:
-                page++;
-                newList.clear();
-                newList = ProjectDao.getInstance().getAll(userID, page, size, search);
-                break;
-            case 4:
-                showPPW();
-                dataList.get(deletePosition).delete(mActivity);
-                break;
-        }
-    }
-
-    @Override
-    public void onComplete(int type) {
-        switch (type) {
-            case 1:
-                initRecycleView();
-                break;
-            case 2:
-                projectAdapter.notifyDataSetChanged();
-                projectAdapter.openFrist();
-                refresh.setRefreshing(false);
-                break;
-            case 3:
-                dataList.addAll(newList);
-                projectAdapter.notifyDataSetChanged();
-                break;
-            case 4:
-                dismissPPW();
-                onRefresh();
-                break;
-        }
+        page++;
+        mPresenter.loadData(App.userID, page, size, projectSearchEt.getText().toString().trim());
     }
 
 
@@ -232,7 +197,7 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
             bundle.putString(MainActivity.SN, sn);
             startActivity(ReleteLocationActivity.class, bundle);
         } else {
-            Common.showMessage(mActivity, "该项目未关联，请先关联项目信息");
+            Common.showMessage(mActivity, getString(R.string.project_nav_norelate));
         }
     }
 
@@ -256,9 +221,7 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //标记要删除的项
-                                deletePosition = position;
-                                obsUtils.execute(4);
+                                mPresenter.delete(mActivity, dataList.get(position));
                             }
                         })
                 .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)
@@ -275,52 +238,49 @@ public class ProjectListFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
-    private void showDialog() {
-        View view = mActivity.getLayoutInflater().inflate(R.layout.project_list_choose, null);
-        Button butDetail = (Button) view.findViewById(R.id.but_detail);
-        Button butNav = (Button) view.findViewById(R.id.but_nav);
-        Button butDelete = (Button) view.findViewById(R.id.but_delete);
-        Button butCancel = (Button) view.findViewById(R.id.but_cancel);
-        butDetail.setOnClickListener(this);
-        butNav.setOnClickListener(this);
-        butDelete.setOnClickListener(this);
-        butCancel.setOnClickListener(this);
-        dialog = new Dialog(mActivity, R.style.transparentFrameWindowStyle);
-        dialog.setContentView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        Window window = dialog.getWindow();
-        // 设置显示动画
-        if (window != null) {
-            window.setWindowAnimations(R.style.main_menu_animstyle);
-            WindowManager.LayoutParams wl = window.getAttributes();
-            wl.x = 0;
-            wl.y = mActivity.getWindowManager().getDefaultDisplay().getHeight();
-            // 以下这两句是为了保证按钮可以水平满屏
-            wl.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            wl.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            // 设置显示位置
-            dialog.onWindowAttributesChanged(wl);
-        }
-        // 设置点击外围解散
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
+    @Override
+    public void showLoading() {
+        ProgressDialog.getInstance().show(mActivity);
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.but_detail:
-                dialog.dismiss();
-                break;
-            case R.id.but_nav:
-                dialog.dismiss();
-                break;
-            case R.id.but_delete:
-                dialog.dismiss();
-                break;
-            case R.id.but_cancel:
-                dialog.dismiss();
-                break;
+    public void hideLoading() {
+        ProgressDialog.getInstance().dismiss();
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        refresh.setRefreshing(false);
+        ToastUtil.showToastS(mActivity, throwable.toString());
+    }
+
+    @Override
+    public void onSuccessAddOrUpdate() {
+
+    }
+
+    @Override
+    public void onSuccessDelete() {
+        onRefresh();
+    }
+
+    @Override
+    public void onSuccessList(PageBean<Project> pageBean) {
+        total = pageBean.getTotleSize();
+        if (page == 0) {
+            dataList.clear();
+            dataList.addAll(pageBean.getList());
+            projectAdapter.notifyDataSetChanged();
+            projectAdapter.openFrist();
+            refresh.setRefreshing(false);
+        } else if (page > 0) {
+            dataList.addAll(pageBean.getList());
+            projectAdapter.notifyDataSetChanged();
         }
     }
 
+    @Override
+    public void onSuccessRelate(BaseObjectBean<String> bean) {
+
+    }
 }

@@ -59,8 +59,8 @@ public class LayerDescYsFragment extends RecordBaseFragment {
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("岩石_颜色"));
         sprJycdList = DictionaryDao.getInstance().getDropItemList(getSqlString("岩石_坚硬程度"));
         sprWzcdList = DictionaryDao.getInstance().getDropItemList(getSqlString("岩石_完整程度"));
@@ -78,11 +78,7 @@ public class LayerDescYsFragment extends RecordBaseFragment {
         sprKwx.setAdapter(mActivity, sprKwxList, MaterialBetterSpinner.MODE_CLEAR_CUSTOM);
         sprKwx.setOnItemClickListener(kwxListener);
         sprJglx.setAdapter(mActivity, sprJglxList, MaterialBetterSpinner.MODE_CLEAR);
-    }
 
-    @Override
-    public void initView() {
-        super.initView();
         sprYs.setText(record.getYs());
         sprJycd.setText(record.getJycd());
         sprWzcd.setText(record.getWzcd());

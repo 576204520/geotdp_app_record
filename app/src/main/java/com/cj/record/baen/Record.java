@@ -25,6 +25,7 @@ import com.cj.record.db.MediaDao;
 import com.cj.record.db.RecordDao;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
+import com.cj.record.utils.RxPartMapUtils;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
@@ -37,11 +38,15 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * 记录
@@ -776,239 +781,239 @@ public class Record implements Serializable, Cloneable {
         return params;
     }
 
-    public static Map<String, String> getMap(List<Record> list, String serialNumber) {
-        Map<String, String> map = new ConcurrentHashMap<>();
+    public static Map<String, RequestBody> getMap(List<Record> list, String serialNumber) {
+        Map<String, RequestBody> map = new ConcurrentHashMap<>();
         for (int i = 0; i < list.size(); i++) {
             Record record = list.get(i);
-            map.put("record[" + i + "].projectID", serialNumber);
-            map.put("record[" + i + "].id", record.getId());
-            map.put("record[" + i + "].code", record.getCode());
-            map.put("record[" + i + "].holeID", record.getHoleID());
+            map.put("record[" + i + "].projectID", RxPartMapUtils.toRequestBodyOfText(serialNumber));
+            map.put("record[" + i + "].id", RxPartMapUtils.toRequestBodyOfText(record.getId()));
+            map.put("record[" + i + "].code", RxPartMapUtils.toRequestBodyOfText(record.getCode()));
+            map.put("record[" + i + "].holeID", RxPartMapUtils.toRequestBodyOfText(record.getHoleID()));
             if (!TextUtils.isEmpty(record.getUpdateId())) {
-                map.put("record[" + i + "].updateID", record.getUpdateId());
+                map.put("record[" + i + "].updateID", RxPartMapUtils.toRequestBodyOfText(record.getUpdateId()));
             }
             if (!TextUtils.isEmpty(record.getType())) {
-                map.put("record[" + i + "].type", record.getType());
+                map.put("record[" + i + "].type", RxPartMapUtils.toRequestBodyOfText(record.getType()));
             }
             //titile没用，不上传
 //            if (!TextUtils.isEmpty(record.getTitle())) {
 //                map.put("record[" + i + "].title", record.getTitle());
 //            }
             if (!TextUtils.isEmpty(record.getBeginDepth())) {
-                map.put("record[" + i + "].beginDepth", record.getBeginDepth());
+                map.put("record[" + i + "].beginDepth", RxPartMapUtils.toRequestBodyOfText(record.getBeginDepth()));
             }
             if (!TextUtils.isEmpty(record.getEndDepth())) {
-                map.put("record[" + i + "].endDepth", record.getEndDepth());
+                map.put("record[" + i + "].endDepth", RxPartMapUtils.toRequestBodyOfText(record.getEndDepth()));
             }
             if (!TextUtils.isEmpty(record.getCreateTime())) {
-                map.put("record[" + i + "].createTime", record.getCreateTime());
+                map.put("record[" + i + "].createTime", RxPartMapUtils.toRequestBodyOfText(record.getCreateTime()));
             }
             if (!TextUtils.isEmpty(record.getDescription())) {
-                map.put("record[" + i + "].description", record.getDescription());
+                map.put("record[" + i + "].description", RxPartMapUtils.toRequestBodyOfText(record.getDescription()));
             }
             if (!TextUtils.isEmpty(record.getUpdateTime())) {
-                map.put("record[" + i + "].updateTime", record.getUpdateTime());
+                map.put("record[" + i + "].updateTime", RxPartMapUtils.toRequestBodyOfText(record.getUpdateTime()));
             }
             if (!TextUtils.isEmpty(record.getRecordPerson())) {
-                map.put("record[" + i + "].recordPerson", record.getRecordPerson());
+                map.put("record[" + i + "].recordPerson", RxPartMapUtils.toRequestBodyOfText(record.getRecordPerson()));
             }
             if (!TextUtils.isEmpty(record.getOperatePerson())) {
-                map.put("record[" + i + "].operatePerson", record.getOperatePerson());
+                map.put("record[" + i + "].operatePerson", RxPartMapUtils.toRequestBodyOfText(record.getOperatePerson()));
             }
             if (!TextUtils.isEmpty(record.getFrequencyType())) {
-                map.put("record[" + i + "].frequencyType", record.getFrequencyType());
+                map.put("record[" + i + "].frequencyType", RxPartMapUtils.toRequestBodyOfText(record.getFrequencyType()));
             }
             if (!TextUtils.isEmpty(record.getFrequencyMode())) {
-                map.put("record[" + i + "].frequencyMode", record.getFrequencyMode());
+                map.put("record[" + i + "].frequencyMode", RxPartMapUtils.toRequestBodyOfText(record.getFrequencyMode()));
             }
             if (!TextUtils.isEmpty(record.getAperture())) {
-                map.put("record[" + i + "].aperture", record.getAperture());
+                map.put("record[" + i + "].aperture", RxPartMapUtils.toRequestBodyOfText(record.getAperture()));
             }
             if (!TextUtils.isEmpty(record.getEarthType())) {
-                map.put("record[" + i + "].earthType", record.getEarthType());
+                map.put("record[" + i + "].earthType", RxPartMapUtils.toRequestBodyOfText(record.getEarthType()));
             }
             if (!TextUtils.isEmpty(record.getTestType())) {
-                map.put("record[" + i + "].testType", record.getTestType());
+                map.put("record[" + i + "].testType", RxPartMapUtils.toRequestBodyOfText(record.getTestType()));
             }
             if (!TextUtils.isEmpty(record.getWaterDepth())) {
-                map.put("record[" + i + "].waterDepth", record.getWaterDepth());
+                map.put("record[" + i + "].waterDepth", RxPartMapUtils.toRequestBodyOfText(record.getWaterDepth()));
             }
             if (!TextUtils.isEmpty(record.getGetMode())) {
-                map.put("record[" + i + "].getMode", record.getGetMode());
+                map.put("record[" + i + "].getMode", RxPartMapUtils.toRequestBodyOfText(record.getGetMode()));
             }
             if (!TextUtils.isEmpty(record.getLayerType())) {
-                map.put("record[" + i + "].layerType", record.getLayerType());
+                map.put("record[" + i + "].layerType", RxPartMapUtils.toRequestBodyOfText(record.getLayerType()));
             }
             if (!TextUtils.isEmpty(record.getLayerName())) {
-                map.put("record[" + i + "].layerName", record.getLayerName());
+                map.put("record[" + i + "].layerName", RxPartMapUtils.toRequestBodyOfText(record.getLayerName()));
             }
             if (!TextUtils.isEmpty(record.getWeathering())) {
-                map.put("record[" + i + "].weathering", record.getWeathering());
+                map.put("record[" + i + "].weathering", RxPartMapUtils.toRequestBodyOfText(record.getWeathering()));
             }
             if (!TextUtils.isEmpty(record.getEra())) {
-                map.put("record[" + i + "].era", record.getEra());
+                map.put("record[" + i + "].era", RxPartMapUtils.toRequestBodyOfText(record.getEra()));
             }
             if (!TextUtils.isEmpty(record.getCauses())) {
-                map.put("record[" + i + "].causes", record.getCauses());
+                map.put("record[" + i + "].causes", RxPartMapUtils.toRequestBodyOfText(record.getCauses()));
             }
             if (!TextUtils.isEmpty(record.getWzcf())) {
-                map.put("record[" + i + "].wzcf", record.getWzcf());
+                map.put("record[" + i + "].wzcf", RxPartMapUtils.toRequestBodyOfText(record.getWzcf()));
             }
             if (!TextUtils.isEmpty(record.getYs())) {
-                map.put("record[" + i + "].ys", record.getYs());
+                map.put("record[" + i + "].ys", RxPartMapUtils.toRequestBodyOfText(record.getYs()));
             }
             if (!TextUtils.isEmpty(record.getKlzc())) {
-                map.put("record[" + i + "].klzc", record.getKlzc());
+                map.put("record[" + i + "].klzc", RxPartMapUtils.toRequestBodyOfText(record.getKlzc()));
             }
             if (!TextUtils.isEmpty(record.getKlxz())) {
-                map.put("record[" + i + "].klxz", record.getKlxz());
+                map.put("record[" + i + "].klxz", RxPartMapUtils.toRequestBodyOfText(record.getKlxz()));
             }
             if (!TextUtils.isEmpty(record.getKlpl())) {
-                map.put("record[" + i + "].klpl", record.getKlpl());
+                map.put("record[" + i + "].klpl", RxPartMapUtils.toRequestBodyOfText(record.getKlpl()));
             }
             if (!TextUtils.isEmpty(record.getKljp())) {
-                map.put("record[" + i + "].kljp", record.getKljp());
+                map.put("record[" + i + "].kljp", RxPartMapUtils.toRequestBodyOfText(record.getKljp()));
             }
             if (!TextUtils.isEmpty(record.getSd())) {
-                map.put("record[" + i + "].sd", record.getSd());
+                map.put("record[" + i + "].sd", RxPartMapUtils.toRequestBodyOfText(record.getSd()));
             }
             if (!TextUtils.isEmpty(record.getMsd())) {
-                map.put("record[" + i + "].msd", record.getMsd());
+                map.put("record[" + i + "].msd", RxPartMapUtils.toRequestBodyOfText(record.getMsd()));
             }
             if (!TextUtils.isEmpty(record.getJyx())) {
-                map.put("record[" + i + "].jyx", record.getJyx());
+                map.put("record[" + i + "].jyx", RxPartMapUtils.toRequestBodyOfText(record.getJyx()));
             }
             if (!TextUtils.isEmpty(record.getZt())) {
-                map.put("record[" + i + "].zt", record.getZt());
+                map.put("record[" + i + "].zt", RxPartMapUtils.toRequestBodyOfText(record.getZt()));
             }
             if (!TextUtils.isEmpty(record.getBhw())) {
-                map.put("record[" + i + "].bhw", record.getBhw());
+                map.put("record[" + i + "].bhw", RxPartMapUtils.toRequestBodyOfText(record.getBhw()));
             }
             if (!TextUtils.isEmpty(record.getFtfchd())) {
-                map.put("record[" + i + "].ftfchd", record.getFtfchd());
+                map.put("record[" + i + "].ftfchd", RxPartMapUtils.toRequestBodyOfText(record.getFtfchd()));
             }
             if (!TextUtils.isEmpty(record.getFzntfchd())) {
-                map.put("record[" + i + "].fzntfchd", record.getFzntfchd());
+                map.put("record[" + i + "].fzntfchd", RxPartMapUtils.toRequestBodyOfText(record.getFzntfchd()));
             }
             if (!TextUtils.isEmpty(record.getJc())) {
-                map.put("record[" + i + "].jc", record.getJc());
+                map.put("record[" + i + "].jc", RxPartMapUtils.toRequestBodyOfText(record.getJc()));
             }
             if (!TextUtils.isEmpty(record.getKx())) {
-                map.put("record[" + i + "].kx", record.getKx());
+                map.put("record[" + i + "].kx", RxPartMapUtils.toRequestBodyOfText(record.getKx()));
             }
             if (!TextUtils.isEmpty(record.getCzjl())) {
-                map.put("record[" + i + "].czjl", record.getCzjl());
+                map.put("record[" + i + "].czjl", RxPartMapUtils.toRequestBodyOfText(record.getCzjl()));
             }
             if (!TextUtils.isEmpty(record.getYbljx())) {
-                map.put("record[" + i + "].ybljx", record.getYbljx());
+                map.put("record[" + i + "].ybljx", RxPartMapUtils.toRequestBodyOfText(record.getYbljx()));
             }
             if (!TextUtils.isEmpty(record.getYbljd())) {
-                map.put("record[" + i + "].ybljd", record.getYbljd());
+                map.put("record[" + i + "].ybljd", RxPartMapUtils.toRequestBodyOfText(record.getYbljd()));
             }
             if (!TextUtils.isEmpty(record.getJdljx())) {
-                map.put("record[" + i + "].jdljx", record.getJdljx());
+                map.put("record[" + i + "].jdljx", RxPartMapUtils.toRequestBodyOfText(record.getJdljx()));
             }
             if (!TextUtils.isEmpty(record.getJdljd())) {
-                map.put("record[" + i + "].jdljd", record.getJdljd());
+                map.put("record[" + i + "].jdljd", RxPartMapUtils.toRequestBodyOfText(record.getJdljd()));
             }
             if (!TextUtils.isEmpty(record.getZdlj())) {
-                map.put("record[" + i + "].zdlj", record.getZdlj());
+                map.put("record[" + i + "].zdlj", RxPartMapUtils.toRequestBodyOfText(record.getZdlj()));
             }
             if (!TextUtils.isEmpty(record.getMycf())) {
-                map.put("record[" + i + "].mycf", record.getMycf());
+                map.put("record[" + i + "].mycf", RxPartMapUtils.toRequestBodyOfText(record.getMycf()));
             }
             if (!TextUtils.isEmpty(record.getFhcd())) {
-                map.put("record[" + i + "].fhcd", record.getFhcd());
+                map.put("record[" + i + "].fhcd", RxPartMapUtils.toRequestBodyOfText(record.getFhcd()));
             }
             if (!TextUtils.isEmpty(record.getTcw())) {
-                map.put("record[" + i + "].tcw", record.getTcw());
+                map.put("record[" + i + "].tcw", RxPartMapUtils.toRequestBodyOfText(record.getTcw()));
             }
             if (!TextUtils.isEmpty(record.getKwzc())) {
-                map.put("record[" + i + "].kwzc", record.getKwzc());
+                map.put("record[" + i + "].kwzc", RxPartMapUtils.toRequestBodyOfText(record.getKwzc()));
             }
             if (!TextUtils.isEmpty(record.getZycf())) {
-                map.put("record[" + i + "].zycf", record.getZycf());
+                map.put("record[" + i + "].zycf", RxPartMapUtils.toRequestBodyOfText(record.getZycf()));
             }
             if (!TextUtils.isEmpty(record.getCycf())) {
-                map.put("record[" + i + "].cycf", record.getCycf());
+                map.put("record[" + i + "].cycf", RxPartMapUtils.toRequestBodyOfText(record.getCycf()));
             }
             if (!TextUtils.isEmpty(record.getDjnd())) {
-                map.put("record[" + i + "].djnd", record.getDjnd());
+                map.put("record[" + i + "].djnd", RxPartMapUtils.toRequestBodyOfText(record.getDjnd()));
             }
             if (!TextUtils.isEmpty(record.getHsl())) {
-                map.put("record[" + i + "].hsl", record.getHsl());
+                map.put("record[" + i + "].hsl", RxPartMapUtils.toRequestBodyOfText(record.getHsl()));
             }
             if (!TextUtils.isEmpty(record.getJycd())) {
-                map.put("record[" + i + "].jycd", record.getJycd());
+                map.put("record[" + i + "].jycd", RxPartMapUtils.toRequestBodyOfText(record.getJycd()));
             }
             if (!TextUtils.isEmpty(record.getWzcd())) {
-                map.put("record[" + i + "].wzcd", record.getWzcd());
+                map.put("record[" + i + "].wzcd", RxPartMapUtils.toRequestBodyOfText(record.getWzcd()));
             }
             if (!TextUtils.isEmpty(record.getJbzldj())) {
-                map.put("record[" + i + "].jbzldj", record.getJbzldj());
+                map.put("record[" + i + "].jbzldj", RxPartMapUtils.toRequestBodyOfText(record.getJbzldj()));
             }
             if (!TextUtils.isEmpty(record.getKwx())) {
-                map.put("record[" + i + "].kwx", record.getKwx());
+                map.put("record[" + i + "].kwx", RxPartMapUtils.toRequestBodyOfText(record.getKwx()));
             }
             if (!TextUtils.isEmpty(record.getJglx())) {
-                map.put("record[" + i + "].jglx", record.getJglx());
+                map.put("record[" + i + "].jglx", RxPartMapUtils.toRequestBodyOfText(record.getJglx()));
             }
             if (!TextUtils.isEmpty(record.getPowerType())) {
-                map.put("record[" + i + "].powerType", record.getPowerType());
+                map.put("record[" + i + "].powerType", RxPartMapUtils.toRequestBodyOfText(record.getPowerType()));
             }
             if (!TextUtils.isEmpty(record.getDrillLength())) {
-                map.put("record[" + i + "].drillLength", record.getDrillLength());
+                map.put("record[" + i + "].drillLength", RxPartMapUtils.toRequestBodyOfText(record.getDrillLength()));
             }
             if (!TextUtils.isEmpty(record.getBegin1())) {
-                map.put("record[" + i + "].begin1", record.getBegin1());
+                map.put("record[" + i + "].begin1", RxPartMapUtils.toRequestBodyOfText(record.getBegin1()));
             }
             if (!TextUtils.isEmpty(record.getEnd1())) {
-                map.put("record[" + i + "].end1", record.getEnd1());
+                map.put("record[" + i + "].end1", RxPartMapUtils.toRequestBodyOfText(record.getEnd1()));
             }
             if (!TextUtils.isEmpty(record.getBlow1())) {
-                map.put("record[" + i + "].blow1", record.getBlow1());
+                map.put("record[" + i + "].blow1", RxPartMapUtils.toRequestBodyOfText(record.getBlow1()));
             }
             if (!TextUtils.isEmpty(record.getBegin2())) {
-                map.put("record[" + i + "].begin2", record.getBegin2());
+                map.put("record[" + i + "].begin2", RxPartMapUtils.toRequestBodyOfText(record.getBegin2()));
             }
             if (!TextUtils.isEmpty(record.getEnd2())) {
-                map.put("record[" + i + "].end2", record.getEnd2());
+                map.put("record[" + i + "].end2", RxPartMapUtils.toRequestBodyOfText(record.getEnd2()));
             }
             if (!TextUtils.isEmpty(record.getBlow2())) {
-                map.put("record[" + i + "].blow2", record.getBlow2());
+                map.put("record[" + i + "].blow2", RxPartMapUtils.toRequestBodyOfText(record.getBlow2()));
             }
             if (!TextUtils.isEmpty(record.getBegin3())) {
-                map.put("record[" + i + "].begin3", record.getBegin3());
+                map.put("record[" + i + "].begin3", RxPartMapUtils.toRequestBodyOfText(record.getBegin3()));
             }
             if (!TextUtils.isEmpty(record.getEnd3())) {
-                map.put("record[" + i + "].end3", record.getEnd3());
+                map.put("record[" + i + "].end3", RxPartMapUtils.toRequestBodyOfText(record.getEnd3()));
             }
             if (!TextUtils.isEmpty(record.getBlow3())) {
-                map.put("record[" + i + "].blow3", record.getBlow3());
+                map.put("record[" + i + "].blow3", RxPartMapUtils.toRequestBodyOfText(record.getBlow3()));
             }
             if (!TextUtils.isEmpty(record.getBegin4())) {
-                map.put("record[" + i + "].begin4", record.getBegin4());
+                map.put("record[" + i + "].begin4", RxPartMapUtils.toRequestBodyOfText(record.getBegin4()));
             }
             if (!TextUtils.isEmpty(record.getEnd4())) {
-                map.put("record[" + i + "].end4", record.getEnd4());
+                map.put("record[" + i + "].end4", RxPartMapUtils.toRequestBodyOfText(record.getEnd4()));
             }
             if (!TextUtils.isEmpty(record.getBlow4())) {
-                map.put("record[" + i + "].blow4", record.getBlow4());
+                map.put("record[" + i + "].blow4", RxPartMapUtils.toRequestBodyOfText(record.getBlow4()));
             }
             if (!TextUtils.isEmpty(record.getWaterType())) {
-                map.put("record[" + i + "].waterType", record.getWaterType());
+                map.put("record[" + i + "].waterType", RxPartMapUtils.toRequestBodyOfText(record.getWaterType()));
             }
             if (!TextUtils.isEmpty(record.getShownWaterLevel())) {
-                map.put("record[" + i + "].shownWaterLevel", record.getShownWaterLevel());
+                map.put("record[" + i + "].shownWaterLevel", RxPartMapUtils.toRequestBodyOfText(record.getShownWaterLevel()));
             }
             if (!TextUtils.isEmpty(record.getStillWaterLevel())) {
-                map.put("record[" + i + "].stillWaterLevel", record.getStillWaterLevel());
+                map.put("record[" + i + "].stillWaterLevel", RxPartMapUtils.toRequestBodyOfText(record.getStillWaterLevel()));
             }
             if (!TextUtils.isEmpty(record.getShownTime())) {
-                map.put("record[" + i + "].shownTime", record.getShownTime());
+                map.put("record[" + i + "].shownTime", RxPartMapUtils.toRequestBodyOfText(record.getShownTime()));
             }
             if (!TextUtils.isEmpty(record.getStillTime())) {
-                map.put("record[" + i + "].stillTime", record.getStillTime());
+                map.put("record[" + i + "].stillTime", RxPartMapUtils.toRequestBodyOfText(record.getStillTime()));
             }
 //            if (!TextUtils.isEmpty(record.getMainLayerCode())) {
 //                map.put("record[" + i + "].mainLayerCode", record.getMainLayerCode());

@@ -7,7 +7,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -26,35 +25,32 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.navi.model.NaviLatLng;
 import com.cj.record.R;
-import com.cj.record.activity.base.BaseActivity;
 import com.cj.record.adapter.ReleteLocationAdapter;
+import com.cj.record.base.App;
+import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.Hole;
-import com.cj.record.baen.JsonResult;
+import com.cj.record.baen.LocalUser;
+import com.cj.record.baen.PageBean;
 import com.cj.record.baen.Record;
+import com.cj.record.base.BaseMvpActivity;
+import com.cj.record.contract.HoleContract;
+import com.cj.record.presenter.HolePresenter;
 import com.cj.record.utils.Common;
+import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
-import com.cj.record.utils.Urls;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.Response;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.Call;
 
 /**
  * Created by Administrator on 2018/7/3.
  */
 
-public class ReleteLocationActivity extends BaseActivity implements AMapLocationListener, ReleteLocationAdapter.OnItemListener {
+public class ReleteLocationActivity extends BaseMvpActivity<HolePresenter> implements HoleContract.View, AMapLocationListener, ReleteLocationAdapter.OnItemListener {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.location_map)
@@ -90,15 +86,15 @@ public class ReleteLocationActivity extends BaseActivity implements AMapLocation
         return R.layout.activity_relete_location;
     }
 
-    @Override
     public void initMust(Bundle savedInstanceState) {
-        super.initMust(savedInstanceState);
-        locationMap.onCreate(savedInstanceState);// 此方法必须重写
+        locationMap.onCreate(savedInstanceState);
     }
 
 
     @Override
     public void initView() {
+        mPresenter = new HolePresenter();
+        mPresenter.attachView(this);
         toolbar.setTitle("导航");
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
@@ -128,7 +124,8 @@ public class ReleteLocationActivity extends BaseActivity implements AMapLocation
         aMap.setMyLocationEnabled(true);
         //默认缩放比例
         aMap.moveCamera(CameraUpdateFactory.zoomTo(19));
-        getReleteList();
+        //获取关联列表
+        mPresenter.getRelateList(App.userID, serialNumber, UpdateUtil.getVerCode(this) + "");
         doLocation();
     }
 
@@ -155,55 +152,6 @@ public class ReleteLocationActivity extends BaseActivity implements AMapLocation
         mLocationClient.setLocationOption(mLocationOption);
         //启动定位
         mLocationClient.startLocation();
-    }
-
-    /**
-     * 获取勘探点列表
-     */
-    private void getReleteList() {
-        if (TextUtils.isEmpty(userID)) {
-            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
-            return;
-        }
-        showPPW();
-        Map<String, String> map = new HashMap<>();
-        map.put("verCode", UpdateUtil.getVerCode(this) + "");
-        map.put("userID", userID);
-        map.put("serialNumber", serialNumber);
-        OkGo.<String>post(Urls.GET_RELATE_HOLE)
-                .params(map)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(Response<String> response) {
-                        String data = response.body();//这个就是返回来的结果
-                        Gson gson = new Gson();
-                        JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
-                        if (jsonResult.getStatus()) {
-                            list = gson.fromJson(jsonResult.getResult(), new TypeToken<List<Hole>>() {
-                            }.getType());
-                            if (list != null && list.size() > 0) {
-                                addMarkersToMap();
-                                createListView();
-                            } else {
-                                ToastUtil.showToastS(ReleteLocationActivity.this, "服务端未创建勘察点，无法获取");
-                            }
-                        } else {
-                            ToastUtil.showToastS(ReleteLocationActivity.this, jsonResult.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onError(Response<String> response) {
-                        super.onError(response);
-                        ToastUtil.showToastS(ReleteLocationActivity.this, "获取勘察点失败");
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        super.onFinish();
-                        dismissPPW();
-                    }
-                });
     }
 
     /**
@@ -256,7 +204,7 @@ public class ReleteLocationActivity extends BaseActivity implements AMapLocation
             startActivity(intent);
 //            aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(list.get(position).getLatitude()), Double.parseDouble(list.get(position).getLongitude())), 19));
         } else {
-            ToastUtil.showToastS(ReleteLocationActivity.this, "该勘探点没有位置信息(发布坐标),需要导航请联系项目负责人");
+            ToastUtil.showToastS(ReleteLocationActivity.this, getString(R.string.hole_relate_location_nodata));
         }
     }
 
@@ -283,7 +231,7 @@ public class ReleteLocationActivity extends BaseActivity implements AMapLocation
                     intent.putExtra("end", new NaviLatLng(goMarker.getPosition().latitude, goMarker.getPosition().longitude));
                     startActivity(intent);
                 } else {
-                    ToastUtil.showToastS(this, "请选择要去的位置");
+                    ToastUtil.showToastS(this, getString(R.string.hole_relate_location_please));
                 }
                 break;
         }
@@ -350,5 +298,93 @@ public class ReleteLocationActivity extends BaseActivity implements AMapLocation
                 this.aMapLocation = null;
             }
         }
+    }
+
+    @Override
+    public void showLoading() {
+        com.cj.record.views.ProgressDialog.getInstance().show(this);
+    }
+
+    @Override
+    public void hideLoading() {
+        com.cj.record.views.ProgressDialog.getInstance().dismiss();
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        ToastUtil.showToastS(this, throwable.toString());
+    }
+
+    @Override
+    public void onSuccessAddOrUpdate() {
+
+    }
+
+
+    @Override
+    public void onSuccessDelete() {
+
+    }
+
+    @Override
+    public void onSuccessList(PageBean<Hole> pageBean) {
+
+    }
+
+    @Override
+    public void onSuccessRelate(BaseObjectBean<String> bean) {
+        if (bean.isStatus()) {
+            list.addAll(JsonUtils.getInstance().fromJson(bean.getResult(), new TypeToken<List<Hole>>() {
+            }.getType()));
+            if (list != null && list.size() > 0) {
+                addMarkersToMap();
+                createListView();
+            } else {
+                ToastUtil.showToastS(this, getString(R.string.hole_relate_no_data));
+            }
+        } else {
+            ToastUtil.showToastS(this, bean.getMessage());
+            Common.showMessage(this, bean.getMessage());
+        }
+    }
+
+    @Override
+    public void onSuccessRelateMore(BaseObjectBean<String> bean, Hole newHole) {
+
+    }
+
+    @Override
+    public void onSuccessNoRelateList(List<Hole> noRelateList) {
+
+    }
+
+    @Override
+    public void onSuccessDownloadHole(BaseObjectBean<String> bean, LocalUser localUser) {
+
+    }
+
+    @Override
+    public void onSuccessRelateList(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessDownloadList(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessCheckUser(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessGetScene(List<Record> recordList) {
+
+    }
+
+    @Override
+    public void onSuccessUpload(BaseObjectBean<Integer> bean) {
+
     }
 }

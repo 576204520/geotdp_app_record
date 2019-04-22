@@ -49,7 +49,6 @@ public class RecordDao extends BaseDAO<Record> {
     }
 
 
-
     /**
      * 获取一个勘探点下所有所有未上传的记录
      *
@@ -454,6 +453,24 @@ public class RecordDao extends BaseDAO<Record> {
                     where.eq("type", Record.TYPE_SCENE_OPERATECODE)
             );
             return where.query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 查询记录最大深度
+     *
+     * @param holeID
+     * @return
+     */
+    public Record getCurrentDepthByHoleID(String holeID) {
+        try {
+            QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
+            queryBuilder.where().eq("updateID", "").and().eq("holeID", holeID).and().ne("state", "0");
+            queryBuilder.orderBy("endDepth", false);
+            return (Record) queryBuilder.queryForFirst();
         } catch (SQLException e) {
             e.printStackTrace();
         }

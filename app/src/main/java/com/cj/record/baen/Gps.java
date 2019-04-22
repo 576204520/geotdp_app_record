@@ -24,14 +24,20 @@ import com.amap.api.location.AMapLocation;
 import com.cj.record.db.GpsDao;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.GPSutils;
+import com.cj.record.utils.RxPartMapUtils;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Gps
@@ -115,7 +121,6 @@ public class Gps implements Serializable {
     }
 
 
-
     public Map<String, String> getNameValuePairMap(String serialNumber) {
         Map<String, String> params = new HashMap<>();
         params.put("gps.projectID", serialNumber);
@@ -132,31 +137,31 @@ public class Gps implements Serializable {
         return params;
     }
 
-    public static Map<String, String> getMap(List<Gps> list, String serialNumber) {
-        Map<String, String> map = new ConcurrentHashMap<>();
+    public static Map<String, RequestBody> getMap(List<Gps> list, String serialNumber) {
+        Map<String, RequestBody> map = new ConcurrentHashMap<>();
         for (int i = 0; i < list.size(); i++) {
             Gps gps = list.get(i);
-            map.put("gps[" + i + "].projectID", serialNumber);
-            map.put("gps[" + i + "].id", gps.getId() == null ? "" : gps.getId());
-            map.put("gps[" + i + "].holeID", gps.getHoleID() == null ? "" : gps.getHoleID());
-            map.put("gps[" + i + "].recordID", gps.getRecordID() == null ? "" : gps.getRecordID());
+            map.put("gps[" + i + "].projectID", RxPartMapUtils.toRequestBodyOfText(serialNumber));
+            map.put("gps[" + i + "].id", RxPartMapUtils.toRequestBodyOfText(gps.getId() == null ? "" : gps.getId()));
+            map.put("gps[" + i + "].holeID", RxPartMapUtils.toRequestBodyOfText(gps.getHoleID() == null ? "" : gps.getHoleID()));
+            map.put("gps[" + i + "].recordID", RxPartMapUtils.toRequestBodyOfText(gps.getRecordID() == null ? "" : gps.getRecordID()));
             if (!TextUtils.isEmpty(gps.getMediaID())) {
-                map.put("gps[" + i + "].mediaID", gps.getMediaID());
+                map.put("gps[" + i + "].mediaID", RxPartMapUtils.toRequestBodyOfText(gps.getMediaID()));
             }
             if (!TextUtils.isEmpty(gps.getType())) {
-                map.put("gps[" + i + "].type", gps.getType());
+                map.put("gps[" + i + "].type", RxPartMapUtils.toRequestBodyOfText(gps.getType()));
             }
             if (!TextUtils.isEmpty(gps.getLongitude())) {
-                map.put("gps[" + i + "].longitude", gps.getLongitude());
+                map.put("gps[" + i + "].longitude", RxPartMapUtils.toRequestBodyOfText(gps.getLongitude()));
             }
             if (!TextUtils.isEmpty(gps.getLatitude())) {
-                map.put("gps[" + i + "].latitude", gps.getLatitude());
+                map.put("gps[" + i + "].latitude", RxPartMapUtils.toRequestBodyOfText(gps.getLatitude()));
             }
             if (!TextUtils.isEmpty(gps.getGpsTime())) {
-                map.put("gps[" + i + "].gpsTime", gps.getGpsTime());
+                map.put("gps[" + i + "].gpsTime", RxPartMapUtils.toRequestBodyOfText(gps.getGpsTime()));
             }
             if (!TextUtils.isEmpty(gps.getDistance())) {
-                map.put("gps[" + i + "].distance", gps.getDistance());
+                map.put("gps[" + i + "].distance", RxPartMapUtils.toRequestBodyOfText(gps.getDistance()));
             }
         }
         return map;

@@ -1,93 +1,47 @@
 package com.cj.record.activity;
 
-import android.Manifest;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cj.record.R;
-import com.cj.record.activity.base.BaseActivity;
-import com.cj.record.baen.Hole;
-import com.cj.record.baen.JsonResult;
-import com.cj.record.baen.LocalUser;
-import com.cj.record.baen.Project;
-import com.cj.record.baen.Record;
+import com.cj.record.adapter.ViewPagerAdapter;
+import com.cj.record.base.App;
+import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.VersionVo;
-import com.cj.record.db.CipherDbHelper;
-import com.cj.record.db.DBManager;
-import com.cj.record.db.HoleDao;
-import com.cj.record.db.ProjectDao;
-import com.cj.record.db.RecordDao;
+import com.cj.record.base.BaseFragment;
+import com.cj.record.base.BaseMvpActivity;
+import com.cj.record.contract.UserContract;
 import com.cj.record.fragment.ProjectListFragment;
-import com.cj.record.fragment.TestFragment;
-import com.cj.record.service.DownloadService;
+import com.cj.record.fragment.ChatFragment;
+import com.cj.record.fragment.UserFragment;
+import com.cj.record.presenter.UserPresenter;
 import com.cj.record.utils.Common;
-import com.cj.record.utils.FileUtil;
-import com.cj.record.utils.L;
-import com.cj.record.utils.ObsUtils;
-import com.cj.record.utils.SPUtils;
-import com.cj.record.utils.SqlcipherUtil;
+import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
-import com.cj.record.utils.Urls;
-import com.google.gson.Gson;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.Response;
-import com.tbruyelle.rxpermissions2.Permission;
-import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.cj.record.views.MViewPager;
+import com.cj.record.views.ProgressDialog;
+import com.jpeng.jptabbar.JPTabBar;
 
-import junit.runner.Version;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.functions.Action;
 
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, ObsUtils.ObsLinstener {
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.nav_view)
-    NavigationView navView;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
+public class MainActivity extends BaseMvpActivity<UserPresenter> implements UserContract.View {
 
-    private TextView name;
-    private TextView email;
-    private Fragment mFragment;
-    private ProjectListFragment projectListFragment;
-    private TestFragment testFragment;
-    private FragmentTransaction fragmentTransaction;
-    private FragmentManager fragmentManager;
-    private ObsUtils obsUtils;
-    private boolean isInit = true;
+    @BindView(R.id.main_viewPager)
+    MViewPager viewPager;
+    @BindView(R.id.main_tabLayout)
+    JPTabBar tabLayout;
+    List<BaseFragment> fragments = new ArrayList<>();
+    private ViewPagerAdapter viewPagerAdapter;
 
     public static final String FROMTYPE = "fromtype";//区分编辑还是添加
     public static final int PROJECT_GO_EDIT = 101;
     public static final int PROJECT_GO_LIST = 102;
+    public static final int USER_GO_MY = 107;//去修改密码界面
     public static final String PROJECT = "project";
     public static final String SERIALNUMBER = "serialnumber";
     public static final int HOLE_GO_EDIT = 201;
@@ -119,251 +73,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public void initView() {
-        setSupportActionBar(toolbar);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        navView.setNavigationItemSelectedListener(this);
-        //获取navigation头部的布局
-        View headerView = navView.getHeaderView(0);
-        name = (TextView) headerView.findViewById(R.id.header_name);
-        email = (TextView) headerView.findViewById(R.id.header_email);
-        //从sp文件拿到用户信息，在登录成功时保存的
-        name.setText((String) SPUtils.get(mContext, Urls.SPKey.USER_REALNAME, ""));
-        email.setText((String) SPUtils.get(mContext, Urls.SPKey.USER_EMAIL, ""));
-        headerView.setOnClickListener(headerViewListener);
-
-
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus && isInit) {
-            isInit = false;
-            obsUtils = new ObsUtils();
-            obsUtils.setObsLinstener(this);
-            obsUtils.execute(1);
-        }
-    }
-
-    View.OnClickListener headerViewListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            startActivity(UpdatePwdActivity.class);
-        }
-    };
-
-    private void initProject() {
-        //初始化加载项目
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        projectListFragment = new ProjectListFragment();
-        ft.add(R.id.main_frame, projectListFragment);
-        ft.commit();
-        //记录当前的fragment
-        mFragment = projectListFragment;
+        mPresenter = new UserPresenter();
+        mPresenter.attachView(this);
+        //检查版本
+        mPresenter.versionCheck(MainActivity.this, App.userID, UpdateUtil.getVerCode(MainActivity.this) + "");
+        //初始化数据库
+        mPresenter.initDB(this);
     }
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            finishDialog();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.act_add:
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(FROMTYPE, false);
-                startActivityForResult(ProjectEditActiity.class, bundle, PROJECT_GO_EDIT);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        L.e("onActivityResult:requestCode=" + requestCode + "--resultCode=" + resultCode);
-        if (resultCode == RESULT_OK) {
-            if (projectListFragment != null) {
-                projectListFragment.onRefresh();
-            }
-        }
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (item.getItemId()) {
-            case R.id.nav_project:
-                if (projectListFragment == null) {
-                    projectListFragment = new ProjectListFragment();
-                }
-                switchContent(mFragment, projectListFragment);
-                break;
-            case R.id.nav_setting:
-                startActivity(SettingActivity.class);
-                break;
-            case R.id.nav_help:
-                Intent intent = new Intent(MainActivity.this, HelpActivtiy.class);
-                intent.setAction("MainActivity");
-                startActivity(intent);
-                break;
-            case R.id.nav_logout:
-                logoutDialog();
-                break;
-            case R.id.nav_quit:
-                quitDialog();
-                break;
-            case R.id.nav_test:
-                if (testFragment == null) {
-                    testFragment = new TestFragment();
-                }
-                switchContent(mFragment, testFragment);
-                break;
-            case R.id.nav_decirpt:
-                try {
-                    L.e("Passphrase:" + getPassphrase());
-                    SqlcipherUtil.decrypt(Urls.DATABASE_BASE, getPassphrase());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                ToastUtil.showToastS(this, "解密完成");
-                break;
-        }
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    private String getPassphrase() {
-//        return "geotdp" + Common.getDataBaseKey(this);
-        return "geotdp";
-    }
-
-    private void logoutDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.hint)
-                .setMessage("注销后将清空当前用户的登录信息（但不会清除该用户的项目信息），返回到登录页面重新登陆。确定注销吗？")
-                .setNegativeButton(R.string.agree,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                SPUtils.put(mContext, Urls.SPKey.USER_ID, "");
-                                SPUtils.put(mContext, Urls.SPKey.USER_EMAIL, "");
-                                SPUtils.put(mContext, Urls.SPKey.USER_REALNAME, "");
-                                SPUtils.put(mContext, Urls.SPKey.USER_PWD, "");
-                                SPUtils.put(mContext, Urls.SPKey.USER_AUTO, false);
-
-                                finish();
-                                startActivity(LoginActivity.class);
-                            }
-                        })
-                .setPositiveButton(R.string.disagree, null)
-                .setCancelable(false)
-                .show();
-    }
-
-    private void quitDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.hint)
-                .setMessage("将关闭APP")
-                .setNegativeButton(R.string.agree,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                .setPositiveButton(R.string.disagree, null)
-                .setCancelable(false)
-                .show();
-    }
-
-    public void switchContent(Fragment from, Fragment to) {
-        if (mFragment != to) {
-            mFragment = to;
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            if (!to.isAdded()) {    // 先判断是否被add过
-                ft.hide(from).add(R.id.main_frame, to).commit(); // 隐藏当前的fragment，add下一个到Activity中
-            } else {
-                ft.hide(from).show(to).commit(); // 隐藏当前的fragment，显示下一个
-            }
-
-        }
-    }
-
-
-    /**
-     * 检查数据库文件是否存在
-     */
-    public void initDB() {
-        File newFile = new File(Urls.DATABASE_BASE);
-        if (!newFile.exists()) {
-            try {
-                //在指定的文件夹中创建文件
-                FileUtil.CreateText(Urls.DATABASE_PATH);
-                //查看老版数据库是否存在
-                File oldFile = new File(Urls.DATABASE_BASE_OLD);
-                if (!oldFile.exists()) {
-                    copyDB(Urls.DATABASE_BASE);
-                } else {
-                    copyDBForOld(Urls.DATABASE_BASE_OLD, Urls.DATABASE_BASE);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-    /**
-     * 从资源文件里复制
-     */
-    public void copyDB(String path) {
-        try {
-            InputStream is = getResources().openRawResource(R.raw.gcdz);
-            FileOutputStream fos = new FileOutputStream(path);
-            byte[] buffer = new byte[8192];
-            int count;
-            while ((count = is.read(buffer)) >= 0) {
-                fos.write(buffer, 0, count);
-            }
-            fos.close();
-            is.close();
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
-    }
-
-    /**
-     * 从老地址中复制
-     */
-    public void copyDBForOld(String oldPath, String path) {
-        try {
-            FileInputStream fis = new FileInputStream(oldPath);
-            FileOutputStream fos = new FileOutputStream(path);
-            byte[] buffer = new byte[8192];
-            int count;
-            while ((count = fis.read(buffer)) >= 0) {
-                fos.write(buffer, 0, count);
-            }
-            fis.close();
-            fos.close();
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
+        finishDialog();
     }
 
     /**
@@ -372,7 +92,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private void finishDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.hint)
-                .setMessage("是否退出应用")
+                .setMessage(R.string.main_finish_msg)
                 .setNegativeButton(R.string.agree,
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -386,170 +106,77 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     @Override
-    public void onSubscribe(int type) {
-        switch (type) {
-            case 1:
-                showPPW();
-                //初始化数据库
-                initDB();
-                L.e("Passphrase:" + getPassphrase());
-                DBManager.init(this, Urls.DATABASE_BASE, getPassphrase());
-                break;
-            case 2:
-                L.e("遍历数据库开始:检查长度");
-                checkDB();
-                break;
-        }
+    public void showLoading() {
+        ProgressDialog.getInstance().show(this);
     }
 
     @Override
-    public void onComplete(int type) {
-        switch (type) {
-            case 1:
-                dismissPPW();
-                //初始化project布局
-                initProject();
-                //检查版本
-                UpdateUtil.checkVersion(MainActivity.this, false);
-                obsUtils.execute(2);
-                break;
-            case 2:
-                L.e("遍历数据库结束:检查长度");
-                break;
+    public void hideLoading() {
+        ProgressDialog.getInstance().dismiss();
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        ToastUtil.showToastS(this, throwable.toString());
+    }
+
+    @Override
+    public void onSuccess(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessUpdateVersion(BaseObjectBean<String> bean) {
+        if (bean.isStatus()) {
+            VersionVo version = JsonUtils.getInstance().fromJson(bean.getResult().toString(), VersionVo.class);
+            String type = version.getType();
+            String content = "版本:" + version.getName() + "\n更新内容:" + version.getDescription() + "\n大小:" + version.getSize();
+            int code = Integer.parseInt(version.getCode());
+            //0-不用更新  1-可以更新 2必须更新
+            if (UpdateUtil.getVerCode(this) < code) {
+                if ("2".equals(type)) {
+                    Common.showViesionDialog(MainActivity.this, content, true);
+                } else {
+                    Common.showViesionDialog(MainActivity.this, content, false);
+                }
+            }
+        } else {
+            ToastUtil.showToastS(this, bean.getMessage());
         }
     }
 
-    private void checkDB() {
-        //遍历所有字段，检查长度
-        File newFile = new File(Urls.DATABASE_BASE);
-        boolean initData = (boolean) SPUtils.get(MainActivity.this, Urls.SPKey.DATA_INIT, false);
-        if (!initData && newFile.exists() && !TextUtils.isEmpty(userID)) {
-            L.e("遍历数据库开始:检查长度-开始遍历");
-            List<Project> projectList = ProjectDao.getInstance().getAll(userID);
-            if (projectList != null && projectList.size() > 0) {
-                for (Project project : projectList) {
-                    //项目名称 200
-                    if (project.getFullName().length() > 200) {
-                        project.setFullName(project.getFullName().substring(0, 200));
-                        ProjectDao.getInstance().addOrUpdate(project);
-                    }
-                    List<Hole> holeList = HoleDao.getInstance().getHoleListByProjectID(project.getId());
-                    if (holeList != null && holeList.size() > 0) {
-                        for (Hole hole : holeList) {
-                            //勘探点编号 20
-                            if (hole.getCode().length() > 20) {
-                                hole.setCode(hole.getCode().substring(0, 20));
-                                HoleDao.getInstance().addOrUpdate(hole);
-                            }
-                            List<Record> recordList = RecordDao.getInstance().getRecordListByHoleID(hole.getId());
-                            if (recordList != null && recordList.size() > 0) {
-                                for (Record record : recordList) {
-                                    /**
-                                     记录：编号（code）20、其他描述（description）50、
-                                     取土：试验类型（testType）100
-                                     岩土：地质成因（causes）150、
-                                     填土：主要成分（zycf）50、次要成分（cycf）50、颜色（ys）50、
-                                     黏性土：包含物（bhw）50、夹层（jc）50
-                                     粉土：包含物、夹层
-                                     砂土：矿物组成（kwzc）50、颜色、颗粒形状（klxz）50、湿度（sd）50、夹层
-                                     碎石土：母岩成分（mycf）50、夹层
-                                     冲填土：物质成分（wzcf）50、颜色
-                                     粉黏互层：包含物
-                                     黄土状粘性土：包含物
-                                     黄土状粉土：包含物
-                                     淤泥：包含物、状态（zt）50
-                                     */
-                                    int have = 0;
-                                    if (record.getCode().length() > 20) {
-                                        record.setCode(record.getCode().substring(0, 20));
-                                        have++;
-                                    }
-                                    if (record.getDescription().length() > 50) {
-                                        record.setDescription(record.getDescription().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getTestType().length() > 100) {
-                                        record.setTestType(record.getTestType().substring(0, 100));
-                                        have++;
-                                    }
-                                    if (record.getCauses().length() > 150) {
-                                        record.setCauses(record.getCauses().substring(0, 150));
-                                        have++;
-                                    }
-                                    if (record.getZycf().length() > 50) {
-                                        record.setZycf(record.getZycf().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getCycf().length() > 50) {
-                                        record.setCycf(record.getCycf().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getYs().length() > 50) {
-                                        record.setYs(record.getYs().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getBhw().length() > 50) {
-                                        record.setBhw(record.getBhw().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getJc().length() > 50) {
-                                        record.setJc(record.getJc().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getKwzc().length() > 50) {
-                                        record.setKwzc(record.getKwzc().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getKlxz().length() > 50) {
-                                        record.setKlxz(record.getKlxz().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getSd().length() > 50) {
-                                        record.setSd(record.getSd().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getMycf().length() > 50) {
-                                        record.setMycf(record.getMycf().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getWzcf().length() > 50) {
-                                        record.setWzcf(record.getWzcf().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (record.getZt().length() > 50) {
-                                        record.setZt(record.getZt().substring(0, 50));
-                                        have++;
-                                    }
-                                    if (have > 0) {
-                                        RecordDao.getInstance().addOrUpdate(record);
-                                    }
-                                }
-                            }
-                        }
-                    }
 
-                }
-            }
-            SPUtils.put(MainActivity.this, Urls.SPKey.DATA_INIT, true);
-        }
-        boolean initData2 = (boolean) SPUtils.get(MainActivity.this, Urls.SPKey.DATA_INIT2, false);
-        if (!initData2 && newFile.exists() && !TextUtils.isEmpty(userID)) {
-            L.e("onSubscribe:遍历数据库开始---第二次");
-            List<Project> projectList = ProjectDao.getInstance().getAll(userID);
-            if (projectList != null && projectList.size() > 0) {
-                for (Project project : projectList) {
-                    List<Record> recordList = RecordDao.getInstance().getRecordListByProjectIDAndType(project.getId(), Record.TYPE_SCENE_OPERATEPERSON);
-                    if (recordList != null && recordList.size() > 0) {
-                        for (Record record : recordList) {
-                            if (record.getTestType().length() > 50) {
-                                record.setTestType(record.getTestType().substring(0, 50));
-                                RecordDao.getInstance().addOrUpdate(record);
-                            }
-                        }
-                    }
-                }
-            }
-            SPUtils.put(MainActivity.this, Urls.SPKey.DATA_INIT2, true);
-        }
+    @Override
+    public void onSuccessUpdateInfo(BaseObjectBean<String> bean) {
+
+
     }
+
+    @Override
+    public void onSuccessResetPassword(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessCheckOperate(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessInitDB() {
+        fragments.add(new ProjectListFragment());
+        fragments.add(new ChatFragment());
+        fragments.add(new UserFragment());
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), fragments, null);
+        viewPager.setAdapter(viewPagerAdapter);
+
+        tabLayout.setTitles("首页", "朋友", "用户")
+                .setNormalIcons(R.mipmap.label_home_n, R.mipmap.label_friends_n, R.mipmap.label_my_n)
+                .setSelectedIcons(R.mipmap.label_home_s, R.mipmap.label_friends_s, R.mipmap.label_my_s)
+                .generate();
+        tabLayout.setIconSize(19);
+        tabLayout.setContainer(viewPager);
+    }
+
+
 }

@@ -61,9 +61,10 @@ public class LayerDescYnFragment extends RecordBaseFragment {
         return R.layout.frt_dcms_yn;
     }
 
+
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("淤泥_颜色"));
         sprBhwList = DictionaryDao.getInstance().getDropItemList(getSqlString("淤泥_包含物"));
         sprHslList = DictionaryDao.getInstance().getDropItemList(getSqlString("淤泥_含水量"));
@@ -197,11 +198,7 @@ public class LayerDescYnFragment extends RecordBaseFragment {
                 ztDialog.show();
             }
         });
-    }
 
-    @Override
-    public void initView() {
-        super.initView();
         sprYs.setText(record.getYs());
         sprBhw.setText(record.getBhw());
         sprHsl.setText(record.getHsl());

@@ -54,8 +54,8 @@ public class RecordEditDPTFragment extends RecordBaseFragment {
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         edtBegin.addTextChangedListener(beginTextWatcher);
         powerTypeListAdapter = new DropListAdapter(mActivity, R.layout.drop_item, getPowerTypeList());
         sprPowerType.setAdapter(powerTypeListAdapter);
@@ -77,11 +77,7 @@ public class RecordEditDPTFragment extends RecordBaseFragment {
 
             }
         });
-    }
 
-    @Override
-    public void initView() {
-        super.initView();
         edtDrillLength.setText(record.getDrillLength());
         sprPowerType.setText(record.getPowerType());
         edtBegin.setText(record.getBegin1());

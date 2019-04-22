@@ -68,9 +68,10 @@ public class LayerDescTtFragment extends RecordBaseFragment {
         return R.layout.frt_dcms_tt;
     }
 
+
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("填土_颜色"));
         sprDjndList = DictionaryDao.getInstance().getDropItemList(getSqlString("填土_堆积年代"));
         sprMsdList = DictionaryDao.getInstance().getDropItemList(getSqlString("填土_密实度"));
@@ -262,11 +263,7 @@ public class LayerDescTtFragment extends RecordBaseFragment {
         sprDjnd.setAdapter(mActivity, sprDjndList, MaterialBetterSpinner.MODE_CLEAR);
         sprMsd.setAdapter(mActivity, sprMsdList, MaterialBetterSpinner.MODE_CLEAR);
         sprJyx.setAdapter(mActivity, sprJyxList, MaterialBetterSpinner.MODE_CLEAR);
-    }
 
-    @Override
-    public void initView() {
-        super.initView();
         sprZycf.setText(record.getZycf());
         sprCycf.setText(record.getCycf());
         sprDjnd.setText(record.getDjnd());
@@ -274,6 +271,7 @@ public class LayerDescTtFragment extends RecordBaseFragment {
         sprJyx.setText(record.getJyx());
         sprYs.setText(record.getYs());
     }
+
 
     @Override
     public Record getRecord() {

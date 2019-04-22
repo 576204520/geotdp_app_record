@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:background="@null"
-                android:hint="勘探点编号搜索"
+                android:hint="@string/hole_relate_search_hint"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="没有搜索结果"
+        android:text="@string/hole_relate_prompt"
         android:textSize="15sp"
         android:visibility="gone" />
 

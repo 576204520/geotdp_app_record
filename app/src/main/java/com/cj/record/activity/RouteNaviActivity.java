@@ -25,7 +25,7 @@ import com.amap.api.navi.model.NaviInfo;
 import com.amap.api.navi.model.NaviLatLng;
 import com.autonavi.tbt.TrafficFacilityInfo;
 import com.cj.record.R;
-import com.cj.record.activity.base.BaseActivity;
+import com.cj.record.base.BaseActivity;
 import com.cj.record.utils.ToastUtil;
 
 import java.util.ArrayList;

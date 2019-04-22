@@ -28,9 +28,10 @@ public class RecordPersonFragment extends RecordBaseFragment {
 
 
     @Override
-    public void initView() {
-        super.initView();
+    protected void initView(View view) {
+        super.initView(view);
         personName.setText(userName);
+
     }
 
     @Override

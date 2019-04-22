@@ -40,18 +40,14 @@ public class RecordOperateCodeFragment extends RecordBaseFragment implements Obs
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         obsUtils = new ObsUtils();
         obsUtils.setObsLinstener(this);
-    }
-
-    @Override
-    public void initView() {
-        super.initView();
         operatecodeCode.setText(record.getTestType());
         obsUtils.execute(1);
     }
+
 
     @Override
     public void onSubscribe(int type) {

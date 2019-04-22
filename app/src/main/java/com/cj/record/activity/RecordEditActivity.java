@@ -1,9 +1,9 @@
 package com.cj.record.activity;
 
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocation;
 import com.cj.record.R;
-import com.cj.record.activity.base.BaseActivity;
+import com.cj.record.base.BaseActivity;
 import com.cj.record.baen.Gps;
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.JsonResult;
@@ -61,9 +61,6 @@ import com.cj.record.views.MaterialEditTextElevation;
 import com.cj.record.views.MaterialEditTextNoEmoji;
 import com.google.gson.Gson;
 import com.j256.ormlite.dao.Dao;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.Response;
 
 import net.qiujuer.genius.ui.widget.Button;
 
@@ -94,8 +91,6 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
     Button recordDptupBtn;
     @BindView(R.id.record_edit_note_tv)
     TextView recordEditNoteTv;
-    @BindView(R.id.record_template_ll)
-    LinearLayout recordTemplateLl;
 
     private RecordBaseFragment recordBaseFragment;
     private RecordLocationFragment locationFragment;
@@ -114,13 +109,6 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         return R.layout.activity_record_edit;
     }
 
-    @Override
-    public void initData() {
-        super.initData();
-        obsUtils = new ObsUtils();
-        obsUtils.setObsLinstener(this);
-        obsUtils.execute(1);
-    }
 
     @Override
     public void onSubscribe(int type) {
@@ -144,7 +132,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
                 } else {
                     //false添加
                     recordType = getIntent().getStringExtra(MainActivity.EXTRA_RECORD_TYPE);
-                    record = new Record(mContext, hole, recordType);
+                    record = new Record(RecordEditActivity.this, hole, recordType);
                     RecordDao.getInstance().addOrUpdate(record);
                 }
                 break;
@@ -258,7 +246,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         Bundle bundle = new Bundle();
         bundle.putSerializable(MainActivity.RECORD, record);
         recordBaseFragment.setArguments(bundle);
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.record_content_fl, recordBaseFragment, "type" + recordType);
         ft.commit();
     }
@@ -268,7 +256,7 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         bundle.putSerializable(MainActivity.RECORD, record);
         mediaFragment = new RecordMediaFragment();
         mediaFragment.setArguments(bundle);
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.mediaFrame, mediaFragment, "mediaFragment");
         ft.commit();
     }
@@ -278,13 +266,16 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         bundle.putSerializable(MainActivity.HOLE, hole);
         locationFragment = new RecordLocationFragment();
         locationFragment.setArguments(bundle);
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.locationFrame, locationFragment, "locationFragment");
         ft.commit();
     }
 
     @Override
     public void initView() {
+        obsUtils = new ObsUtils();
+        obsUtils.setObsLinstener(this);
+        obsUtils.execute(1);
         toolbar.setTitle("编辑" + recordType);
         if (recordType.equals(Record.TYPE_SCENE_OPERATEPERSON)) {
             toolbar.setTitle("编辑司钻员");
@@ -505,83 +496,21 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
                 .show();
     }
 
-    @OnClick({R.id.record_dptup_btn, R.id.record_template_btn, R.id.record_template_up_btn})
+    @OnClick({R.id.record_dptup_btn})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.record_dptup_btn:
                 //如果保存成功了，新建record，初始页面，继续编辑
                 if (save()) {
                     isEdit = false;
-                    record = new Record(mContext, hole, Record.TYPE_DPT);
+                    record = new Record(RecordEditActivity.this, hole, Record.TYPE_DPT);
                     RecordDao.getInstance().addOrUpdate(record);
                     initPage(record);
                 }
                 break;
-            case R.id.record_template_btn:
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(MainActivity.RECORD, record);
-                startActivityForResult(TemplateActivity.class, bundle, MainActivity.EDIT_GO_TEMPLATE);
-                break;
-            case R.id.record_template_up_btn:
-                templateDialog();
-                break;
         }
     }
 
-    private void templateDialog() {
-        if (!verify()) {
-            return;
-        }
-        new MaterialDialog.Builder(this).title("提示").inputType(InputType.TYPE_CLASS_TEXT |
-                InputType.TYPE_TEXT_VARIATION_PERSON_NAME |
-                InputType.TYPE_TEXT_FLAG_CAP_WORDS).maxIconSize(10).input("请输入模板名称", "", false, new MaterialDialog.InputCallback() {
-            @Override
-            public void onInput(MaterialDialog dialog, CharSequence input) {
-                if (!TextUtils.isEmpty(input.toString())) {
-                    uploadTemplate(input.toString());
-                }
-            }
-        }).show();
-    }
-
-    private void uploadTemplate(String templateName) {
-        if (TextUtils.isEmpty(userID)) {
-            ToastUtil.showToastS(mContext, "用户信息丢失，请尝试重新登陆");
-            return;
-        }
-        Gson gson = new Gson();
-        Template template = new Template(templateName, userID, record);
-        String templateJson = gson.toJson(template).replace("detailList", "detailListStr");
-        showPPW();
-        OkGo.<String>post(Urls.TEMPLATE_UPLOAD).upJson(templateJson)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(Response<String> response) {
-                        String data = response.body();//这个就是返回来的结果
-                        if (JsonUtils.isGoodJson(data)) {
-                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
-                            if (jsonResult.getStatus()) {
-                                String result = jsonResult.getResult();
-                            }
-                            ToastUtil.showToastS(mContext, jsonResult.getMessage() + "");
-                        } else {
-                            ToastUtil.showToastS(RecordEditActivity.this, "服务器异常，请联系客服");
-                        }
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        super.onFinish();
-                        dismissPPW();
-                    }
-
-                    @Override
-                    public void onError(Response<String> response) {
-                        super.onError(response);
-                        ToastUtil.showToastS(mContext, "网络连接错误");
-                    }
-                });
-    }
 
     public void saveMediaList() {
         MediaDao.getInstance().getMediaListByRecordIDSave(record.getId());

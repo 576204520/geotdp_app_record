@@ -11,6 +11,8 @@
         android:id="@+id/email_cardView"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_margin="1dp"
+        android:layout_marginRight="1dp"
         android:layout_marginTop="10dp">
 
         <TextView

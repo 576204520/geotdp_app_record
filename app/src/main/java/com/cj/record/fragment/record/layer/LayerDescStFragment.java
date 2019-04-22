@@ -81,8 +81,8 @@ public class LayerDescStFragment extends RecordBaseFragment {
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("砂土_颜色"));                    //颜色
         sprKljpList = DictionaryDao.getInstance().getDropItemList(getSqlString("砂土_颗粒级配"));                //颗粒级配
         sprKlxzList = DictionaryDao.getInstance().getDropItemList(getSqlString("砂土_颗粒形状"));                //颗粒形状
@@ -399,11 +399,7 @@ public class LayerDescStFragment extends RecordBaseFragment {
         });
         sprKljp.setAdapter(mActivity, sprKljpList, MaterialBetterSpinner.MODE_CLEAR);
         sprMsd.setAdapter(mActivity, sprMsdList, MaterialBetterSpinner.MODE_CLEAR);
-    }
 
-    @Override
-    public void initView() {
-        super.initView();
         sprKwzc.setText(record.getKwzc());
         sprYs.setText(record.getYs());
         sprKljp.setText(record.getKljp());

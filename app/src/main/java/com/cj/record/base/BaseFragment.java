@@ -1,8 +1,8 @@
-package com.cj.record.activity.base;
+package com.cj.record.base;
 
-
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,23 +10,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cj.record.R;
-import com.cj.record.views.ProgressPopupWindow;
-
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+/**
+ * @author azheng
+ * @date 2018/4/24.
+ * GitHub：https://github.com/RookieExaminer
+ * Email：wei.azheng@foxmail.com
+ * Description：
+ */
 public abstract class BaseFragment extends Fragment {
     public BaseActivity mActivity;
-    public Unbinder unbinder;
-    private final String TAG = "BaseFragment";
-    public static boolean isVisible;//是否对用户可见
-    public LayoutInflater inflater;
-    public ProgressPopupWindow progressPopupWindow;
+    private Unbinder unBinder;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        inCreate();
         mActivity = (BaseActivity) getActivity();
         if (savedInstanceState != null) {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -44,27 +45,27 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
+    public void inCreate() {
+
+    }
+
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(getLayoutId(), container, false);
-        unbinder = ButterKnife.bind(this, view);
-        this.inflater = inflater;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(this.getLayoutId(), container, false);
+        unBinder = ButterKnife.bind(this, view);
         initMust(savedInstanceState);
-        init();
+        initView(view);
         return view;
     }
 
-    public void showPPW() {
-        if (progressPopupWindow == null) {
-            progressPopupWindow = new ProgressPopupWindow(mActivity);
-        }
-        progressPopupWindow.showPopupWindow();
-    }
-
-    public void dismissPPW() {
-        if (progressPopupWindow != null) {
-            progressPopupWindow.dismiss();
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        try {
+            unBinder.unbind();
+        } catch (Exception e) {
         }
     }
 
@@ -72,23 +73,14 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
-    private final void init() {
-        initData();//初始化数据
-        initView();
-    }
+    /**
+     * 初始化视图
+     *
+     * @param view
+     */
+    protected abstract void initView(View view);
 
-    public abstract int getLayoutId();
-
-    public abstract void initView();
-
-    public void initData() {
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
+    protected abstract int getLayoutId();
 
     /**
      * 通过Class跳转界面
@@ -128,4 +120,5 @@ public abstract class BaseFragment extends Fragment {
         }
         startActivity(intent);
     }
+
 }

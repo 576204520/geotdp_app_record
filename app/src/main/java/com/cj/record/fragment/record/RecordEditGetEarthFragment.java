@@ -54,9 +54,10 @@ public class RecordEditGetEarthFragment extends RecordBaseFragment {
         return R.layout.frt_record_get_earth_edit;
     }
 
+
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         testList = new ArrayList<>();
         testList = DropItemVo.getStrList(getTestTypeList());
         sprTestType.setOnDialogListener(new MaterialBetterSpinner.OnDialogListener() {
@@ -124,11 +125,6 @@ public class RecordEditGetEarthFragment extends RecordBaseFragment {
         sprMode.setOnItemClickListener(modeListener);
         //设置工具方法为可选可编辑
         //sprMode.setIsEnabled(true);
-    }
-
-    @Override
-    public void initView() {
-        super.initView();
         sprEarthType.setText(record.getEarthType());
         sprMode.setText(record.getGetMode());
         sprTestType.setText(record.getTestType());

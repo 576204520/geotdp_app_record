@@ -20,6 +20,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -37,9 +38,16 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.cj.record.R;
 import com.cj.record.activity.MainActivity;
-import com.cj.record.activity.base.BaseFragment;
+import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.Hole;
-import com.cj.record.db.HoleDao;
+import com.cj.record.baen.LocalUser;
+import com.cj.record.baen.PageBean;
+import com.cj.record.baen.Record;
+import com.cj.record.base.BaseFragment;
+import com.cj.record.base.BaseMvpFragment;
+import com.cj.record.contract.HoleContract;
+import com.cj.record.presenter.HolePresenter;
+import com.cj.record.utils.GPSutils;
 import com.cj.record.utils.L;
 import com.cj.record.utils.ObsUtils;
 import com.j256.ormlite.dao.Dao;
@@ -56,7 +64,7 @@ import java.util.List;
 import butterknife.BindView;
 
 
-public class HoleLocationFragment extends BaseFragment implements ObsUtils.ObsLinstener, LocationSource, AMapLocationListener {
+public class HoleLocationFragment extends BaseFragment implements LocationSource, AMapLocationListener {
 
     @BindView(R.id.hole_map)
     MapView holeMap;
@@ -79,10 +87,7 @@ public class HoleLocationFragment extends BaseFragment implements ObsUtils.ObsLi
     private OnLocationChangedListener mListener = null;
     private Marker marker;
     private boolean isFirstLoc = true;
-    private String projectID;
     private Hole hole;
-    private List<Hole> list;
-    private ObsUtils obsUtils;
     private int firstInt = 1;
 
     @Override
@@ -97,11 +102,8 @@ public class HoleLocationFragment extends BaseFragment implements ObsUtils.ObsLi
     }
 
     @Override
-    public void initView() {
+    protected void initView(View view) {
         hole = (Hole) getArguments().getSerializable(MainActivity.HOLE);
-        projectID = hole.getProjectID();
-        obsUtils = new ObsUtils();
-        obsUtils.setObsLinstener(this);
         if (aMap == null) {
             aMap = holeMap.getMap();
             //设置显示定位按钮 并且可以点击
@@ -128,62 +130,6 @@ public class HoleLocationFragment extends BaseFragment implements ObsUtils.ObsLi
         doLocation();
     }
 
-    @Override
-    public void onSubscribe(int type) {
-        switch (type) {
-            case 1:
-                list = getList(projectID);
-                break;
-        }
-
-    }
-
-    @Override
-    public void onComplete(int type) {
-        switch (type) {
-            case 1:
-                addMarkersToMap();
-                break;
-        }
-    }
-
-
-    //获取所有的点信息
-    private List<Hole> getList(String projectID) {
-        list = new ArrayList<Hole>();
-        try {
-            String oneSql = "select id,code,type,state,recordsCount,updateTime,cast(mapLatitude as text),cast(mapLongitude as text),mapTime ,abs(mapLatitude - " + aMapLocation.getLatitude() + ") + abs(mapLongitude - " + aMapLocation.getLongitude() + ") as  adsvalue  from hole where projectID='" + projectID + "' and locationState ='1' order by  adsvalue LIMIT 10";
-            L.e(oneSql);
-            GenericRawResults<Hole> results = HoleDao.getInstance().getDAO().queryRaw(oneSql, new RawRowMapper<Hole>() {
-                @Override
-                public Hole mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
-                    Hole hole = new Hole();
-                    hole.setId(resultColumns[0]);
-                    hole.setCode(resultColumns[1]);
-                    hole.setType(resultColumns[2]);
-                    hole.setState(resultColumns[3]);
-                    hole.setRecordsCount(resultColumns[4]);
-                    hole.setUpdateTime(resultColumns[5]);
-                    hole.setMapLatitude(resultColumns[6]);
-                    hole.setMapLongitude(resultColumns[7]);
-                    hole.setMapTime(resultColumns[8]);
-//                    hole.jieMi();
-                    return hole;
-                }
-            });
-            Iterator<Hole> iterator = results.iterator();
-            while (iterator.hasNext()) {
-                Hole hole = iterator.next();
-                list.add(hole);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return list;
-    }
-
-
     //EditActivity按钮点击
     public void location() {
         if (marker != null) {
@@ -200,39 +146,6 @@ public class HoleLocationFragment extends BaseFragment implements ObsUtils.ObsLi
         // marker旋转90度
         marker.showInfoWindow();
     }
-
-    /**
-     * 在地图上添加marker
-     */
-    private void addMarkersToMap() {
-        for (Hole hole1 : list) {
-            MarkerOptions options = new MarkerOptions();
-            if (!TextUtils.isEmpty(hole1.getMapLatitude()) && !TextUtils.isEmpty(hole1.getMapLongitude())) {
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                options.anchor(0.5f, 0.5f);
-                options.position(new LatLng(Double.valueOf(hole1.getMapLatitude()), Double.valueOf(hole1.getMapLongitude())));
-                options.title(hole1.getCode());
-                options.snippet("经度:" + hole1.getMapLongitude() + ",纬度:" + hole1.getMapLatitude() + "\n" + "时间:" + String.valueOf(df.format(new Date(aMapLocation.getTime()))));
-                options.draggable(false);
-            }
-            if (hole1.getId().equals(hole.getId())) {
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            }
-            aMap.addMarker(options);
-            aMap.setOnMarkerClickListener(listener);
-        }
-    }
-
-    /**
-     * 覆盖物点击事件
-     */
-    AMap.OnMarkerClickListener listener = new AMap.OnMarkerClickListener() {
-        @Override
-        public boolean onMarkerClick(Marker marker) {
-            marker.showInfoWindow();
-            return true;
-        }
-    };
 
     private void doLocation() {
         //初始化定位
@@ -289,6 +202,7 @@ public class HoleLocationFragment extends BaseFragment implements ObsUtils.ObsLi
         mLocationClient.onDestroy();//销毁定位客户端。
     }
 
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -314,9 +228,7 @@ public class HoleLocationFragment extends BaseFragment implements ObsUtils.ObsLi
                 // 定位成功回调信息，设置相关消息
                 holeLongitude.setText(String.valueOf(aMapLocation.getLongitude()));
                 holeLatitude.setText(String.valueOf(aMapLocation.getLatitude()));
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date(aMapLocation.getTime());
-                holeTime.setText(df.format(date));
+                holeTime.setText(GPSutils.utcToTimeZoneDate(aMapLocation.getTime()));
                 holeRadius.setText(hole.getRadius());
                 // 如果不设置标志位，此时再拖动地图时，它会不断将地图移动到当前的位置
                 if (isFirstLoc) {
@@ -330,7 +242,6 @@ public class HoleLocationFragment extends BaseFragment implements ObsUtils.ObsLi
                 }
                 if (firstInt == 1) {
                     firstInt++;
-                    obsUtils.execute(1);
                 }
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。

@@ -1,50 +1,35 @@
 package com.cj.record.fragment.record;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 
 import com.cj.record.R;
-import com.cj.record.activity.UpdatePwdActivity;
+import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.DropItemVo;
-import com.cj.record.baen.JsonResult;
 import com.cj.record.baen.Record;
+import com.cj.record.contract.UserContract;
 import com.cj.record.db.RecordDao;
+import com.cj.record.presenter.UserPresenter;
 import com.cj.record.utils.Common;
-import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.ObsUtils;
-import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
-import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialBetterSpinner;
 import com.cj.record.views.MaterialEditTextNoEmoji;
-import com.google.gson.Gson;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.Response;
-import com.rengwuxian.materialedittext.MaterialEditText;
+import com.cj.record.views.ProgressDialog;
 
 import net.qiujuer.genius.ui.widget.Button;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 
 /**
  * 机长 改成司钻员
  */
-public class RecordOperatePersionFragment extends RecordBaseFragment implements ObsUtils.ObsLinstener {
+public class RecordOperatePersionFragment extends RecordBaseFragment<UserPresenter> implements UserContract.View, ObsUtils.ObsLinstener {
     @BindView(R.id.operateperson_name)
     MaterialBetterSpinner operatepersonName;
     @BindView(R.id.operateperson_code)
@@ -61,18 +46,17 @@ public class RecordOperatePersionFragment extends RecordBaseFragment implements 
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
+        mPresenter = new UserPresenter();
+        mPresenter.attachView(this);
+
         obsUtils = new ObsUtils();
         obsUtils.setObsLinstener(this);
+        obsUtils.execute(1);
         operatepersonCheck.setOnClickListener(personCheckListener);
     }
 
-    @Override
-    public void initView() {
-        super.initView();
-        obsUtils.execute(1);
-    }
 
     View.OnClickListener personCheckListener = new View.OnClickListener() {
         @Override
@@ -85,46 +69,14 @@ public class RecordOperatePersionFragment extends RecordBaseFragment implements 
         if (!validator()) {
             return;
         }
-        showPPW();
-        Map<String, String> map = new HashMap<>();
-        map.put("userID", userID);
-        map.put("operatePerson", operatepersonName.getText().toString().trim());
-        map.put("testType", operatepersonCode.getText().toString().trim());
-        OkGo.<String>post(Urls.CHECK_OPERATE)
-                .params(map)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(Response<String> response) {
-                        String data = response.body();
-                        if (JsonUtils.isGoodJson(data)) {
-                            Gson gson = new Gson();
-                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
-                            if (jsonResult.getStatus()) {
-                            }
-                            Common.showMessage(mActivity, jsonResult.getMessage());
-                        } else {
-                            ToastUtil.showToastS(mActivity, "服务器异常，请联系客服");
-                        }
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        super.onFinish();
-                        dismissPPW();
-                    }
-
-                    @Override
-                    public void onError(Response<String> response) {
-                        super.onError(response);
-                        ToastUtil.showToastS(mActivity, "网络连接错误");
-                    }
-                });
+        mPresenter.checkOperate(mActivity, userID, operatepersonName.getText().toString().trim(), operatepersonCode.getText().toString().trim());
     }
 
     @Override
     public void onSubscribe(int type) {
         recordList = RecordDao.getInstance().getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_OPERATEPERSON);
     }
+
 
     @Override
     public void onComplete(int type) {
@@ -181,19 +133,19 @@ public class RecordOperatePersionFragment extends RecordBaseFragment implements 
     public boolean validator() {
         boolean validator = true;
         if (TextUtils.isEmpty(operatepersonName.getText().toString().trim())) {
-            operatepersonName.setError("姓名不能为空");
+            operatepersonName.setError(getString(R.string.record_op_p1));
             validator = false;
         }
         if (operatepersonName.getText().toString().length() > 16) {
-            operatepersonName.setError("姓名最长16");
+            operatepersonName.setError(getString(R.string.record_op_p2));
             validator = false;
         }
         if (operatepersonCode.getText().toString().length() > 50) {
-            operatepersonCode.setError("钻机编号最长50");
+            operatepersonCode.setError(getString(R.string.record_op_p3));
             validator = false;
         }
         if (TextUtils.isEmpty(operatepersonCode.getText().toString().trim())) {
-            operatepersonCode.setError("编号不能为空");
+            operatepersonCode.setError(getString(R.string.record_op_p4));
             validator = false;
         }
         return validator;
@@ -204,4 +156,49 @@ public class RecordOperatePersionFragment extends RecordBaseFragment implements 
         return Record.TYPE_SCENE_OPERATEPERSON;
     }
 
+    @Override
+    public void showLoading() {
+        ProgressDialog.getInstance().show(mActivity);
+    }
+
+    @Override
+    public void hideLoading() {
+        ProgressDialog.getInstance().dismiss();
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        ToastUtil.showToastS(mActivity, throwable.toString());
+    }
+
+    @Override
+    public void onSuccess(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessUpdateVersion(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessUpdateInfo(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessResetPassword(BaseObjectBean<String> bean) {
+
+    }
+
+
+    @Override
+    public void onSuccessCheckOperate(BaseObjectBean<String> bean) {
+        Common.showMessage(mActivity, bean.getMessage());
+    }
+
+    @Override
+    public void onSuccessInitDB() {
+
+    }
 }

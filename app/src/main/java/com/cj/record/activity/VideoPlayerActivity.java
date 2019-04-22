@@ -16,7 +16,7 @@ import android.view.MenuItem;
 
 import com.amap.api.location.AMapLocation;
 import com.cj.record.R;
-import com.cj.record.activity.base.BaseActivity;
+import com.cj.record.base.BaseActivity;
 import com.cj.record.baen.Media;
 import com.cj.record.db.MediaDao;
 import com.cj.record.fragment.RecordLocationFragment;

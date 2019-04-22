@@ -1,6 +1,5 @@
 package com.cj.record.activity;
 
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -8,33 +7,24 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.cj.record.R;
-import com.cj.record.activity.base.BaseActivity;
-import com.cj.record.baen.JsonResult;
+import com.cj.record.baen.BaseObjectBean;
+import com.cj.record.base.BaseMvpActivity;
+import com.cj.record.contract.UserContract;
+import com.cj.record.presenter.UserPresenter;
 import com.cj.record.utils.Common;
-import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialEditTextNoEmoji;
-import com.google.gson.Gson;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.Response;
+import com.cj.record.views.ProgressDialog;
 
 import net.qiujuer.genius.ui.widget.Button;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * Created by Administrator on 2019/3/8.
- */
-
-public class UpdatePwdActivity extends BaseActivity {
+public class UpdatePwdActivity extends BaseMvpActivity<UserPresenter> implements UserContract.View {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.email_textView)
@@ -50,6 +40,7 @@ public class UpdatePwdActivity extends BaseActivity {
 
     private String userID;
     private String email;
+    private String newPassword;
 
     @Override
     public int getLayoutId() {
@@ -58,7 +49,10 @@ public class UpdatePwdActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        toolbar.setTitle("修改密码");
+        mPresenter = new UserPresenter();
+        mPresenter.attachView(this);
+
+        toolbar.setTitle(R.string.user_update_pwd_title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -79,75 +73,29 @@ public class UpdatePwdActivity extends BaseActivity {
 
     private void doSubmit() {
         String oldPassword = oldPasswordEditText.getText().toString().trim();
-        String newPassword = newPasswordEditText.getText().toString().trim();
+        newPassword = newPasswordEditText.getText().toString().trim();
         String newPassword2 = newPassword2EditText.getText().toString().trim();
         if (TextUtils.isEmpty(oldPassword)) {
-            ToastUtil.showToastS(this, "请输入老密码");
+            ToastUtil.showToastS(this, getString(R.string.user_update_pwd_p1));
             return;
         }
         if (TextUtils.isEmpty(newPassword)) {
-            ToastUtil.showToastS(this, "请输入新密码");
+            ToastUtil.showToastS(this, getString(R.string.user_update_pwd_p2));
             return;
         }
         if (oldPassword.equals(newPassword)) {
-            ToastUtil.showToastS(this, "新密码与老密码一致，请重新填写");
+            ToastUtil.showToastS(this, getString(R.string.user_update_pwd_p3));
             return;
         }
         if (TextUtils.isEmpty(newPassword2)) {
-            ToastUtil.showToastS(this, "请输入确认密码");
+            ToastUtil.showToastS(this, getString(R.string.user_update_pwd_p4));
             return;
         }
         if (!newPassword.equals(newPassword2)) {
-            ToastUtil.showToastS(this, "两次输入密码不一致");
+            ToastUtil.showToastS(this, getString(R.string.user_update_pwd_p5));
             return;
         }
-
-        showPPW();
-        Map<String, String> map = new HashMap<>();
-        map.put("userID", userID);
-        map.put("email", email);
-        map.put("oldPassword", oldPassword);
-        map.put("newPassword", newPassword);
-        map.put("newPassword2",newPassword2);
-        OkGo.<String>post(Urls.UPDATE_PWD)
-                .params(map)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(Response<String> response) {
-                        //注意这里已经是在主线程了
-                        String data = response.body();//这个就是返回来的结果
-                        if (JsonUtils.isGoodJson(data)) {
-                            Gson gson = new Gson();
-                            JsonResult jsonResult = gson.fromJson(data, JsonResult.class);
-                            //如果登陆成功，保存用户名和密码到数据库,并保存到baen
-                            if (jsonResult.getStatus()) {
-                                String passwordOld = (String) SPUtils.get(mContext, Urls.SPKey.USER_PWD, "");
-                                if (!TextUtils.isEmpty(passwordOld)) {
-                                    SPUtils.put(mContext, Urls.SPKey.USER_PWD, newPassword);
-                                }
-                                finish();
-                                setResult(RESULT_OK);
-                            } else {
-                                Common.showMessage(UpdatePwdActivity.this, jsonResult.getMessage());
-                            }
-                        } else {
-                            ToastUtil.showToastS(UpdatePwdActivity.this, "服务器异常，请联系客服");
-                        }
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        super.onFinish();
-                        dismissPPW();
-                    }
-
-                    @Override
-                    public void onError(Response<String> response) {
-                        super.onError(response);
-                        ToastUtil.showToastS(UpdatePwdActivity.this, "网络连接错误");
-                    }
-                });
-
+        mPresenter.resetPassword(UpdatePwdActivity.this, userID, email, oldPassword, newPassword, newPassword2);
     }
 
 
@@ -162,9 +110,56 @@ public class UpdatePwdActivity extends BaseActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
+    public void showLoading() {
+        ProgressDialog.getInstance().show(this);
+    }
+
+    @Override
+    public void hideLoading() {
+        ProgressDialog.getInstance().dismiss();
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        ToastUtil.showToastS(this, throwable.toString());
+    }
+
+    @Override
+    public void onSuccess(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessUpdateVersion(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessUpdateInfo(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessResetPassword(BaseObjectBean<String> bean) {
+        if (bean.isStatus()) {
+            String passwordOld = (String) SPUtils.get(this, Urls.SPKey.USER_PWD, "");
+            if (!TextUtils.isEmpty(passwordOld)) {
+                SPUtils.put(this, Urls.SPKey.USER_PWD, newPassword);
+            }
+            finish();
+            setResult(RESULT_OK);
+        } else {
+            Common.showMessage(UpdatePwdActivity.this, bean.getMessage());
+        }
+    }
+
+    @Override
+    public void onSuccessCheckOperate(BaseObjectBean<String> bean) {
+
+    }
+
+    @Override
+    public void onSuccessInitDB() {
+
     }
 }

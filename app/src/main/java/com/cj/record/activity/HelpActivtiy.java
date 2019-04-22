@@ -9,7 +9,7 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.cj.record.R;
-import com.cj.record.activity.base.BaseActivity;
+import com.cj.record.base.BaseActivity;
 import com.cj.record.utils.Urls;
 
 import java.net.URL;
@@ -33,8 +33,7 @@ public class HelpActivtiy extends BaseActivity {
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    public void initView() {
         action = getIntent().getAction();
         if ("RecordListActivity".equals(action)) {
             helpWebView.loadUrl("file:///android_asset/record_list.html");
@@ -66,10 +65,7 @@ public class HelpActivtiy extends BaseActivity {
         helpWebView.setWebViewClient(new WebViewClient());
         WebSettings webSettings = helpWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-    }
 
-    @Override
-    public void initView() {
         toolbar.setTitle("使用帮助");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -92,8 +92,8 @@ public class LayerDescSstFragment extends RecordBaseFragment {
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_颜色"));        //颜色
         sprMsdList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_密实度"));        //密实度
         sprTcwList = DictionaryDao.getInstance().getDropItemList(getSqlString("碎石土_充填物"));        //充填物
@@ -257,11 +257,7 @@ public class LayerDescSstFragment extends RecordBaseFragment {
                 jcDialog.show();
             }
         });
-    }
 
-    @Override
-    public void initView() {
-        super.initView();
         sprYs.setText(record.getYs());
         sprMsd.setText(record.getMsd());
         sprTcw.setText(record.getTcw());
@@ -278,6 +274,7 @@ public class LayerDescSstFragment extends RecordBaseFragment {
         sprSd.setText(record.getSd());
         sprJc.setText(record.getJc());
     }
+
 
     @Override
     public boolean layerValidator() {

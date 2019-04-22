@@ -64,8 +64,8 @@ public class LayerDescHtzFtFragment extends RecordBaseFragment {
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initView(View view) {
+        super.initView(view);
         sprYsList = DictionaryDao.getInstance().getDropItemList(getSqlString("黄土状粉土_颜色"));
         sprMsdList = DictionaryDao.getInstance().getDropItemList(getSqlString("黄土状粉土_密实度"));
         sprKlzcList = DictionaryDao.getInstance().getDropItemList(getSqlString("黄土状粉土_颗粒组成"));
@@ -145,11 +145,6 @@ public class LayerDescHtzFtFragment extends RecordBaseFragment {
         sprKx.setOnItemClickListener(kxListener);
         sprCzjl.setAdapter(mActivity, sprCzjlList, MaterialBetterSpinner.MODE_CLEAR);
 
-    }
-
-    @Override
-    public void initView() {
-        super.initView();
         sprYs.setText(record.getYs());
         sprMsd.setText(record.getMsd());
         sprKlzc.setText(record.getKlzc());
@@ -157,6 +152,7 @@ public class LayerDescHtzFtFragment extends RecordBaseFragment {
         sprCzjl.setText(record.getCzjl());
         sprBhw.setText(record.getBhw());
     }
+
 
     MaterialBetterSpinner.OnItemClickListener ysListener = new MaterialBetterSpinner.OnItemClickListener() {
         @Override
