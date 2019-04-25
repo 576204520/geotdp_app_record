@@ -82,10 +82,6 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
         obsUtils = new ObsUtils();
         obsUtils.setObsLinstener(this);
         obsUtils.execute(1);
-        toolbar.setTitle(hole.getCode());
-        toolbar.setSubtitle("记录列表");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initRecycleView() {
@@ -157,6 +153,10 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
     public void onComplete(int type) {
         switch (type) {
             case 1:
+                toolbar.setTitle(hole.getCode());
+                toolbar.setSubtitle("记录列表");
+                setSupportActionBar(toolbar);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 //初始化列表布局
                 initRecycleView();
                 //调用刷新方法

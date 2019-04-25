@@ -26,8 +26,10 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class ProjectPresenter extends BasePresenter<ProjectContract.View> implements ProjectContract.Presenter {
 
@@ -57,31 +59,32 @@ public class ProjectPresenter extends BasePresenter<ProjectContract.View> implem
                 e.onNext("");
                 e.onComplete();
             }
-        }).subscribe(new Observer<String>() {
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
 
-            @Override
-            public void onSubscribe(Disposable d) {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(String s) {
-                L.e("接收数据,当前线程"+Thread.currentThread().getName());
-            }
+                    @Override
+                    public void onNext(String s) {
+                        L.e("接收数据,当前线程" + Thread.currentThread().getName());
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                mView.onError(e);
-                mView.hideLoading();
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.onError(e);
+                        mView.hideLoading();
 
-            }
+                    }
 
-            @Override
-            public void onComplete() {
-                mView.hideLoading();
-                mView.onSuccessAddOrUpdate();
-            }
-        });
+                    @Override
+                    public void onComplete() {
+                        mView.hideLoading();
+                        mView.onSuccessAddOrUpdate();
+                    }
+                });
     }
 
     @Override
@@ -90,7 +93,6 @@ public class ProjectPresenter extends BasePresenter<ProjectContract.View> implem
         if (!isViewAttached()) {
             return;
         }
-        mView.showLoading();
         Observable.create(new ObservableOnSubscribe<PageBean<Project>>() {
             @Override
             public void subscribe(ObservableEmitter<PageBean<Project>> e) throws Exception {
@@ -104,29 +106,29 @@ public class ProjectPresenter extends BasePresenter<ProjectContract.View> implem
                 e.onNext(pageBean);
                 e.onComplete();
             }
-        }).subscribe(new Observer<PageBean<Project>>() {
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<PageBean<Project>>() {
 
-            @Override
-            public void onSubscribe(Disposable d) {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(PageBean<Project> pageBean) {
-                mView.onSuccessList(pageBean);
-            }
+                    @Override
+                    public void onNext(PageBean<Project> pageBean) {
+                        mView.onSuccessList(pageBean);
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                mView.hideLoading();
-                mView.onError(e);
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.onError(e);
+                    }
 
-            @Override
-            public void onComplete() {
-                mView.hideLoading();
-            }
-        });
+                    @Override
+                    public void onComplete() {
+                        mView.hideLoading();
+                    }
+                });
     }
 
     @Override
@@ -143,30 +145,31 @@ public class ProjectPresenter extends BasePresenter<ProjectContract.View> implem
                 e.onNext("");
                 e.onComplete();
             }
-        }).subscribe(new Observer<String>() {
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
 
-            @Override
-            public void onSubscribe(Disposable d) {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(String s) {
+                    @Override
+                    public void onNext(String s) {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                mView.onError(e);
-                mView.hideLoading();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.onError(e);
+                        mView.hideLoading();
+                    }
 
-            @Override
-            public void onComplete() {
-                mView.hideLoading();
-                mView.onSuccessDelete();
-            }
-        });
+                    @Override
+                    public void onComplete() {
+                        mView.hideLoading();
+                        mView.onSuccessDelete();
+                    }
+                });
     }
 
     @Override

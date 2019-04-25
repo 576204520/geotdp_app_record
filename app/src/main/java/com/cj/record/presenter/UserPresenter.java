@@ -20,8 +20,10 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author azheng
@@ -196,30 +198,31 @@ public class UserPresenter extends BasePresenter<UserContract.View> implements U
                 e.onNext("");
                 e.onComplete();
             }
-        }).subscribe(new Observer<String>() {
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
 
-            @Override
-            public void onSubscribe(Disposable d) {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(String s) {
+                    @Override
+                    public void onNext(String s) {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                mView.onError(e);
-                mView.hideLoading();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.onError(e);
+                        mView.hideLoading();
+                    }
 
-            @Override
-            public void onComplete() {
-                mView.hideLoading();
-                mView.onSuccessInitDB();
-            }
-        });
+                    @Override
+                    public void onComplete() {
+                        mView.hideLoading();
+                        mView.onSuccessInitDB();
+                    }
+                });
 
     }
 }

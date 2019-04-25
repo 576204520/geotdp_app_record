@@ -1,4 +1,4 @@
-package com.cj.record.fragment.record;
+package com.cj.record.fragment.record.inhole;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +14,7 @@ import com.cj.record.R;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
 import com.cj.record.db.RecordDao;
-import com.cj.record.utils.ObsUtils;
+import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.views.MaterialBetterSpinner;
 
 import java.util.ArrayList;
@@ -28,11 +28,10 @@ import butterknife.Unbinder;
 /**
  * 工程师
  */
-public class RecordTechnicianFragment extends RecordBaseFragment implements ObsUtils.ObsLinstener {
+public class RecordGCSFragment extends RecordBaseFragment {
     @BindView(R.id.technician_name)
     MaterialBetterSpinner technicianName;
     private List<Record> recordList;
-    private ObsUtils obsUtils;
 
     @Override
     public int getLayoutId() {
@@ -43,20 +42,8 @@ public class RecordTechnicianFragment extends RecordBaseFragment implements ObsU
     @Override
     protected void initView(View view) {
         super.initView(view);
-        obsUtils = new ObsUtils();
-        obsUtils.setObsLinstener(this);
         technicianName.setText(record.getOperatePerson());
-        obsUtils.execute(1);
-    }
-
-
-    @Override
-    public void onSubscribe(int type) {
         recordList = RecordDao.getInstance().getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_TECHNICIAN);
-    }
-
-    @Override
-    public void onComplete(int type) {
         if (recordList != null) {
             //新建的记录机长信息是空的，删除掉
             Iterator<Record> ir = recordList.iterator();
@@ -76,7 +63,7 @@ public class RecordTechnicianFragment extends RecordBaseFragment implements ObsU
                 }
             }
 
-            final List<DropItemVo> list = new ArrayList<>();
+            List<DropItemVo> list = new ArrayList<>();
             for (int i = 1; i <= recordList.size(); i++) {
                 DropItemVo dropItemVo = new DropItemVo();
                 dropItemVo.setId(i + "");
@@ -84,16 +71,7 @@ public class RecordTechnicianFragment extends RecordBaseFragment implements ObsU
                 dropItemVo.setValue(recordList.get(i - 1).getOperatePerson());
                 list.add(dropItemVo);
             }
-            technicianName.setText(record.getOperatePerson());
             technicianName.setAdapter(mActivity, list, MaterialBetterSpinner.MODE_CUSTOM);
-            technicianName.setOnItemClickListener(new MaterialBetterSpinner.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-
-                }
-            });
-
         }
     }
 

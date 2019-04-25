@@ -1,4 +1,4 @@
-package com.cj.record.fragment.record;
+package com.cj.record.fragment.record.inhole;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.cj.record.R;
 import com.cj.record.baen.Record;
+import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.views.MaterialEditTextNoEmoji;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -17,7 +18,7 @@ import butterknife.Unbinder;
 /**
  * 描述员
  */
-public class RecordPersonFragment extends RecordBaseFragment {
+public class RecordMSYFragment extends RecordBaseFragment {
     @BindView(R.id.person_name)
     MaterialEditTextNoEmoji personName;
 

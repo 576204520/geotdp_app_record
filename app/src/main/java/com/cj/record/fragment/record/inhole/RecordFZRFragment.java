@@ -1,4 +1,4 @@
-package com.cj.record.fragment.record;
+package com.cj.record.fragment.record.inhole;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,7 +12,7 @@ import com.cj.record.R;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
 import com.cj.record.db.RecordDao;
-import com.cj.record.utils.ObsUtils;
+import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.views.MaterialBetterSpinner;
 
 import java.util.ArrayList;
@@ -26,12 +26,11 @@ import butterknife.Unbinder;
 /**
  * 负责人
  */
-public class RecordPrincipalFragment extends RecordBaseFragment implements ObsUtils.ObsLinstener {
+public class RecordFZRFragment extends RecordBaseFragment{
     @BindView(R.id.principal_name)
     MaterialBetterSpinner principalName;
 
     private List<Record> recordList;
-    private ObsUtils obsUtils;
 
     @Override
     public int getLayoutId() {
@@ -41,21 +40,8 @@ public class RecordPrincipalFragment extends RecordBaseFragment implements ObsUt
     @Override
     protected void initView(View view) {
         super.initView(view);
-        obsUtils = new ObsUtils();
-        obsUtils.setObsLinstener(this);
         principalName.setText(record.getOperatePerson());
-        obsUtils.execute(1);
-    }
-
-
-
-    @Override
-    public void onSubscribe(int type) {
         recordList = RecordDao.getInstance().getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_PRINCIPAL);
-    }
-
-    @Override
-    public void onComplete(int type) {
         if (recordList != null) {
             Iterator<Record> ir = recordList.iterator();
             while (ir.hasNext()) {
@@ -73,7 +59,7 @@ public class RecordPrincipalFragment extends RecordBaseFragment implements ObsUt
                 }
             }
 
-            final List<DropItemVo> list = new ArrayList<>();
+            List<DropItemVo> list = new ArrayList<>();
             for (int i = 1; i <= recordList.size(); i++) {
                 DropItemVo dropItemVo = new DropItemVo();
                 dropItemVo.setId(i + "");
@@ -81,18 +67,10 @@ public class RecordPrincipalFragment extends RecordBaseFragment implements ObsUt
                 dropItemVo.setValue(recordList.get(i - 1).getOperatePerson());
                 list.add(dropItemVo);
             }
-            principalName.setText(record.getOperatePerson());
             principalName.setAdapter(mActivity, list, MaterialBetterSpinner.MODE_CUSTOM);
-            principalName.setOnItemClickListener(new MaterialBetterSpinner.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-
-                }
-            });
-
         }
     }
+
 
     @Override
     public Record getRecord() {

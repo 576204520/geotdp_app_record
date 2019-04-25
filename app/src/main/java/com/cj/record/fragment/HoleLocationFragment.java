@@ -49,7 +49,6 @@ import com.cj.record.contract.HoleContract;
 import com.cj.record.presenter.HolePresenter;
 import com.cj.record.utils.GPSutils;
 import com.cj.record.utils.L;
-import com.cj.record.utils.ObsUtils;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;

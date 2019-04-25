@@ -1,4 +1,4 @@
-package com.cj.record.fragment.record;
+package com.cj.record.fragment.record.inhole;
 
 import android.text.TextUtils;
 import android.view.View;
@@ -10,9 +10,9 @@ import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
 import com.cj.record.contract.UserContract;
 import com.cj.record.db.RecordDao;
+import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.presenter.UserPresenter;
 import com.cj.record.utils.Common;
-import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.MaterialBetterSpinner;
 import com.cj.record.views.MaterialEditTextNoEmoji;
@@ -29,7 +29,7 @@ import butterknife.BindView;
 /**
  * 机长 改成司钻员
  */
-public class RecordOperatePersionFragment extends RecordBaseFragment<UserPresenter> implements UserContract.View, ObsUtils.ObsLinstener {
+public class RecordJZFragment extends RecordBaseFragment<UserPresenter> implements UserContract.View {
     @BindView(R.id.operateperson_name)
     MaterialBetterSpinner operatepersonName;
     @BindView(R.id.operateperson_code)
@@ -38,7 +38,6 @@ public class RecordOperatePersionFragment extends RecordBaseFragment<UserPresent
     Button operatepersonCheck;
 
     private List<Record> recordList;
-    private ObsUtils obsUtils;
 
     @Override
     public int getLayoutId() {
@@ -50,36 +49,10 @@ public class RecordOperatePersionFragment extends RecordBaseFragment<UserPresent
         super.initView(view);
         mPresenter = new UserPresenter();
         mPresenter.attachView(this);
-
-        obsUtils = new ObsUtils();
-        obsUtils.setObsLinstener(this);
-        obsUtils.execute(1);
+        operatepersonName.setText(record.getOperatePerson());
+        operatepersonCode.setText(record.getTestType());
         operatepersonCheck.setOnClickListener(personCheckListener);
-    }
-
-
-    View.OnClickListener personCheckListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            doCheck();
-        }
-    };
-
-    private void doCheck() {
-        if (!validator()) {
-            return;
-        }
-        mPresenter.checkOperate(mActivity, userID, operatepersonName.getText().toString().trim(), operatepersonCode.getText().toString().trim());
-    }
-
-    @Override
-    public void onSubscribe(int type) {
         recordList = RecordDao.getInstance().getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_OPERATEPERSON);
-    }
-
-
-    @Override
-    public void onComplete(int type) {
         if (recordList != null) {
             //新建的记录机长信息是空的，删除掉
             Iterator<Record> ir = recordList.iterator();
@@ -106,8 +79,6 @@ public class RecordOperatePersionFragment extends RecordBaseFragment<UserPresent
                 dropItemVo.setValue(recordList.get(i - 1).getOperatePerson() + "  " + recordList.get(i - 1).getTestType());
                 list.add(dropItemVo);
             }
-            operatepersonName.setText(record.getOperatePerson());
-            operatepersonCode.setText(record.getTestType());
             operatepersonName.setAdapter(mActivity, list, MaterialBetterSpinner.MODE_CUSTOM);
             operatepersonName.setOnItemClickListener(new MaterialBetterSpinner.OnItemClickListener() {
                 @Override
@@ -121,6 +92,20 @@ public class RecordOperatePersionFragment extends RecordBaseFragment<UserPresent
         }
     }
 
+
+    View.OnClickListener personCheckListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            doCheck();
+        }
+    };
+
+    private void doCheck() {
+        if (!validator()) {
+            return;
+        }
+        mPresenter.checkOperate(mActivity, userID, operatepersonName.getText().toString().trim(), operatepersonCode.getText().toString().trim());
+    }
 
     @Override
     public Record getRecord() {

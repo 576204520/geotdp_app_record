@@ -32,7 +32,6 @@ import com.cj.record.db.MediaDao;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.GPSutils;
 import com.cj.record.utils.L;
-import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;
@@ -57,7 +56,7 @@ import me.iwf.photopicker.PhotoPreview;
  * Created by Administrator on 2018/6/5.
  */
 
-public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLinstener, MediaAdapter.OnItemListener {
+public class RecordMediaFragment extends BaseFragment implements MediaAdapter.OnItemListener {
     @BindView(R.id.recycler_photo)
     RecyclerView recyclerPhoto;
     @BindView(R.id.recycler_video)
@@ -66,7 +65,6 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
     private MediaAdapter mediaAdapter, mediaAdapter2;
     public List<Media> photoList;
     private List<Media> videoList;
-    private ObsUtils obsUtils;
     private Record record;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private static final int PICKER_CODE = 101;
@@ -74,13 +72,21 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
     private RecordLocationFragment locationFragment;
     private File file;
     private List<String> photoPathList;
-    private Dialog dialog;
 
     @Override
     protected void initView(View view) {
-        obsUtils = new ObsUtils();
-        obsUtils.setObsLinstener(this);
-        obsUtils.execute(1);
+        if (getArguments().containsKey(MainActivity.RECORD)) {
+            record = (Record) getArguments().getSerializable(MainActivity.RECORD);
+        }
+        photoList = new ArrayList<>();
+        videoList = new ArrayList<>();
+        photoPathList = new ArrayList<>();
+        getMediaList();
+        initRecycleView();
+        //实例化位置fragment
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+        locationFragment = (RecordLocationFragment) fragmentManager.findFragmentByTag("locationFragment");
+        initRecyclerByType();
     }
 
     @Override
@@ -102,7 +108,6 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
         recyclerVideo.setLayoutManager(mLayoutManager_video);
         recyclerVideo.setAdapter(mediaAdapter2);
         mediaAdapter2.setOnItemListener(this);
-
     }
 
     private void initRecyclerByType() {
@@ -117,46 +122,12 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
         }
     }
 
-
-    @Override
-    public void onSubscribe(int type) {
-        switch (type) {
-            case 1:
-                if (getArguments().containsKey(MainActivity.RECORD)) {
-                    record = (Record) getArguments().getSerializable(MainActivity.RECORD);
-                }
-                photoList = new ArrayList<>();
-                videoList = new ArrayList<>();
-                photoPathList = new ArrayList<>();
-                getMediaList();
-                break;
-            case 2:
-                photoList.clear();
-                videoList.clear();
-                getMediaList();
-                break;
-        }
-    }
-
-    @Override
-    public void onComplete(int type) {
-        switch (type) {
-            case 1:
-                initRecycleView();
-                //实例化位置fragment
-                FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
-                locationFragment = (RecordLocationFragment) fragmentManager.findFragmentByTag("locationFragment");
-                initRecyclerByType();
-                break;
-            case 2:
-                mediaAdapter.notifyDataSetChanged();
-                mediaAdapter2.notifyDataSetChanged();
-                break;
-        }
-    }
-
     private void refresh() {
-        obsUtils.execute(2);
+        photoList.clear();
+        videoList.clear();
+        getMediaList();
+        mediaAdapter.notifyDataSetChanged();
+        mediaAdapter2.notifyDataSetChanged();
     }
 
     private void getMediaList() {
@@ -244,26 +215,22 @@ public class RecordMediaFragment extends BaseFragment implements ObsUtils.ObsLin
 
     private void hesitate(final int position) {
         final Media media = photoList.get(position);
-        if (dialog == null) {
-            dialog = new AlertDialog.Builder(mActivity)
-                    .setTitle(R.string.hint)
-                    .setMessage("确定删除该图片吗")
-                    .setNegativeButton(R.string.record_camera_cancel_dialog_yes,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    MediaDao.getInstance().delete(media);
-                                    ToastUtil.showToastL(getActivity(), "删除图片成功");
-                                    photoList.remove(position);
-                                    refresh();
-                                }
-                            })
-                    .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)
-                    .setCancelable(false)
-                    .show();
-        } else {
-            dialog.show();
-        }
+        new AlertDialog.Builder(mActivity)
+                .setTitle(R.string.hint)
+                .setMessage("确定删除该图片吗")
+                .setNegativeButton(R.string.record_camera_cancel_dialog_yes,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                media.delete(mActivity);
+                                ToastUtil.showToastL(getActivity(), "删除图片成功");
+                                refresh();
+                            }
+                        })
+                .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)
+                .setCancelable(false)
+                .show();
+
     }
 
     /**

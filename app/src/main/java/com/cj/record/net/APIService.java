@@ -20,6 +20,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -145,9 +146,9 @@ public interface APIService {
      * @param url
      * @return
      */
-    @Multipart
     @POST
-    Flowable<BaseObjectBean<Integer>> uploadHole(@Url String url, @PartMap Map<String, RequestBody> params);
+    Flowable<BaseObjectBean<Integer>> uploadHole(@Url String url, @Body RequestBody requestBody);
+
 
     /**
      * 上传到规委平台

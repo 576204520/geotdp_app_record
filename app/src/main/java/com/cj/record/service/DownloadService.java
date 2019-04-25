@@ -16,6 +16,7 @@ import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 
 
+import com.cj.record.BuildConfig;
 import com.cj.record.net.RetrofitClient;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
@@ -48,7 +49,7 @@ public class DownloadService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 //        initDownManager(testLink);
-        initDownManager(RetrofitClient.baseUrl + "gcdz.apk");
+        initDownManager(BuildConfig.URL + "gcdz.apk");
         return super.onStartCommand(intent, flags, startId);
     }
 

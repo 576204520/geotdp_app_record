@@ -137,31 +137,31 @@ public class Gps implements Serializable {
         return params;
     }
 
-    public static Map<String, RequestBody> getMap(List<Gps> list, String serialNumber) {
-        Map<String, RequestBody> map = new ConcurrentHashMap<>();
+    public static Map<String, String> getMap(List<Gps> list, String serialNumber) {
+        Map<String, String> map = new ConcurrentHashMap<>();
         for (int i = 0; i < list.size(); i++) {
             Gps gps = list.get(i);
-            map.put("gps[" + i + "].projectID", RxPartMapUtils.toRequestBodyOfText(serialNumber));
-            map.put("gps[" + i + "].id", RxPartMapUtils.toRequestBodyOfText(gps.getId() == null ? "" : gps.getId()));
-            map.put("gps[" + i + "].holeID", RxPartMapUtils.toRequestBodyOfText(gps.getHoleID() == null ? "" : gps.getHoleID()));
-            map.put("gps[" + i + "].recordID", RxPartMapUtils.toRequestBodyOfText(gps.getRecordID() == null ? "" : gps.getRecordID()));
+            map.put("gps[" + i + "].projectID", serialNumber);
+            map.put("gps[" + i + "].id", gps.getId() == null ? "" : gps.getId());
+            map.put("gps[" + i + "].holeID", gps.getHoleID() == null ? "" : gps.getHoleID());
+            map.put("gps[" + i + "].recordID", gps.getRecordID() == null ? "" : gps.getRecordID());
             if (!TextUtils.isEmpty(gps.getMediaID())) {
-                map.put("gps[" + i + "].mediaID", RxPartMapUtils.toRequestBodyOfText(gps.getMediaID()));
+                map.put("gps[" + i + "].mediaID", gps.getMediaID());
             }
             if (!TextUtils.isEmpty(gps.getType())) {
-                map.put("gps[" + i + "].type", RxPartMapUtils.toRequestBodyOfText(gps.getType()));
+                map.put("gps[" + i + "].type", gps.getType());
             }
             if (!TextUtils.isEmpty(gps.getLongitude())) {
-                map.put("gps[" + i + "].longitude", RxPartMapUtils.toRequestBodyOfText(gps.getLongitude()));
+                map.put("gps[" + i + "].longitude", gps.getLongitude());
             }
             if (!TextUtils.isEmpty(gps.getLatitude())) {
-                map.put("gps[" + i + "].latitude", RxPartMapUtils.toRequestBodyOfText(gps.getLatitude()));
+                map.put("gps[" + i + "].latitude", gps.getLatitude());
             }
             if (!TextUtils.isEmpty(gps.getGpsTime())) {
-                map.put("gps[" + i + "].gpsTime", RxPartMapUtils.toRequestBodyOfText(gps.getGpsTime()));
+                map.put("gps[" + i + "].gpsTime", gps.getGpsTime());
             }
             if (!TextUtils.isEmpty(gps.getDistance())) {
-                map.put("gps[" + i + "].distance", RxPartMapUtils.toRequestBodyOfText(gps.getDistance()));
+                map.put("gps[" + i + "].distance", gps.getDistance());
             }
         }
         return map;

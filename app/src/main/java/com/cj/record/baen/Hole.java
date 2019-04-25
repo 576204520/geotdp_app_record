@@ -202,69 +202,69 @@ public class Hole implements Serializable, Cloneable {
     }
 
     //生成map类型参数
-    public Map<String, RequestBody> getNameValuePairMap(String serialNumber) {
-        Map<String, RequestBody> params = new ConcurrentHashMap<>();
-        params.put("hole.projectID", RxPartMapUtils.toRequestBodyOfText(serialNumber));
-        params.put("hole.relateID", RxPartMapUtils.toRequestBodyOfText(relateID));
-        params.put("hole.id", RxPartMapUtils.toRequestBodyOfText(id));
-        params.put("hole.code", RxPartMapUtils.toRequestBodyOfText(code));
+    public Map<String, String> getNameValuePairMap(String serialNumber) {
+        Map<String, String> params = new ConcurrentHashMap<>();
+        params.put("hole.projectID", serialNumber);
+        params.put("hole.relateID", relateID);
+        params.put("hole.id", id);
+        params.put("hole.code", code);
         if (!TextUtils.isEmpty(attribute)) {
-            params.put("hole.attribute", RxPartMapUtils.toRequestBodyOfText(attribute));
+            params.put("hole.attribute", attribute);
         }
         if (!TextUtils.isEmpty(createTime)) {
-            params.put("hole.createTime", RxPartMapUtils.toRequestBodyOfText(createTime));
+            params.put("hole.createTime", createTime);
         }
         if (!TextUtils.isEmpty(updateTime)) {
-            params.put("hole.updateTime", RxPartMapUtils.toRequestBodyOfText(updateTime));
+            params.put("hole.updateTime", updateTime);
         }
         if (!TextUtils.isEmpty(type)) {
-            params.put("hole.type", RxPartMapUtils.toRequestBodyOfText(type));
+            params.put("hole.type", type);
         }
         if (!TextUtils.isEmpty(elevation)) {
-            params.put("hole.elevation", RxPartMapUtils.toRequestBodyOfText(elevation));
+            params.put("hole.elevation", elevation);
         }
         if (!TextUtils.isEmpty(beginTime)) {
-            params.put("hole.beginTime", RxPartMapUtils.toRequestBodyOfText(beginTime));
+            params.put("hole.beginTime", beginTime);
         }
         if (!TextUtils.isEmpty(endTime)) {
-            params.put("hole.endTime", RxPartMapUtils.toRequestBodyOfText(endTime));
+            params.put("hole.endTime", endTime);
         }
         if (!TextUtils.isEmpty(inputPerson)) {
-            params.put("hole.inputPerson", RxPartMapUtils.toRequestBodyOfText(inputPerson));
+            params.put("hole.inputPerson", inputPerson);
         }
         if (!TextUtils.isEmpty(operatePerson)) {
-            params.put("hole.operatePerson", RxPartMapUtils.toRequestBodyOfText(operatePerson));
+            params.put("hole.operatePerson", operatePerson);
         }
         if (!TextUtils.isEmpty(operateCode)) {
-            params.put("hole.operateCode", RxPartMapUtils.toRequestBodyOfText(operateCode));
+            params.put("hole.operateCode", operateCode);
         }
         if (!TextUtils.isEmpty(longitude)) {
-            params.put("hole.longitude", RxPartMapUtils.toRequestBodyOfText(longitude));
+            params.put("hole.longitude", longitude);
         }
         if (!TextUtils.isEmpty(latitude)) {
-            params.put("hole.latitude", RxPartMapUtils.toRequestBodyOfText(latitude));
+            params.put("hole.latitude", latitude);
         }
         if (!TextUtils.isEmpty(radius)) {
-            params.put("hole.radius", RxPartMapUtils.toRequestBodyOfText(radius));
+            params.put("hole.radius", radius);
         }
         if (!TextUtils.isEmpty(locationState)) {
-            params.put("hole.locationState", RxPartMapUtils.toRequestBodyOfText(locationState));
+            params.put("hole.locationState", locationState);
         }
         if (!TextUtils.isEmpty(projectName)) {
-            params.put("hole.projectName", RxPartMapUtils.toRequestBodyOfText(projectName));
+            params.put("hole.projectName", projectName);
         }
         if (!TextUtils.isEmpty(recordsCount)) {
-            params.put("hole.recordsCount", RxPartMapUtils.toRequestBodyOfText(recordsCount));
+            params.put("hole.recordsCount", recordsCount);
         }
 
         if (!TextUtils.isEmpty(mapLatitude)) {
-            params.put("hole.mapLatitude", RxPartMapUtils.toRequestBodyOfText(mapLatitude));
+            params.put("hole.mapLatitude", mapLatitude);
         }
         if (!TextUtils.isEmpty(mapLongitude)) {
-            params.put("hole.mapLongitude", RxPartMapUtils.toRequestBodyOfText(mapLongitude));
+            params.put("hole.mapLongitude", mapLongitude);
         }
         if (!TextUtils.isEmpty(mapTime)) {
-            params.put("hole.mapTime", RxPartMapUtils.toRequestBodyOfText(mapTime));
+            params.put("hole.mapTime", mapTime);
         }
 //        DateUtil.traversal(params);
         return params;

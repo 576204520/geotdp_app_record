@@ -102,6 +102,7 @@ public class HoleDao extends BaseDAO<Hole> {
             UpdateBuilder updateBuilder = instance.getDAO().updateBuilder();
             updateBuilder.where().eq("projectID", projectID);
             updateBuilder.updateColumnValue("state", "1");
+            updateBuilder.updateColumnValue("stateGW", "1");
             updateBuilder.updateColumnValue("relateID", "");
             updateBuilder.updateColumnValue("relateCode", "");
             updateBuilder.update();

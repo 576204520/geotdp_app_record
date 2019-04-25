@@ -53,7 +53,6 @@ import butterknife.OnClick;
 public class ReleteLocationActivity extends BaseMvpActivity<HolePresenter> implements HoleContract.View, AMapLocationListener, ReleteLocationAdapter.OnItemListener {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.location_map)
     MapView locationMap;
     @BindView(R.id.location_fabu)
     TextView locationFabu;
@@ -86,10 +85,12 @@ public class ReleteLocationActivity extends BaseMvpActivity<HolePresenter> imple
         return R.layout.activity_relete_location;
     }
 
+    @Override
     public void initMust(Bundle savedInstanceState) {
+        super.initMust(savedInstanceState);
+        locationMap = findViewById(R.id.location_map);
         locationMap.onCreate(savedInstanceState);
     }
-
 
     @Override
     public void initView() {

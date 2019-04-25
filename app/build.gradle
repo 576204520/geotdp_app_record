@@ -8,35 +8,33 @@ android {
         applicationId "com.cj.record"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 50
-        versionName "3.3.0"
+        versionCode 51
+        versionName "3.3.1"
         multiDexEnabled true
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "armeabi", "armeabi-v7a"
+            abiFilters "armeabi"
         }
     }
     buildTypes {
         debug {
-            //启用代码混淆
-            minifyEnabled false
-            //混淆规则配置文件
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            //去掉无用资源
-//            shrinkResources true
-            //Zip代码压缩优化
-//            zipAlignEnabled true
+            buildConfigField "String", "URL", DEBUG_BASE_URL
+            buildConfigField "String", "UPLOAD_GW", DEBUG_UPLOAD_HOLE_GW
+            buildConfigField "String", "SECRET_KEY", DEBUG_SECRET_KEY
         }
         release {
+            buildConfigField "String", "URL", RELEASE_BASE_URL
+            buildConfigField "String", "UPLOAD_GW", RELEASE_UPLOAD_HOLE_GW
+            buildConfigField "String", "SECRET_KEY", RELEASE_SECRET_KEY
             //启用代码混淆
-            minifyEnabled false
+            minifyEnabled true
             //混淆规则配置文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //去掉无用资源
-//            shrinkResources true
+            shrinkResources true
             //Zip代码压缩优化
-//            zipAlignEnabled true
+            zipAlignEnabled true
         }
 
     }

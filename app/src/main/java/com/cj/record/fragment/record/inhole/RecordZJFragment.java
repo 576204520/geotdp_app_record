@@ -1,4 +1,4 @@
-package com.cj.record.fragment.record;
+package com.cj.record.fragment.record.inhole;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +14,7 @@ import com.cj.record.R;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Record;
 import com.cj.record.db.RecordDao;
-import com.cj.record.utils.ObsUtils;
+import com.cj.record.fragment.record.RecordBaseFragment;
 import com.cj.record.views.MaterialBetterSpinner;
 
 import java.util.ArrayList;
@@ -28,11 +28,10 @@ import butterknife.Unbinder;
 /**
  * 钻机编号照片
  */
-public class RecordOperateCodeFragment extends RecordBaseFragment implements ObsUtils.ObsLinstener {
+public class RecordZJFragment extends RecordBaseFragment {
     @BindView(R.id.operatecode_code)
     MaterialBetterSpinner operatecodeCode;
     private List<Record> recordList;
-    private ObsUtils obsUtils;
 
     @Override
     public int getLayoutId() {
@@ -42,20 +41,8 @@ public class RecordOperateCodeFragment extends RecordBaseFragment implements Obs
     @Override
     protected void initView(View view) {
         super.initView(view);
-        obsUtils = new ObsUtils();
-        obsUtils.setObsLinstener(this);
         operatecodeCode.setText(record.getTestType());
-        obsUtils.execute(1);
-    }
-
-
-    @Override
-    public void onSubscribe(int type) {
         recordList = RecordDao.getInstance().getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_OPERATECODE);
-    }
-
-    @Override
-    public void onComplete(int type) {
         if (recordList != null) {
             //新建的记录机长信息是空的，删除掉
             Iterator<Record> ir = recordList.iterator();
@@ -65,7 +52,6 @@ public class RecordOperateCodeFragment extends RecordBaseFragment implements Obs
                     ir.remove();
                 }
             }
-            //去掉机长和机长编号相同的数据
             for (int i = 0; i < recordList.size(); i++) {
                 for (int j = i + 1; j < recordList.size(); j++) {
                     if (recordList.get(i).getTestType().equals(recordList.get(j).getTestType())) {
@@ -74,8 +60,7 @@ public class RecordOperateCodeFragment extends RecordBaseFragment implements Obs
                     }
                 }
             }
-
-            final List<DropItemVo> list = new ArrayList<>();
+            List<DropItemVo> list = new ArrayList<>();
             for (int i = 1; i <= recordList.size(); i++) {
                 DropItemVo dropItemVo = new DropItemVo();
                 dropItemVo.setId(i + "");
@@ -83,18 +68,10 @@ public class RecordOperateCodeFragment extends RecordBaseFragment implements Obs
                 dropItemVo.setValue(recordList.get(i - 1).getTestType());
                 list.add(dropItemVo);
             }
-            operatecodeCode.setText(record.getTestType());
             operatecodeCode.setAdapter(mActivity, list, MaterialBetterSpinner.MODE_CUSTOM);
-            operatecodeCode.setOnItemClickListener(new MaterialBetterSpinner.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-
-                }
-            });
-
         }
     }
+
 
     @Override
     public Record getRecord() {

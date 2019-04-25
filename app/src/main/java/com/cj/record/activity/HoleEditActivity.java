@@ -26,6 +26,7 @@ import com.cj.record.baen.Record;
 import com.cj.record.base.BaseMvpActivity;
 import com.cj.record.contract.HoleContract;
 import com.cj.record.db.HoleDao;
+import com.cj.record.db.MediaDao;
 import com.cj.record.db.RecordDao;
 import com.cj.record.presenter.HolePresenter;
 import com.cj.record.R;
@@ -284,16 +285,10 @@ public class HoleEditActivity extends BaseMvpActivity<HolePresenter> implements 
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                hole.setLocationState("0");
-                                hole.setMapLatitude("");
-                                hole.setMapLongitude("");
-                                HoleDao.getInstance().addOrUpdate(hole);
-                                //清除定位信息，删除所有记录
+                                //判断钻孔下是否已有记录，有记录保留钻孔和定位信息，没有则删除钻孔
                                 List<Record> recordList = RecordDao.getInstance().getRecordListByHoleID(hole.getId());
-                                if (recordList != null && recordList.size() > 0) {
-                                    for (Record record : recordList) {
-                                        record.delete(HoleEditActivity.this);
-                                    }
+                                if (recordList == null || recordList.size() == 0) {
+                                    HoleDao.getInstance().delete(hole);
                                 }
                                 setResult(RESULT_OK);
                                 finish();
@@ -598,6 +593,7 @@ public class HoleEditActivity extends BaseMvpActivity<HolePresenter> implements 
             hole.setState("1");
             hole.setStateGW("1");
             HoleDao.getInstance().addOrUpdate(hole);
+            //项目的修改时间修改
             project.setUpdateTime(DateUtil.date2Str(new Date()) + "");
             ProjectDao.getInstance().addOrUpdate(project);
             initPage(hole);
@@ -641,6 +637,20 @@ public class HoleEditActivity extends BaseMvpActivity<HolePresenter> implements 
     public void onSuccessGetScene(List<Record> recordList) {
         if (recordList != null && recordList.size() > 0) {
             changeType(hole.getType());
+            sceneJizhang.setText("");
+            sceneJizhangTv.setTextColor(getResources().getColor(R.color.colorTexthintGrey));
+            sceneZuanji.setText("");
+            sceneZuanjiTv.setTextColor(getResources().getColor(R.color.colorTexthintGrey));
+            sceneMiaoshu.setText("");
+            sceneMiaoshuTv.setTextColor(getResources().getColor(R.color.colorTexthintGrey));
+            sceneChangjing.setText("");
+            sceneChangjingTv.setTextColor(getResources().getColor(R.color.colorTexthintGrey));
+            sceneFuze.setText("");
+            sceneFuzeTv.setTextColor(getResources().getColor(R.color.colorTexthintGrey));
+            sceneGongcheng.setText("");
+            sceneGongchengTv.setTextColor(getResources().getColor(R.color.colorTexthintGrey));
+            sceneTizuan.setText("");
+            sceneTizuanTv.setTextColor(getResources().getColor(R.color.colorTexthintGrey));
             for (Record record : recordList) {
                 if (record.getType().equals(Record.TYPE_SCENE_OPERATEPERSON)) {
                     sceneJizhang.setText(record.getOperatePerson());

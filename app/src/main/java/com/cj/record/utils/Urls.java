@@ -43,9 +43,4 @@ public class Urls {
         public static final String DATA_INIT = "initData";
         public static final String DATA_INIT2 = "initData2";
     }
-
-    //各企业自己的key
-//    public static final String C_KEY = "tZ4FzkhObZ";//北京正式
-    public static final String C_KEY = "nQvvTKE504";//测试
-
 }

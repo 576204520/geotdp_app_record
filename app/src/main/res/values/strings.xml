@@ -115,7 +115,7 @@
     <string name="go_setting">去设置</string>
     <string name="project_nav_norelate">该项目未关联，请先关联项目信息</string>
     <string name="project_search_hint">项目编号搜索</string>
-    <string name="main_logout_msg">注销后将清空当前用户的登录信息（但不会清除该用户的项目信息），返回到登录页面重新登陆。确定注销吗？</string>
+    <string name="main_logout_msg">退出后将清空当前用户的登录信息（但不会清除该用户的项目信息），返回到登录页面重新登陆。确定退出吗？</string>
     <string name="main_finish_msg">是否退出应用</string>
     <string name="project_edit_title">项目详情与编辑</string>
     <string name="project_edit_hint_num">请输入项目序列号</string>
@@ -152,7 +152,7 @@
     <string name="hole_edit_finish_hint2">勘探点数据不完整，请完善（描述员、场景）记录，否则不保留定位信息</string>
     <string name="hole_edit_finish_hint4">勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录,否则不保留定位信息</string>
     <string name="hole_edit_finish_keep_edit">继续编辑</string>
-    <string name="hole_edit_finish_out_edit">取消定位并退出</string>
+    <string name="hole_edit_finish_out_edit">退出</string>
     <string name="hole_edit_save_hint2">勘探点数据不完整，请完善（描述员、场景）记录</string>
     <string name="hole_edit_save_hint4">勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录</string>
     <string name="hole_edit_save_no_code">请输入勘探点编号</string>
@@ -219,4 +219,5 @@
     <string name="chat_title_nofriends">未关注的好友</string>
     <string name="chat_guanzhu">关注后可与其收发信息，是否关注该好友?</string>
     <string name="chat_friend_delete">确定取消关注该好友吗?</string>
+    <string name="hole_edit_no_location_hint">勘探点未定位,是否编辑勘察点，进行定位操作</string>
 </resources>

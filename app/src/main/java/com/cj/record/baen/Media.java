@@ -219,9 +219,9 @@ public class Media implements Serializable {
             Gps gps = GpsDao.getInstance().getGpsByMedia(getId());
             if (gps != null) {
                 GpsDao.getInstance().delete(gps);
-                MediaDao.getInstance().delete(this);
             }
         }
+        MediaDao.getInstance().delete(this);
     }
 
     //生成属性列表
@@ -255,45 +255,45 @@ public class Media implements Serializable {
         return params;
     }
 
-    public static Map<String, RequestBody> getMap(List<Media> list, String serialNumber) {
-        Map<String, RequestBody> map = new ConcurrentHashMap<>();
+    public static Map<String, String> getMap(List<Media> list, String serialNumber) {
+        Map<String, String> map = new ConcurrentHashMap<>();
         for (int i = 0; i < list.size(); i++) {
             Media media = list.get(i);
-            map.put("media[" + i + "].projectID", RxPartMapUtils.toRequestBodyOfText(serialNumber));
-            map.put("media[" + i + "].id", RxPartMapUtils.toRequestBodyOfText(media.getId() == null ? "" : media.getId()));
-            map.put("media[" + i + "].name", RxPartMapUtils.toRequestBodyOfText(media.getName() == null ? "" : media.getName()));
-            map.put("media[" + i + "].holeID", RxPartMapUtils.toRequestBodyOfText(media.getHoleID() == null ? "" : media.getHoleID()));
-            map.put("media[" + i + "].recordID", RxPartMapUtils.toRequestBodyOfText(media.getRecordID() == null ? "" : media.getRecordID()));
-            map.put("media[" + i + "].gpsID", RxPartMapUtils.toRequestBodyOfText(media.getGpsID() == null ? "" : media.getGpsID()));
+            map.put("media[" + i + "].projectID", serialNumber);
+            map.put("media[" + i + "].id", media.getId() == null ? "" : media.getId());
+            map.put("media[" + i + "].name", media.getName() == null ? "" : media.getName());
+            map.put("media[" + i + "].holeID", media.getHoleID() == null ? "" : media.getHoleID());
+            map.put("media[" + i + "].recordID", media.getRecordID() == null ? "" : media.getRecordID());
+            map.put("media[" + i + "].gpsID", media.getGpsID() == null ? "" : media.getGpsID());
             if (!TextUtils.isEmpty(media.getCreateTime())) {
-                map.put("media[" + i + "].createTime", RxPartMapUtils.toRequestBodyOfText(media.getCreateTime()));
+                map.put("media[" + i + "].createTime", media.getCreateTime());
             }
             if (!TextUtils.isEmpty(media.getCreateUser())) {
-                map.put("media[" + i + "].createUser", RxPartMapUtils.toRequestBodyOfText(media.getCreateUser()));
+                map.put("media[" + i + "].createUser", media.getCreateUser());
             }
             if (!TextUtils.isEmpty(media.getUploadUser())) {
-                map.put("media[" + i + "].uploadUser", RxPartMapUtils.toRequestBodyOfText(media.getUploadUser()));
+                map.put("media[" + i + "].uploadUser", media.getUploadUser());
             }
             if (!TextUtils.isEmpty(media.getType())) {
-                map.put("media[" + i + "].type", RxPartMapUtils.toRequestBodyOfText(media.getType()));
+                map.put("media[" + i + "].type", media.getType());
             }
             if (!TextUtils.isEmpty(media.getState())) {
-                map.put("media[" + i + "].state", RxPartMapUtils.toRequestBodyOfText(media.getState()));
+                map.put("media[" + i + "].state", media.getState());
             }
             if (!TextUtils.isEmpty(media.getInternetPath())) {
-                map.put("media[" + i + "].internetPath", RxPartMapUtils.toRequestBodyOfText(media.getInternetPath()));
+                map.put("media[" + i + "].internetPath", media.getInternetPath());
             }
             if (!TextUtils.isEmpty(media.getRemark())) {
-                map.put("media[" + i + "].remark", RxPartMapUtils.toRequestBodyOfText(media.getRemark()));
+                map.put("media[" + i + "].remark", media.getRemark());
             }
             //如果是文件加，只能是video的文件夹
             File file = new File(list.get(i).getLocalPath());
             if (file.isDirectory()) {
-                map.put("media[" + i + "].localPath", RxPartMapUtils.toRequestBodyOfText(Common.getVideoByDir(list.get(i).getLocalPath())));
+                map.put("media[" + i + "].localPath", Common.getVideoByDir(list.get(i).getLocalPath()));
                 L.e("isDirectory");
             } else {
                 L.e("noDirectory");
-                map.put("media[" + i + "].localPath", RxPartMapUtils.toRequestBodyOfText(list.get(i).getLocalPath()));
+                map.put("media[" + i + "].localPath", list.get(i).getLocalPath());
             }
         }
         return map;

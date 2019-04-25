@@ -7,23 +7,18 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocation;
 import com.cj.record.R;
 import com.cj.record.base.BaseActivity;
 import com.cj.record.baen.Gps;
 import com.cj.record.baen.Hole;
-import com.cj.record.baen.JsonResult;
 import com.cj.record.baen.Media;
 import com.cj.record.baen.Record;
 import com.cj.record.baen.Template;
@@ -42,25 +37,22 @@ import com.cj.record.fragment.record.RecordEditLayerFragment;
 import com.cj.record.fragment.record.RecordEditRemarkFragment;
 import com.cj.record.fragment.record.RecordEditSPTFragment;
 import com.cj.record.fragment.record.RecordEditWaterFragment;
-import com.cj.record.fragment.record.RecordOperateCodeFragment;
-import com.cj.record.fragment.record.RecordOperatePersionFragment;
-import com.cj.record.fragment.record.RecordPersonFragment;
-import com.cj.record.fragment.record.RecordPrincipalFragment;
-import com.cj.record.fragment.record.RecordSceneFragment;
-import com.cj.record.fragment.record.RecordTechnicianFragment;
-import com.cj.record.fragment.record.RecordVideoFragment;
+import com.cj.record.fragment.record.inhole.RecordFZRFragment;
+import com.cj.record.fragment.record.inhole.RecordJZFragment;
+import com.cj.record.fragment.record.inhole.RecordZJFragment;
+import com.cj.record.fragment.record.inhole.RecordMSYFragment;
+import com.cj.record.fragment.record.inhole.RecordCJFragment;
+import com.cj.record.fragment.record.inhole.RecordGCSFragment;
+import com.cj.record.fragment.record.inhole.RecordVideoFragment;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
 import com.cj.record.utils.GPSutils;
-import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialEditTextElevation;
 import com.cj.record.views.MaterialEditTextNoEmoji;
-import com.google.gson.Gson;
-import com.j256.ormlite.dao.Dao;
 
 import net.qiujuer.genius.ui.widget.Button;
 
@@ -74,7 +66,7 @@ import butterknife.OnClick;
  * Created by Administrator on 2018/6/5.
  */
 
-public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLinstener {
+public class RecordEditActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.record_beginDepth)
@@ -95,7 +87,6 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
     private RecordBaseFragment recordBaseFragment;
     private RecordLocationFragment locationFragment;
     private RecordMediaFragment mediaFragment;
-    private ObsUtils obsUtils;
     private Hole hole;
     private boolean isEdit;
     private Record record;
@@ -111,44 +102,46 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
 
 
     @Override
-    public void onSubscribe(int type) {
-        switch (type) {
-            case 1:
-                isEdit = getIntent().getBooleanExtra(MainActivity.FROMTYPE, false);
-                hole = (Hole) getIntent().getSerializableExtra(MainActivity.HOLE);
-                if (isEdit) {
-                    //true编辑
-                    record = (Record) getIntent().getSerializableExtra(MainActivity.RECORD);
-                    recordType = record.getType();
-                    // 获取的记录就改成历史记录，关联的gps也关联到历史记录,历史记录要修改状态，重新上传
-                    recordOld = (Record) record.clone();
-                    recordOld.setId(Common.getUUID());
-                    recordOld.setUpdateId(record.getId());
-                    recordOld.setState("1");//到这里，都是说明将要保存这条记录，并打算上传，状态设置为1
-                    gpsOld = GpsDao.getInstance().getGpsByRecord(record.getId());
-                    if (gpsOld != null) {
-                        gpsOld.setRecordID(recordOld.getId());
-                    }
-                } else {
-                    //false添加
-                    recordType = getIntent().getStringExtra(MainActivity.EXTRA_RECORD_TYPE);
-                    record = new Record(RecordEditActivity.this, hole, recordType);
-                    RecordDao.getInstance().addOrUpdate(record);
-                }
-                break;
+    public void initView() {
+        isEdit = getIntent().getBooleanExtra(MainActivity.FROMTYPE, false);
+        hole = (Hole) getIntent().getSerializableExtra(MainActivity.HOLE);
+        if (isEdit) {
+            //true编辑
+            record = (Record) getIntent().getSerializableExtra(MainActivity.RECORD);
+            recordType = record.getType();
+            // 获取的记录就改成历史记录，关联的gps也关联到历史记录,历史记录要修改状态，重新上传
+            recordOld = (Record) record.clone();
+            recordOld.setId(Common.getUUID());
+            recordOld.setUpdateId(record.getId());
+            recordOld.setState("1");//到这里，都是说明将要保存这条记录，并打算上传，状态设置为1
+            gpsOld = GpsDao.getInstance().getGpsByRecord(record.getId());
+            if (gpsOld != null) {
+                gpsOld.setRecordID(recordOld.getId());
+            }
+        } else {
+            //false添加
+            recordType = getIntent().getStringExtra(MainActivity.EXTRA_RECORD_TYPE);
+            record = new Record(RecordEditActivity.this, hole, recordType);
+            RecordDao.getInstance().addOrUpdate(record);
         }
-    }
-
-    @Override
-    public void onComplete(int type) {
-        switch (type) {
-            case 1:
-                initPage(record);
-                break;
-        }
+        initPage(record);
     }
 
     private void initPage(Record record) {
+        toolbar.setTitle("编辑" + recordType);
+        if (recordType.equals(Record.TYPE_SCENE_OPERATEPERSON)) {
+            toolbar.setTitle("编辑司钻员");
+        }
+        if (recordType.equals(Record.TYPE_SCENE_PRINCIPAL)) {
+            toolbar.setTitle("编辑项目负责人");
+        }
+        if (recordType.equals(Record.TYPE_SCENE_TECHNICIAN)) {
+            toolbar.setTitle("编辑项目工程师");
+        }
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setHomeAsUpIndicator(R.mipmap.ic_clear_white_24dp);
+        ab.setDisplayHomeAsUpEnabled(true);
         //加载定位测模块
         initLocationFragment(hole);
         //加载媒体的模块
@@ -177,17 +170,17 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         } else if (recordType.equals(Record.TYPE_SCENE)) {
             setRecordEditBaseFragment(new RecordEditRemarkFragment());
         } else if (recordType.equals(Record.TYPE_SCENE_OPERATEPERSON)) {//机长
-            setRecordEditBaseFragment(new RecordOperatePersionFragment());
+            setRecordEditBaseFragment(new RecordJZFragment());
         } else if (recordType.equals(Record.TYPE_SCENE_OPERATECODE)) {//编号
-            setRecordEditBaseFragment(new RecordOperateCodeFragment());
+            setRecordEditBaseFragment(new RecordZJFragment());
         } else if (recordType.equals(Record.TYPE_SCENE_RECORDPERSON)) {//描述员
-            setRecordEditBaseFragment(new RecordPersonFragment());
+            setRecordEditBaseFragment(new RecordMSYFragment());
         } else if (recordType.equals(Record.TYPE_SCENE_SCENE)) {//场景
-            setRecordEditBaseFragment(new RecordSceneFragment());
+            setRecordEditBaseFragment(new RecordCJFragment());
         } else if (recordType.equals(Record.TYPE_SCENE_PRINCIPAL)) {//负责人
-            setRecordEditBaseFragment(new RecordPrincipalFragment());
+            setRecordEditBaseFragment(new RecordFZRFragment());
         } else if (recordType.equals(Record.TYPE_SCENE_TECHNICIAN)) {//工程师
-            setRecordEditBaseFragment(new RecordTechnicianFragment());
+            setRecordEditBaseFragment(new RecordGCSFragment());
         } else if (recordType.equals(Record.TYPE_SCENE_VIDEO)) {//短视频
             setRecordEditBaseFragment(new RecordVideoFragment());
         }
@@ -271,26 +264,6 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
         ft.commit();
     }
 
-    @Override
-    public void initView() {
-        obsUtils = new ObsUtils();
-        obsUtils.setObsLinstener(this);
-        obsUtils.execute(1);
-        toolbar.setTitle("编辑" + recordType);
-        if (recordType.equals(Record.TYPE_SCENE_OPERATEPERSON)) {
-            toolbar.setTitle("编辑司钻员");
-        }
-        if (recordType.equals(Record.TYPE_SCENE_PRINCIPAL)) {
-            toolbar.setTitle("编辑项目负责人");
-        }
-        if (recordType.equals(Record.TYPE_SCENE_TECHNICIAN)) {
-            toolbar.setTitle("编辑项目工程师");
-        }
-        setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.mipmap.ic_clear_white_24dp);
-        ab.setDisplayHomeAsUpEnabled(true);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -486,6 +459,15 @@ public class RecordEditActivity extends BaseActivity implements ObsUtils.ObsLins
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (isEdit) {
+                                    if (recordType.equals(Record.TYPE_SCENE_OPERATEPERSON)
+                                            || recordType.equals(Record.TYPE_SCENE_OPERATECODE)
+                                            || recordType.equals(Record.TYPE_SCENE_RECORDPERSON)
+                                            || recordType.equals(Record.TYPE_SCENE_SCENE)
+                                            || recordType.equals(Record.TYPE_SCENE_PRINCIPAL)
+                                            || recordType.equals(Record.TYPE_SCENE_TECHNICIAN)
+                                            || recordType.equals(Record.TYPE_SCENE_VIDEO)) {
+                                        record.delete(RecordEditActivity.this);
+                                    }
                                     onBackPressed();
                                 } else {
                                     record.delete(RecordEditActivity.this);

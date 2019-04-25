@@ -25,22 +25,21 @@
         android:background="@color/colorTexthintGrey" />
 
     <com.jpeng.jptabbar.JPTabBar
-        android:id="@+id/main_tabLayout"
+        android:id="@id/main_tabLayout"
         android:layout_width="match_parent"
         android:layout_height="47dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:background="@color/colorWhite"
         android:paddingTop="2dp"
-        app:BadgeColor="@color/colorPrimaryDark"
+        app:BadgeColor="@color/colorPrimary"
         app:BadgeHorizonalMargin="16dp"
         app:BadgePadding="4dp"
         app:BadgeVerticalMargin="6dp"
-        app:TabAnimate="None"
         app:TabIconSize="20dp"
         app:TabMargin="4dp"
         app:TabNormalColor="@color/colorTexthintGrey"
-        app:TabSelectColor="@color/colorPrimaryDark"
+        app:TabSelectColor="@color/colorPrimary"
         app:TabTextSize="12sp" />
 </RelativeLayout>
 

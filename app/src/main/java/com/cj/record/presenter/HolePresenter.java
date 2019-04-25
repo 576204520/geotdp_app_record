@@ -1,8 +1,10 @@
 package com.cj.record.presenter;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 
+import com.cj.record.BuildConfig;
 import com.cj.record.base.App;
 import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.Gps;
@@ -40,8 +42,10 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -98,27 +102,28 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
                 e.onNext(pageBean);
                 e.onComplete();
             }
-        }).subscribe(new Observer<PageBean<Hole>>() {
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<PageBean<Hole>>() {
 
-            @Override
-            public void onSubscribe(Disposable d) {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(PageBean<Hole> pageBean) {
-                mView.onSuccessList(pageBean);
-            }
+                    @Override
+                    public void onNext(PageBean<Hole> pageBean) {
+                        mView.onSuccessList(pageBean);
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                mView.onError(e);
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.onError(e);
+                    }
 
-            @Override
-            public void onComplete() {
-            }
-        });
+                    @Override
+                    public void onComplete() {
+                    }
+                });
     }
 
     @Override
@@ -135,30 +140,31 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
                 e.onNext("");
                 e.onComplete();
             }
-        }).subscribe(new Observer<String>() {
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
 
-            @Override
-            public void onSubscribe(Disposable d) {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(String s) {
-                mView.hideLoading();
-            }
+                    @Override
+                    public void onNext(String s) {
+                        mView.hideLoading();
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                mView.onError(e);
-                mView.hideLoading();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.onError(e);
+                        mView.hideLoading();
+                    }
 
-            @Override
-            public void onComplete() {
-                mView.hideLoading();
-                mView.onSuccessDelete();
-            }
-        });
+                    @Override
+                    public void onComplete() {
+                        mView.hideLoading();
+                        mView.onSuccessDelete();
+                    }
+                });
     }
 
     @Override
@@ -238,8 +244,8 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
         if (!isViewAttached()) {
             return;
         }
+        mView.showLoading();
         for (LocalUser localUser : localUserList) {
-            mView.showLoading();
             model.downLoadHole(App.userID, localUser.getId(), verCode)
                     .compose(RxScheduler.<BaseObjectBean<String>>Flo_io_main())
                     .as(mView.<BaseObjectBean<String>>bindAutoDispose())
@@ -348,29 +354,30 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
                 e.onNext(RecordDao.getInstance().getSceneRecord(holeID));
                 e.onComplete();
             }
-        }).subscribe(new Observer<List<Record>>() {
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Record>>() {
 
-            @Override
-            public void onSubscribe(Disposable d) {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(List<Record> recordList) {
-                mView.onSuccessGetScene(recordList);
-            }
+                    @Override
+                    public void onNext(List<Record> recordList) {
+                        mView.onSuccessGetScene(recordList);
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                mView.onError(e);
-                mView.hideLoading();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.onError(e);
+                        mView.hideLoading();
+                    }
 
-            @Override
-            public void onComplete() {
-                mView.hideLoading();
-            }
-        });
+                    @Override
+                    public void onComplete() {
+                        mView.hideLoading();
+                    }
+                });
     }
 
 
@@ -427,10 +434,10 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
          */
         if ("1".equals(uploadHole.getState())) {
             //上传企业平台要提交的数据
-            Map<String, RequestBody> params = new ConcurrentHashMap<>();
+            ConcurrentHashMap<String, String> params = new ConcurrentHashMap<>();
             //添加hole到表单
             params.putAll(uploadHole.getNameValuePairMap(project.getSerialNumber()));
-
+            //url
             String strParams = "/" + project.getSerialNumber();
             //所有的gps的集合
             List<Gps> resultGpsList = new LinkedList<>();
@@ -445,6 +452,7 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
                     }
                 }
             }
+            //所有媒体数据
             if (realMediaList != null && realMediaList.size() > 0) {
                 //添加media数据到表单
                 params.putAll(Media.getMap(realMediaList, project.getSerialNumber()));
@@ -453,29 +461,37 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
                     Gps gps = GpsDao.getInstance().getGpsByMedia(media.getId());
                     resultGpsList.add(gps);
                 }
-                strParams += "-file";
-            } else {
-                strParams += "-noFile";
             }
             //所有的gps数据
             if (resultGpsList != null && resultGpsList.size() > 0) {
                 params.putAll(Gps.getMap(resultGpsList, project.getSerialNumber()));
             }
-            //file
+
+            RequestBody requestBody;
+            //media file
             if (realMediaList != null && realMediaList.size() > 0) {
+                MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+                //map数据添加到builder中
+                builder = RxPartMapUtils.addTextPart(builder, params);
                 for (Media media : realMediaList) {
                     File file = new File(media.getLocalPath());
                     if (file.isDirectory()) {
                         File video = new File(Common.getVideoByDir(media.getLocalPath()));
-                        params.put("file\"; filename=\"" + media.getId() + ".mp4", RxPartMapUtils.toRequestBodyOfImage(video));
+                        builder = RxPartMapUtils.addFilePart(builder, media.getId() + ".mp4", video);
                     } else {
-                        params.put("file\"; filename=\"" + media.getId() + ".jpg", RxPartMapUtils.toRequestBodyOfImage(file));
+                        builder = RxPartMapUtils.addFilePart(builder, media.getId() + ".jpg", file);
                     }
                 }
+                requestBody = builder.build();
+                //url
+                strParams += "-file";
+            } else {
+                strParams += "-noFile";
+                requestBody = RxPartMapUtils.getRequestBody(params);
             }
-            //url
+            //最终url
             strParams += "?verCode=" + UpdateUtil.getVerCode(context) + "&userID=" + App.userID + "&relateID=" + uploadHole.getRelateID();
-            upload_company = RetrofitClient.getInstance().getApi().uploadHole(RetrofitClient.UPLOAD_HOLE + strParams, params);
+            upload_company = RetrofitClient.getInstance().getApi().uploadHole(BuildConfig.URL + "geotdp/hole/uploadNew" + strParams, requestBody);
         }
         /**
          * 上传规委的数据
@@ -484,7 +500,7 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
             //修改projectID为序列号
             Hole uploadHoleZF = (Hole) uploadHole.clone();
             uploadHoleZF.setProjectID(project.getSerialNumber());
-            uploadHoleZF.setSecretKey(Urls.C_KEY);
+            uploadHoleZF.setSecretKey(BuildConfig.SECRET_KEY);
             uploadHoleZF.setRelateID(uploadHole.getUploadID());
 
             if (recordList != null && recordList.size() > 0) {
@@ -517,7 +533,7 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
                                 } else {
                                     suffix = ".jpg";
                                 }
-                                media.setInternetPath(RetrofitClient.baseUrl + "upload/" + project.getCompanyID() + "/" + project.getProjectID() + "/db/" + media.getId() + suffix);
+                                media.setInternetPath(BuildConfig.URL + "upload/" + project.getCompanyID() + "/" + project.getProjectID() + "/db/" + media.getId() + suffix);
                             }
                         }
                         record.setMediaListStr(mediaList);
@@ -528,7 +544,7 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
             String uploadHoleJson = JsonUtils.getInstance().toJson(uploadHoleZF);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), uploadHoleJson);
 
-            upload_gw = RetrofitClient.getInstance().getApi().uploadHoleGW(RetrofitClient.UPLOAD_HOLE_GW, requestBody);
+            upload_gw = RetrofitClient.getInstance().getApi().uploadHoleGW(BuildConfig.UPLOAD_GW, requestBody);
         }
 
         if (upload_company != null && upload_gw != null) {

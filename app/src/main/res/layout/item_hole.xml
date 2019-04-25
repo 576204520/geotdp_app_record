@@ -114,15 +114,17 @@
                     android:textSize="12sp" />
             </LinearLayout>
 
+
             <TextView
                 android:id="@+id/hole_createTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:layout_marginTop="6dp"
                 android:lines="1"
                 android:singleLine="true"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/hole_updateTime"
                 android:layout_width="wrap_content"
@@ -131,6 +133,7 @@
                 android:lines="1"
                 android:singleLine="true"
                 android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/hole_mapTime"
                 android:layout_width="wrap_content"
@@ -139,6 +142,7 @@
                 android:lines="1"
                 android:singleLine="true"
                 android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/hole_getData"
                 android:layout_width="wrap_content"
@@ -146,8 +150,8 @@
                 android:layout_marginTop="6dp"
                 android:lines="1"
                 android:singleLine="true"
-                android:textColor="@color/colorPrimary"
                 android:text="获取的数据"
+                android:textColor="@color/colorPrimary"
                 android:textSize="12sp" />
 
         </LinearLayout>
@@ -187,7 +191,7 @@
                 android:background="@color/colorPrimary"
                 android:drawableTop="@mipmap/ai_icon_edit"
                 android:paddingTop="6dp"
-                android:text="编辑"
+                android:text="编辑/关联"
                 android:textColor="@color/colorWhite"
                 android:textSize="10sp"
                 app:gTouchEffect="ease" />
@@ -239,7 +243,7 @@
                 android:drawableTop="@mipmap/ai_icon_upload"
                 android:padding="4dp"
                 android:paddingTop="6dp"
-                android:text="关联/上传"
+                android:text="上传"
                 android:textColor="@color/colorWhite"
                 android:textSize="10sp"
                 app:gTouchEffect="ease" />

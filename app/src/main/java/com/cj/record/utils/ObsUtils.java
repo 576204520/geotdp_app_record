@@ -8,7 +8,9 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2018/6/5.
@@ -24,26 +26,27 @@ public class ObsUtils {
                 e.onNext("");
                 e.onComplete();
             }
-        }).subscribe(new Observer<String>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-            }
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
 
-            @Override
-            public void onNext(String s) {
+                    @Override
+                    public void onNext(String s) {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-            }
+                    }
 
-            @Override
-            public void onComplete() {
-                obsLinstener.onComplete(type);
-            }
-        });
+                    @Override
+                    public void onComplete() {
+                        obsLinstener.onComplete(type);
+                    }
+                });
     }
 
     private ObsLinstener obsLinstener;

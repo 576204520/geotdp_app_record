@@ -276,47 +276,6 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
     }
 
 
-    public void addOrUpdate(Hole hole, LocalUser localUser) {
-        hole.setProjectID(project.getId());
-        //下载的勘探点都是未关联、已经定位的不需要重新定位、
-        if (hole.getMapLatitude() != null && hole.getMapLongitude() != null) {
-            hole.setLocationState("1");
-        } else {
-            hole.setLocationState("0");//可能获取没有定位信息的钻孔需要定位
-        }
-        hole.setRelateID("");
-        hole.setRelateCode("");
-        hole.setIsDelete("0");
-        HoleDao.getInstance().addOrUpdate(hole);
-        List<Record> recordList = hole.getRecordList();
-        if (recordList != null && recordList.size() > 0) {
-            for (Record record : recordList) {
-                //同勘探点，要判断是否存在
-                if (!localUser.getDeptID().equals(App.userID)) {
-                    record.setId(Common.getUUID());
-                }
-                record.setProjectID(project.getId());
-                record.setHoleID(hole.getId());
-                record.setState("1");
-                record.setIsDelete("0");
-                record.setUpdateId(record.getUpdateId() == null ? "" : record.getUpdateId());//这里有历史记录，不能情况updateID
-                RecordDao.getInstance().addOrUpdate(record);
-                List<Gps> gpsList = record.getGpsList();
-                if (gpsList != null && gpsList.size() > 0) {
-                    for (Gps gps : gpsList) {
-                        if (!localUser.getDeptID().equals(App.userID)) {
-                            gps.setId(Common.getUUID());
-                        }
-                        gps.setProjectID(project.getId());
-                        gps.setHoleID(hole.getId());
-                        gps.setRecordID(record.getId());
-                        GpsDao.getInstance().addOrUpdate(gps);
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public void detailClick(int position) {
         Hole hole = dataList.get(position);
@@ -345,21 +304,21 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
     public void recordListClick(int position) {
         final Hole hole = dataList.get(position);
         if (TextUtils.isEmpty(hole.getMapLatitude()) || TextUtils.isEmpty(hole.getMapLongitude())) {
-            showMsgDialog(hole, "勘探点未定位,是否编辑勘察点，进行定位操作");
+            showMsgDialog(hole, getString(R.string.hole_edit_no_location_hint));
             return;
         }
         //查看信息是否编录完整
         int complete;
-        if ("探井".equals(hole.getType())) {
+        if (Hole.TYPE_TJ.equals(hole.getType())) {
             complete = RecordDao.getInstance().checkTJ(hole.getId());
             if (complete < 2) {
-                showMsgDialog(hole, "勘探点数据不完整，请完善（描述员、场景）记录");
+                showMsgDialog(hole, getString(R.string.hole_edit_save_hint2));
                 return;
             }
         } else {
             complete = RecordDao.getInstance().checkZK(hole.getId());
             if (complete < 4) {
-                showMsgDialog(hole, "勘探点数据不完整，请完善（司钻员、钻机、描述员、场景）记录");
+                showMsgDialog(hole, getString(R.string.hole_edit_save_hint4));
                 return;
             }
         }
@@ -480,7 +439,22 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
                     .show();
             return;
         }
-        if (uploadHole.getNotUploadCount() > 0) {
+        boolean uploaded;
+        if (!TextUtils.isEmpty(project.getProjectID()) && project.isUpload()) {
+            if ("2".equals(uploadHole.getState()) && "2".equals(uploadHole.getStateGW())) {
+                uploaded = true;
+            } else {
+                uploaded = false;
+            }
+        } else {
+            if ("2".equals(uploadHole.getState())) {
+                uploaded = true;
+            } else {
+                uploaded = false;
+            }
+        }
+        //uploadHole.getNotUploadCount()没有包含hole本身,所有判断hole本身是否上传
+        if (!uploaded) {
             //上传操作,先校验用户信息
             mPresenter.checkUser(project.getProjectID(), App.userID, jzTestType, uploadHole.getType(), UpdateUtil.getVerCode(this) + "");
         } else {
@@ -673,7 +647,7 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
             StringBuffer sb = new StringBuffer();
             sb.append("(");
             for (Hole hole : noRelateList) {
-                sb.append(hole.getRelateCode());
+                sb.append(hole.getCode());
                 sb.append("、");
             }
             if (sb.length() > 0) {
@@ -696,6 +670,47 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
             hole.setId(Common.getUUID());
             addOrUpdate(hole, localUser);
             onRefresh();
+        }
+    }
+
+    public void addOrUpdate(Hole hole, LocalUser localUser) {
+        hole.setProjectID(project.getId());
+        //下载的勘探点都是未关联、已经定位的不需要重新定位、
+        if (hole.getMapLatitude() != null && hole.getMapLongitude() != null) {
+            hole.setLocationState("1");
+        } else {
+            hole.setLocationState("0");//可能获取没有定位信息的钻孔需要定位
+        }
+        hole.setRelateID("");
+        hole.setRelateCode("");
+        hole.setIsDelete("0");
+        HoleDao.getInstance().addOrUpdate(hole);
+        List<Record> recordList = hole.getRecordList();
+        if (recordList != null && recordList.size() > 0) {
+            for (Record record : recordList) {
+                //同勘探点，要判断是否存在
+                if (!localUser.getDeptID().equals(App.userID)) {
+                    record.setId(Common.getUUID());
+                }
+                record.setProjectID(project.getId());
+                record.setHoleID(hole.getId());
+                record.setState("1");
+                record.setIsDelete("0");
+                record.setUpdateId(record.getUpdateId() == null ? "" : record.getUpdateId());//这里有历史记录，不能情况updateID
+                RecordDao.getInstance().addOrUpdate(record);
+                List<Gps> gpsList = record.getGpsList();
+                if (gpsList != null && gpsList.size() > 0) {
+                    for (Gps gps : gpsList) {
+                        if (!localUser.getDeptID().equals(App.userID)) {
+                            gps.setId(Common.getUUID());
+                        }
+                        gps.setProjectID(project.getId());
+                        gps.setHoleID(hole.getId());
+                        gps.setRecordID(record.getId());
+                        GpsDao.getInstance().addOrUpdate(gps);
+                    }
+                }
+            }
         }
     }
 

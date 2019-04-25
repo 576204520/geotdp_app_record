@@ -81,6 +81,7 @@ public class MainActivity extends BaseMvpActivity<UserPresenter> implements User
         mPresenter.initDB(this);
     }
 
+
     @Override
     public void onBackPressed() {
         finishDialog();
@@ -174,7 +175,10 @@ public class MainActivity extends BaseMvpActivity<UserPresenter> implements User
                 .setNormalIcons(R.mipmap.label_home_n, R.mipmap.label_friends_n, R.mipmap.label_my_n)
                 .setSelectedIcons(R.mipmap.label_home_s, R.mipmap.label_friends_s, R.mipmap.label_my_s)
                 .generate();
-        tabLayout.setIconSize(19);
+        tabLayout.setIconSize(21);
+        tabLayout.setSelectedColor(getResources().getColor(R.color.colorPrimary));
+        tabLayout.setNormalColor(getResources().getColor(R.color.colorTexthintGrey));
+        tabLayout.setTabTextSize(9);
         tabLayout.setContainer(viewPager);
     }
 
