@@ -53,7 +53,7 @@ public interface UserContract {
          * @param username
          * @param password
          */
-        void login(Context context, String username, String password);
+        void login(String username, String password);
 
         /**
          * 检查版本更新
@@ -61,7 +61,7 @@ public interface UserContract {
          * @param userID
          * @param verCode
          */
-        void versionCheck(Context context, String userID, String verCode);
+        void versionCheck(String userID, String verCode);
 
         /**
          * 修改用户信息
@@ -71,7 +71,7 @@ public interface UserContract {
          * @param idCard
          * @param certificateNumber3
          */
-        void updateInfo(Context context, String userID, String email, String idCard, String certificateNumber3);
+        void updateInfo(String userID, String email, String idCard, String certificateNumber3);
 
         /**
          * 修改密码
@@ -82,7 +82,7 @@ public interface UserContract {
          * @param newPassword
          * @param newPassword2
          */
-        void resetPassword(Context context, String userID, String email, String oldPassword, String newPassword, String newPassword2);
+        void resetPassword(String userID, String email, String oldPassword, String newPassword, String newPassword2);
 
         /**
          * 校验机长信息
@@ -91,7 +91,7 @@ public interface UserContract {
          * @param operatePerson
          * @param testType
          */
-        void checkOperate(Context context, String userID, String operatePerson, String testType);
+        void checkOperate(String userID, String operatePerson, String testType);
 
         void initDB(Context context);
     }

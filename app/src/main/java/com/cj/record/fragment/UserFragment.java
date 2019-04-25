@@ -105,7 +105,7 @@ public class UserFragment extends BaseMvpFragment<UserPresenter> implements User
                 break;
             case R.id.user_update:
                 //检查版本
-                mPresenter.versionCheck(mActivity, App.userID, UpdateUtil.getVerCode(mActivity) + "");
+                mPresenter.versionCheck(App.userID, UpdateUtil.getVerCode(mActivity) + "");
                 break;
             case R.id.user_about:
                 startActivity(new Intent(mActivity, AboutActivity.class));

@@ -104,7 +104,7 @@ public class RecordJZFragment extends RecordBaseFragment<UserPresenter> implemen
         if (!validator()) {
             return;
         }
-        mPresenter.checkOperate(mActivity, userID, operatepersonName.getText().toString().trim(), operatepersonCode.getText().toString().trim());
+        mPresenter.checkOperate(userID, operatepersonName.getText().toString().trim(), operatepersonCode.getText().toString().trim());
     }
 
     @Override

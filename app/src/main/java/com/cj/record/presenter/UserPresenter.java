@@ -41,11 +41,7 @@ public class UserPresenter extends BasePresenter<UserContract.View> implements U
     }
 
     @Override
-    public void login(Context context, String email, String password) {
-        //检查网络
-        if (!NetUtil.haveNet(context)) {
-            return;
-        }
+    public void login(String email, String password) {
         //View是否绑定 如果没有绑定，就不执行网络请求
         if (!isViewAttached()) {
             return;
@@ -70,11 +66,7 @@ public class UserPresenter extends BasePresenter<UserContract.View> implements U
     }
 
     @Override
-    public void versionCheck(Context context, String userID, String verCode) {
-        //检查网络
-        if (!NetUtil.haveNet(context)) {
-            return;
-        }
+    public void versionCheck(String userID, String verCode) {
         //View是否绑定 如果没有绑定，就不执行网络请求
         if (!isViewAttached()) {
             return;
@@ -96,11 +88,7 @@ public class UserPresenter extends BasePresenter<UserContract.View> implements U
     }
 
     @Override
-    public void updateInfo(Context context, String userID, String email, String idCard, String certificateNumber3) {
-        //检查网络
-        if (!NetUtil.haveNet(context)) {
-            return;
-        }
+    public void updateInfo(String userID, String email, String idCard, String certificateNumber3) {
         //View是否绑定 如果没有绑定，就不执行网络请求
         if (!isViewAttached()) {
             return;
@@ -125,11 +113,7 @@ public class UserPresenter extends BasePresenter<UserContract.View> implements U
     }
 
     @Override
-    public void resetPassword(Context context, String userID, String email, String oldPassword, String newPassword, String newPassword2) {
-        //检查网络
-        if (!NetUtil.haveNet(context)) {
-            return;
-        }
+    public void resetPassword(String userID, String email, String oldPassword, String newPassword, String newPassword2) {
         //View是否绑定 如果没有绑定，就不执行网络请求
         if (!isViewAttached()) {
             return;
@@ -154,11 +138,7 @@ public class UserPresenter extends BasePresenter<UserContract.View> implements U
     }
 
     @Override
-    public void checkOperate(Context context, String userID, String operatePerson, String testType) {
-        //检查网络
-        if (!NetUtil.haveNet(context)) {
-            return;
-        }
+    public void checkOperate(String userID, String operatePerson, String testType) {
         //View是否绑定 如果没有绑定，就不执行网络请求
         if (!isViewAttached()) {
             return;

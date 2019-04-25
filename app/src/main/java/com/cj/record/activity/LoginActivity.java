@@ -79,7 +79,7 @@ public class LoginActivity extends BaseMvpActivity<UserPresenter> implements Use
                     ToastUtil.showToastS(this, getString(R.string.user_hint_password));
                     return;
                 }
-                mPresenter.login(this, email, MD5Utils.MD5(password));
+                mPresenter.login(email, MD5Utils.MD5(password));
                 break;
         }
     }

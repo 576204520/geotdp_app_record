@@ -106,7 +106,7 @@ public class UpdateInfoActivity extends BaseMvpActivity<UserPresenter> implement
             ToastUtil.showToastS(this, getString(R.string.user_update_info_no_msyid));
             return;
         }
-        mPresenter.updateInfo(UpdateInfoActivity.this,userID, email, idCard, certificateNumber3);
+        mPresenter.updateInfo(userID, email, idCard, certificateNumber3);
     }
 
     private void showUpdateDialog(TextView tv, String title, String msg, int intputType) {

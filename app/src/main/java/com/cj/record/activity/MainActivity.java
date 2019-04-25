@@ -76,7 +76,7 @@ public class MainActivity extends BaseMvpActivity<UserPresenter> implements User
         mPresenter = new UserPresenter();
         mPresenter.attachView(this);
         //检查版本
-        mPresenter.versionCheck(MainActivity.this, App.userID, UpdateUtil.getVerCode(MainActivity.this) + "");
+        mPresenter.versionCheck(App.userID, UpdateUtil.getVerCode(MainActivity.this) + "");
         //初始化数据库
         mPresenter.initDB(this);
     }

@@ -95,7 +95,7 @@ public class UpdatePwdActivity extends BaseMvpActivity<UserPresenter> implements
             ToastUtil.showToastS(this, getString(R.string.user_update_pwd_p5));
             return;
         }
-        mPresenter.resetPassword(UpdatePwdActivity.this, userID, email, oldPassword, newPassword, newPassword2);
+        mPresenter.resetPassword(userID, email, oldPassword, newPassword, newPassword2);
     }
 
 
