@@ -170,6 +170,9 @@ public class Common {
                     public void onClick(DialogInterface dialog, int which) {
                         //更新
                         activity.startService(new Intent(activity, DownloadService.class));
+                        if (isMust) {
+                            activity.finish();
+                        }
                     }
                 });
         builder.setPositiveButton(R.string.record_camera_cancel_dialog_no, new DialogInterface.OnClickListener() {

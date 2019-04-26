@@ -509,6 +509,9 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
                     record.setIds(record.getId());
                     //title这个字段没用，清空
                     record.setTitle("");
+                    if ("".equals(record.getUpdateId())) {
+                        record.setUpdateId(null);
+                    }
                     record.setProjectID(project.getProjectID());
                     List<Gps> gpsList = GpsDao.getInstance().getListGpsByRecord(record.getId());//
                     if (gpsList != null && gpsList.size() > 0) {
