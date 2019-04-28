@@ -132,7 +132,7 @@ public class RecordMediaFragment extends BaseFragment implements MediaAdapter.On
 
     private void getMediaList() {
         photoPathList.clear();
-        List<Media> list = MediaDao.getInstance().getMediaListByRecordID2(record.getId());
+        List<Media> list = MediaDao.getInstance().getMediaListByRecordID(record.getId());
         if (list != null && list.size() > 0) {
             for (Media media : list) {
                 if (media.getLocalPath().endsWith("jpg")) {

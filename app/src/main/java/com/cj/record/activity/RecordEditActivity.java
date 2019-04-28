@@ -353,7 +353,7 @@ public class RecordEditActivity extends BaseActivity {
                 if (recordList != null && recordList.size() > 0) {
                     int photoSize = 0;
                     for (Record record : recordList) {
-                        List<Media> list = MediaDao.getInstance().getMediaListByRecordID2(record.getId());
+                        List<Media> list = MediaDao.getInstance().getMediaListByRecordID(record.getId());
                         if (list != null && list.size() > 0) {
                             for (Media media : list) {
                                 if (media.getLocalPath().endsWith("jpg")) {

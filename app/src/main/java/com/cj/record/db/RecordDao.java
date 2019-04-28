@@ -58,23 +58,30 @@ public class RecordDao extends BaseDAO<Record> {
     public List<Record> getNotUploadListByHoleID(String holeID) {
         List<Record> list = new ArrayList<Record>();
         try {
-            QueryBuilder<Record, String> qb = instance.getDAO().queryBuilder();
-            qb.where().eq("holeID", holeID)
-                    .and().eq("state", "1")
-                    .and().ne("type", Record.TYPE_SCENE_OPERATEPERSON)
-                    .and().ne("type", Record.TYPE_SCENE_OPERATECODE)
-                    .and().ne("type", Record.TYPE_SCENE_RECORDPERSON)
-                    .and().ne("type", Record.TYPE_SCENE_SCENE)
-                    .and().ne("type", Record.TYPE_SCENE_PRINCIPAL)
-                    .and().ne("type", Record.TYPE_SCENE_TECHNICIAN)
-                    .and().ne("type", Record.TYPE_SCENE_VIDEO);
-            qb.orderBy("createTime", true);
-            list = qb.query();
+            QueryBuilder<Record, String> queryBuilder = instance.getDAO().queryBuilder();
+            Where where = queryBuilder.where();
+            where.and(
+                    where.eq("holeID", holeID),
+                    where.eq("state", "1"),
+                    where.or(
+                            where.eq("type", Record.TYPE_FREQUENCY),
+                            where.eq("type", Record.TYPE_LAYER),
+                            where.eq("type", Record.TYPE_GET_EARTH),
+                            where.eq("type", Record.TYPE_GET_WATER),
+                            where.eq("type", Record.TYPE_DPT),
+                            where.eq("type", Record.TYPE_SPT),
+                            where.eq("type", Record.TYPE_WATER),
+                            where.eq("type", Record.TYPE_SCENE)
+                    )
+            );
+            queryBuilder.orderBy("createTime", true);
+            list = queryBuilder.query();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
     }
+
 
     /**
      * 获取一个勘探点下所有所有未上传的记录 场景的
@@ -86,20 +93,28 @@ public class RecordDao extends BaseDAO<Record> {
     public List<Record> getNotUploadListByHoleIDScene(String holeID) {
         List<Record> list = new ArrayList<Record>();
         try {
-            QueryBuilder<Record, String> qb = instance.getDAO().queryBuilder();
-            qb.where().eq("holeID", holeID)
-                    .and().eq("state", "1")
-                    .and().eq("updateID", "")
-                    .and().ne("type", Record.TYPE_FREQUENCY)
-                    .and().ne("type", Record.TYPE_LAYER)
-                    .and().ne("type", Record.TYPE_GET_EARTH)
-                    .and().ne("type", Record.TYPE_GET_WATER)
-                    .and().ne("type", Record.TYPE_DPT)
-                    .and().ne("type", Record.TYPE_SPT)
-                    .and().ne("type", Record.TYPE_WATER)
-                    .and().ne("type", Record.TYPE_SCENE);
-            qb.orderBy("createTime", true);
-            list = qb.query();
+            QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
+            Where where = queryBuilder.where();
+
+            where.and(
+                    where.eq("holeID", holeID),
+                    where.eq("state", "1"),
+                    where.or(
+                            where.eq("updateID", ""),
+                            where.isNull("updateID")
+                    ),
+                    where.or(
+                            where.eq("type", Record.TYPE_SCENE_OPERATEPERSON),
+                            where.eq("type", Record.TYPE_SCENE_OPERATECODE),
+                            where.eq("type", Record.TYPE_SCENE_RECORDPERSON),
+                            where.eq("type", Record.TYPE_SCENE_SCENE),
+                            where.eq("type", Record.TYPE_SCENE_PRINCIPAL),
+                            where.eq("type", Record.TYPE_SCENE_TECHNICIAN),
+                            where.eq("type", Record.TYPE_SCENE_VIDEO)
+                    )
+            );
+            queryBuilder.orderBy("createTime", true);
+            list = queryBuilder.query();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,33 +131,123 @@ public class RecordDao extends BaseDAO<Record> {
     public Map<Integer, Integer> getSortCountMap(String holeID) {
         Map<Integer, Integer> countMap = new HashMap<Integer, Integer>();
         try {
-            QueryBuilder<Record, String> qb = instance.getDAO().queryBuilder();
-            qb.where().eq("holeID", holeID).and().eq("updateID", "").and().ne("state", "0").and().ne("type", Record.TYPE_SCENE_OPERATEPERSON).and().ne("type", Record.TYPE_SCENE_OPERATECODE).and().ne("type", Record.TYPE_SCENE_RECORDPERSON).and().ne("type", Record.TYPE_SCENE_SCENE).and().ne("type", Record.TYPE_SCENE_PRINCIPAL).and().ne("type", Record.TYPE_SCENE_TECHNICIAN).and().ne("type", Record.TYPE_SCENE_VIDEO);
-            countMap.put(1, qb.query().size());
-            qb.reset();
-            qb.where().eq("holeID", holeID).and().eq("updateID", "").and().eq("type", Record.TYPE_FREQUENCY).and().ne("state", "0");
-            countMap.put(2, qb.query().size());
-            qb.reset();
-            qb.where().eq("holeID", holeID).and().eq("updateID", "").and().eq("type", Record.TYPE_LAYER).and().ne("state", "0");
-            countMap.put(3, qb.query().size());
-            qb.reset();
-            qb.where().eq("holeID", holeID).and().eq("updateID", "").and().eq("type", Record.TYPE_WATER).and().ne("state", "0");
-            countMap.put(4, qb.query().size());
-            qb.reset();
-            qb.where().eq("holeID", holeID).and().eq("updateID", "").and().eq("type", Record.TYPE_DPT).and().ne("state", "0");
-            countMap.put(5, qb.query().size());
-            qb.reset();
-            qb.where().eq("holeID", holeID).and().eq("updateID", "").and().eq("type", Record.TYPE_SPT).and().ne("state", "0");
-            countMap.put(6, qb.query().size());
-            qb.reset();
-            qb.where().eq("holeID", holeID).and().eq("updateID", "").and().eq("type", Record.TYPE_GET_EARTH).and().ne("state", "0");
-            countMap.put(7, qb.query().size());
-            qb.reset();
-            qb.where().eq("holeID", holeID).and().eq("updateID", "").and().eq("type", Record.TYPE_GET_WATER).and().ne("state", "0");
-            countMap.put(8, qb.query().size());
-            qb.reset();
-            qb.where().eq("holeID", holeID).and().eq("updateID", "").and().eq("type", Record.TYPE_SCENE).and().ne("state", "0");
-            countMap.put(9, qb.query().size());
+            QueryBuilder<Record, String> queryBuilder = instance.getDAO().queryBuilder();
+            Where where1 = queryBuilder.where();
+            where1.and(
+                    where1.eq("holeID", holeID),
+                    where1.or(
+                            where1.eq("updateID", ""),
+                            where1.isNull("updateID")
+                    ),
+                    where1.or(
+                            where1.eq("type", Record.TYPE_FREQUENCY),
+                            where1.eq("type", Record.TYPE_LAYER),
+                            where1.eq("type", Record.TYPE_GET_EARTH),
+                            where1.eq("type", Record.TYPE_GET_WATER),
+                            where1.eq("type", Record.TYPE_DPT),
+                            where1.eq("type", Record.TYPE_SPT),
+                            where1.eq("type", Record.TYPE_WATER),
+                            where1.eq("type", Record.TYPE_SCENE)
+                    )
+            );
+            countMap.put(1, where1.query().size());
+
+            queryBuilder.reset();
+            Where where2 = queryBuilder.where();
+            where2.and(
+                    where2.eq("holeID", holeID),
+                    where2.or(
+                            where2.eq("updateID", ""),
+                            where2.isNull("updateID")
+                    ),
+                    where2.eq("type", Record.TYPE_FREQUENCY)
+            );
+            countMap.put(2, where2.query().size());
+
+            queryBuilder.reset();
+            Where where3 = queryBuilder.where();
+            where3.and(
+                    where3.eq("holeID", holeID),
+                    where3.or(
+                            where3.eq("updateID", ""),
+                            where3.isNull("updateID")
+                    ),
+                    where3.eq("type", Record.TYPE_LAYER)
+            );
+            countMap.put(3, where3.query().size());
+
+            queryBuilder.reset();
+            Where where4 = queryBuilder.where();
+            where4.and(
+                    where4.eq("holeID", holeID),
+                    where4.or(
+                            where4.eq("updateID", ""),
+                            where4.isNull("updateID")
+                    ),
+                    where4.eq("type", Record.TYPE_WATER)
+            );
+            countMap.put(4, where4.query().size());
+
+            queryBuilder.reset();
+            Where where5 = queryBuilder.where();
+
+            where5.and(
+                    where5.eq("holeID", holeID),
+                    where5.or(
+                            where5.eq("updateID", ""),
+                            where5.isNull("updateID")
+                    ),
+                    where5.eq("type", Record.TYPE_DPT)
+            );
+            countMap.put(5, where5.query().size());
+
+            queryBuilder.reset();
+            Where where6 = queryBuilder.where();
+            where6.and(
+                    where6.eq("holeID", holeID),
+                    where6.or(
+                            where6.eq("updateID", ""),
+                            where6.isNull("updateID")
+                    ),
+                    where6.eq("type", Record.TYPE_SPT)
+            );
+            countMap.put(6, where6.query().size());
+
+            queryBuilder.reset();
+            Where where7 = queryBuilder.where();
+            where7.and(
+                    where7.eq("holeID", holeID),
+                    where7.or(
+                            where7.eq("updateID", ""),
+                            where7.isNull("updateID")
+                    ),
+                    where7.eq("type", Record.TYPE_GET_EARTH)
+            );
+            countMap.put(7, where7.query().size());
+
+            queryBuilder.reset();
+            Where where8 = queryBuilder.where();
+            where8.and(
+                    where8.eq("holeID", holeID),
+                    where8.or(
+                            where8.eq("updateID", ""),
+                            where8.isNull("updateID")
+                    ),
+                    where8.eq("type", Record.TYPE_GET_WATER)
+            );
+            countMap.put(8, where8.query().size());
+
+            queryBuilder.reset();
+            Where where9 = queryBuilder.where();
+            where9.and(
+                    where9.eq("holeID", holeID),
+                    where9.or(
+                            where9.eq("updateID", ""),
+                            where9.isNull("updateID")
+                    ),
+                    where9.eq("type", Record.TYPE_SCENE)
+            );
+            countMap.put(9, where9.query().size());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -155,11 +260,17 @@ public class RecordDao extends BaseDAO<Record> {
      */
     public Record getRecordByType(String holeID, String type) {
         try {
-            return instance.getDAO().queryBuilder()
-                    .where().eq("holeID", holeID)
-                    .and().eq("type", type)
-                    .and().eq("updateID", "")
-                    .queryForFirst();
+            QueryBuilder<Record, String> queryBuilder = instance.getDAO().queryBuilder();
+            Where where = queryBuilder.where();
+            where.and(
+                    where.eq("holeID", holeID),
+                    where.or(
+                            where.eq("updateID", ""),
+                            where.isNull("updateID")
+                    ),
+                    where.eq("type", type)
+            );
+            return queryBuilder.queryForFirst();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -171,11 +282,18 @@ public class RecordDao extends BaseDAO<Record> {
      */
     public List<Record> getRecordListByType(String holeID, String type) {
         try {
-            return instance.getDAO().queryBuilder()
-                    .where().eq("holeID", holeID)
-                    .and().eq("type", type)
-                    .and().eq("updateID", "")
-                    .query();
+            QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
+            Where where = queryBuilder.where();
+            where.and(
+                    where.eq("holeID", holeID),
+                    where.or(
+                            where.eq("updateID", ""),
+                            where.isNull("updateID")
+
+                    ),
+                    where.eq("type", type)
+            );
+            return queryBuilder.query();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -187,17 +305,26 @@ public class RecordDao extends BaseDAO<Record> {
      */
     public List<Record> getSceneRecord(String holeID) {
         try {
-            return instance.getDAO().queryBuilder().where().eq("holeID", holeID)
-                    .and().eq("updateID", "")
-                    .and().ne("type", Record.TYPE_FREQUENCY)
-                    .and().ne("type", Record.TYPE_LAYER)
-                    .and().ne("type", Record.TYPE_GET_EARTH)
-                    .and().ne("type", Record.TYPE_GET_WATER)
-                    .and().ne("type", Record.TYPE_DPT)
-                    .and().ne("type", Record.TYPE_SPT)
-                    .and().ne("type", Record.TYPE_WATER)
-                    .and().ne("type", Record.TYPE_SCENE)
-                    .query();
+            QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
+            Where where = queryBuilder.where();
+            where.and(
+                    where.eq("holeID", holeID),
+                    where.or(
+                            where.eq("updateID", ""),
+                            where.isNull("updateID")
+                    ),
+                    where.or(
+                            where.eq("type", Record.TYPE_SCENE_OPERATEPERSON),
+                            where.eq("type", Record.TYPE_SCENE_OPERATECODE),
+                            where.eq("type", Record.TYPE_SCENE_RECORDPERSON),
+                            where.eq("type", Record.TYPE_SCENE_SCENE),
+                            where.eq("type", Record.TYPE_SCENE_PRINCIPAL),
+                            where.eq("type", Record.TYPE_SCENE_TECHNICIAN),
+                            where.eq("type", Record.TYPE_SCENE_VIDEO)
+                    )
+            );
+
+            return queryBuilder.query();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -299,23 +426,6 @@ public class RecordDao extends BaseDAO<Record> {
     }
 
     /**
-     * 获取项目的所有指定类型的所有记录
-     *
-     * @return
-     */
-    public List<Record> getRecordListByProjectIDAndType(String projectID, String type) {
-        List<Record> list = new ArrayList<>();
-        try {
-            QueryBuilder<Record, String> qb = instance.getDAO().queryBuilder();
-            qb.where().eq("projectID", projectID).and().eq("type", type);
-            list = qb.query();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    /**
      * 根据项目ID、类别，查询所有记录
      * 机长列表
      */
@@ -355,8 +465,14 @@ public class RecordDao extends BaseDAO<Record> {
 
     public List<Record> getCodeMapNew(String holeID, String type) {
         try {
-            QueryBuilder<Record, String> qb = instance.getDAO().queryBuilder().orderBy("updateTime", true);
-            return qb.where().eq("holeID", holeID).and().eq("type", type).and().ne("state", "0").query();
+            QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
+            Where where = queryBuilder.where();
+            where.and(
+                    where.eq("holeID", holeID),
+                    where.eq("type", type)
+            );
+            queryBuilder.orderBy("updateTime", true);
+            return queryBuilder.query();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -378,14 +494,23 @@ public class RecordDao extends BaseDAO<Record> {
         try {
             QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
             Where where = queryBuilder.where();
-            where.eq("holeID", holeID).and().eq("updateID", "").and().ne("state", "0")
-                    .and().ne("type", Record.TYPE_SCENE_OPERATEPERSON)
-                    .and().ne("type", Record.TYPE_SCENE_OPERATECODE)
-                    .and().ne("type", Record.TYPE_SCENE_RECORDPERSON)
-                    .and().ne("type", Record.TYPE_SCENE_SCENE)
-                    .and().ne("type", Record.TYPE_SCENE_PRINCIPAL)
-                    .and().ne("type", Record.TYPE_SCENE_TECHNICIAN)
-                    .and().ne("type", Record.TYPE_SCENE_VIDEO);
+            where.and(
+                    where.eq("holeID", holeID),
+                    where.or(
+                            where.eq("updateID", ""),
+                            where.isNull("updateID")
+                    ),
+                    where.or(
+                            where.eq("type", Record.TYPE_FREQUENCY),
+                            where.eq("type", Record.TYPE_LAYER),
+                            where.eq("type", Record.TYPE_GET_EARTH),
+                            where.eq("type", Record.TYPE_GET_WATER),
+                            where.eq("type", Record.TYPE_DPT),
+                            where.eq("type", Record.TYPE_SPT),
+                            where.eq("type", Record.TYPE_WATER),
+                            where.eq("type", Record.TYPE_SCENE)
+                    )
+            );
             //筛选
             if (!TextUtils.isEmpty(sort)) {
                 where.and().eq("type", sort);
@@ -446,11 +571,12 @@ public class RecordDao extends BaseDAO<Record> {
     public List<Record> getRecordListForJzAndZj(String holeID) {
         try {
             Where<Record, String> where = instance.getDAO().queryBuilder().where();
-            where.eq("holeID", holeID);
-            where.and();
-            where.or(
-                    where.eq("type", Record.TYPE_SCENE_OPERATEPERSON),
-                    where.eq("type", Record.TYPE_SCENE_OPERATECODE)
+            where.and(
+                    where.eq("holeID", holeID),
+                    where.or(
+                            where.eq("type", Record.TYPE_SCENE_OPERATEPERSON),
+                            where.eq("type", Record.TYPE_SCENE_OPERATECODE)
+                    )
             );
             return where.query();
         } catch (SQLException e) {
@@ -467,10 +593,43 @@ public class RecordDao extends BaseDAO<Record> {
      */
     public Record getCurrentDepthByHoleID(String holeID) {
         try {
-            QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
-            queryBuilder.where().eq("updateID", "").and().eq("holeID", holeID).and().ne("state", "0");
+            QueryBuilder<Record, String> queryBuilder = instance.getDAO().queryBuilder();
+            Where where = queryBuilder.where();
+            where.and(
+                    where.eq("holeID", holeID),
+                    where.or(
+                            where.eq("updateID", ""),
+                            where.isNull("updateID")
+                    )
+            );
             queryBuilder.orderBy("endDepth", false);
-            return (Record) queryBuilder.queryForFirst();
+            return queryBuilder.queryForFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 查询某个类别记录最大深度
+     *
+     * @param holeID
+     * @return
+     */
+    public Record getDepthByHoleIDAndType(String holeID, String type) {
+        try {
+            QueryBuilder<Record, String> queryBuilder = instance.getDAO().queryBuilder();
+            Where where = queryBuilder.where();
+            where.and(
+                    where.eq("holeID", holeID),
+                    where.eq("type", type),
+                    where.or(
+                            where.eq("updateID", ""),
+                            where.isNull("updateID")
+                    )
+            );
+            queryBuilder.orderBy("endDepth", false);
+            return queryBuilder.queryForFirst();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -502,13 +502,15 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
             uploadHoleZF.setProjectID(project.getSerialNumber());
             uploadHoleZF.setSecretKey(BuildConfig.SECRET_KEY);
             uploadHoleZF.setRelateID(uploadHole.getUploadID());
-
+            List<Record> usedList = new LinkedList<>();
             if (recordList != null && recordList.size() > 0) {
+                usedList.addAll(recordList);
                 //获取gps,赋值给recordList
-                for (Record record : recordList) {
+                for (Record record : usedList) {
                     record.setIds(record.getId());
                     //title这个字段没用，清空
                     record.setTitle("");
+                    record.setState(null);
                     if ("".equals(record.getUpdateId())) {
                         record.setUpdateId(null);
                     }
@@ -543,7 +545,7 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
                     }
                 }
             }
-            uploadHoleZF.setRecordListStr(recordList);
+            uploadHoleZF.setRecordListStr(usedList);
             String uploadHoleJson = JsonUtils.getInstance().toJson(uploadHoleZF);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), uploadHoleJson);
 

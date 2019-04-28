@@ -8,8 +8,8 @@ android {
         applicationId "com.cj.record"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 53
-        versionName "3.3.3"
+        versionCode 54
+        versionName "3.3.4"
         multiDexEnabled true
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
         ndk {
@@ -22,11 +22,13 @@ android {
             buildConfigField "String", "URL", DEBUG_BASE_URL
             buildConfigField "String", "UPLOAD_GW", DEBUG_UPLOAD_HOLE_GW
             buildConfigField "String", "SECRET_KEY", DEBUG_SECRET_KEY
+            buildConfigField "boolean", "ISDEBUG", "true"
         }
         release {
             buildConfigField "String", "URL", RELEASE_BASE_URL
             buildConfigField "String", "UPLOAD_GW", RELEASE_UPLOAD_HOLE_GW
             buildConfigField "String", "SECRET_KEY", RELEASE_SECRET_KEY
+            buildConfigField "boolean", "ISDEBUG", "false"
             //启用代码混淆
             minifyEnabled true
             //混淆规则配置文件

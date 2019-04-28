@@ -410,7 +410,7 @@ public class Record implements Serializable, Cloneable {
 
             //这三种类型的数据的初始内容,继承上一条的数据
             if (recordType.equals(Record.TYPE_FREQUENCY) || recordType.equals(Record.TYPE_LAYER) || recordType.equals(Record.TYPE_DPT)) {
-                Record previousRecord = getRecord(context, hole.getId(), recordType);
+                Record previousRecord = RecordDao.getInstance().getDepthByHoleIDAndType(hole.getId(),recordType);
                 if (previousRecord != null) {
                     this.beginDepth = previousRecord.getEndDepth();
                     this.description = previousRecord.getDescription();
@@ -449,36 +449,6 @@ public class Record implements Serializable, Cloneable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public Record getRecord(Context context, String holeID, String recordType) {
-        Record record = null;
-        try {
-            GenericRawResults<Record> results = RecordDao.getInstance().getDAO().queryRaw("select id,code,type,updateTime,beginDepth,endDepth,title from record where holeID='" + holeID + "' and updateID='' and state !='0' and type='" + recordType + "' order by endDepth desc limit 0,1", new RawRowMapper<Record>() {
-                @Override
-                public Record mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
-                    Record record = new Record();
-                    record.setId(resultColumns[0]);
-                    record.setCode(resultColumns[1]);
-                    record.setType(resultColumns[2]);
-                    record.setUpdateTime(resultColumns[3]);
-                    record.setBeginDepth(resultColumns[4]);
-                    record.setEndDepth(resultColumns[5]);
-                    record.setTitle(resultColumns[6]);
-//                    record.jieMi();
-                    return record;
-                }
-            });
-            record = results.getFirstResult();
-            if (null != record) {
-                record = RecordDao.getInstance().getDAO().queryForId(record.getId());
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return record;
     }
 
     /**

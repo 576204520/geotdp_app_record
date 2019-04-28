@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amap.api.maps.offlinemap.OfflineMapActivity;
+import com.cj.record.BuildConfig;
 import com.cj.record.R;
 import com.cj.record.activity.AboutActivity;
 import com.cj.record.activity.DictionaryActvity;
@@ -75,6 +76,12 @@ public class UserFragment extends BaseMvpFragment<UserPresenter> implements User
     protected void initView(View view) {
         mPresenter = new UserPresenter();
         mPresenter.attachView(this);
+        //debug模式，显示解密按钮
+        if (BuildConfig.ISDEBUG) {
+            userDecode.setVisibility(View.VISIBLE);
+        } else {
+            userDecode.setVisibility(View.GONE);
+        }
 
         userName.setText((String) SPUtils.get(mActivity, Urls.SPKey.USER_REALNAME, ""));
         userEmail.setText((String) SPUtils.get(mActivity, Urls.SPKey.USER_EMAIL, ""));
@@ -86,7 +93,7 @@ public class UserFragment extends BaseMvpFragment<UserPresenter> implements User
     }
 
 
-    @OnClick({R.id.user_dictionary,R.id.user_help, R.id.user_map, R.id.user_update, R.id.user_about,
+    @OnClick({R.id.user_dictionary, R.id.user_help, R.id.user_map, R.id.user_update, R.id.user_about,
             R.id.user_logout, R.id.user_rl, R.id.user_icon, R.id.user_name,
             R.id.user_email,
             R.id.user_decode})

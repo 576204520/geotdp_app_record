@@ -42,27 +42,6 @@ public class MediaDao extends BaseDAO<Media> {
     }
 
 
-
-    /**
-     * 获取所有未上传的媒体
-     *
-     * @param holeID
-     * @return
-     */
-    public List<Media> getNotUploadListByHoleID(String holeID) {
-        List<Media> list = new ArrayList<Media>();
-        try {
-            QueryBuilder<Media, String> qb = instance.getDAO().queryBuilder();
-            qb.where().eq("holeID", holeID).and().eq("state", "1");
-            qb.orderBy("createTime", true);
-            list = qb.query();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-
     /**
      * 获取某条记录的所有媒体
      *
@@ -73,8 +52,8 @@ public class MediaDao extends BaseDAO<Media> {
         List<Media> list = new ArrayList<Media>();
         try {
             QueryBuilder<Media, String> qb = instance.getDAO().queryBuilder();
-            qb.where().eq("recordID", recordID).and().eq("isDelete", "0");
-            list = qb.query();
+            qb.where().eq("recordID", recordID);
+            list = qb.orderBy("createTime", false).query();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -121,45 +100,9 @@ public class MediaDao extends BaseDAO<Media> {
 
     /**
      * 获取某条记录的媒体数量
-     * 偷懒了
      */
     public int getMediaCountByrdcordID(String recordID) {
         return getMediaListByRecordID(recordID).size();
-    }
-
-    /**
-     * 获取某条记录的所有媒体
-     *
-     * @param recordID
-     * @return
-     */
-    public List<Media> getMediaListByRecordID2(String recordID) {
-        List<Media> list = new ArrayList<Media>();
-//        list.add(new Media());
-//        list.add(new Media("jpg"));
-        try {
-            GenericRawResults<Media> results = instance.getDAO().queryRaw("select id,localPath,state,name from media where recordID ='" + recordID + "' order by createTime desc", new RawRowMapper<Media>() {
-                @Override
-                public Media mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
-                    Media media = new Media();
-                    media.setId(resultColumns[0]);
-                    media.setLocalPath(resultColumns[1]);
-                    media.setState(resultColumns[2]);
-                    media.setName(resultColumns[3]);
-                    return media;
-                }
-            });
-
-            Iterator<Media> iterator = results.iterator();
-            while (iterator.hasNext()) {
-                Media media = iterator.next();
-                list.add(media);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return list;
     }
 
     /**
