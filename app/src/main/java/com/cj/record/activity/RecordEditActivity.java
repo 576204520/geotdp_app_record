@@ -458,21 +458,10 @@ public class RecordEditActivity extends BaseActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                if (isEdit) {
-                                    if (recordType.equals(Record.TYPE_SCENE_OPERATEPERSON)
-                                            || recordType.equals(Record.TYPE_SCENE_OPERATECODE)
-                                            || recordType.equals(Record.TYPE_SCENE_RECORDPERSON)
-                                            || recordType.equals(Record.TYPE_SCENE_SCENE)
-                                            || recordType.equals(Record.TYPE_SCENE_PRINCIPAL)
-                                            || recordType.equals(Record.TYPE_SCENE_TECHNICIAN)
-                                            || recordType.equals(Record.TYPE_SCENE_VIDEO)) {
-                                        record.delete(RecordEditActivity.this);
-                                    }
-                                    onBackPressed();
-                                } else {
+                                if (!isEdit) {
                                     record.delete(RecordEditActivity.this);
-                                    onBackPressed();
                                 }
+                                onBackPressed();
                             }
                         })
                 .show();
