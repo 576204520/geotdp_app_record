@@ -8,3 +8,7 @@
 /SmallVideoLib2/.externalNativeBuild
 /app/release
 /app/build
+/app/debug
+app/debug/
+app/sampledata/
+database/libs/

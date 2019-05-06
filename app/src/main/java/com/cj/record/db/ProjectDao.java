@@ -64,6 +64,26 @@ public class ProjectDao extends BaseDAO<Project> {
     }
 
     /**
+     * 获取项目列表
+     * debug
+     * @return
+     */
+    public List<Project> getAll(int page, int size, String search) {
+        try {
+            QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
+            if (!TextUtils.isEmpty(search)) {
+                queryBuilder.where().like("code", "%" + search + "%").or().like("fullName", "%" + search + "%");
+            }
+            queryBuilder.orderBy("createTime", false);
+            queryBuilder.offset(page * size).limit(size);
+            return queryBuilder.query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
      * 获取该用户下项目数量
      *
      * @param userID

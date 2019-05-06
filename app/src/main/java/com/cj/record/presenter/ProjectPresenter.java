@@ -4,6 +4,7 @@ package com.cj.record.presenter;
 import android.content.Context;
 
 import com.alibaba.idst.nls.internal.utils.L;
+import com.cj.record.BuildConfig;
 import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.PageBean;
 import com.cj.record.baen.Project;
@@ -96,7 +97,12 @@ public class ProjectPresenter extends BasePresenter<ProjectContract.View> implem
         Observable.create(new ObservableOnSubscribe<PageBean<Project>>() {
             @Override
             public void subscribe(ObservableEmitter<PageBean<Project>> e) throws Exception {
-                List<Project> list = ProjectDao.getInstance().getAll(userID, page, size, search);
+                List<Project> list = new ArrayList<>();
+                if (BuildConfig.ISDEBUG) {
+                    list = ProjectDao.getInstance().getAll(page, size, search);
+                } else {
+                    list = ProjectDao.getInstance().getAll(userID, page, size, search);
+                }
                 int totleSize = ProjectDao.getInstance().getAllCount(userID);
                 PageBean<Project> pageBean = new PageBean<>();
                 pageBean.setTotleSize(totleSize);
