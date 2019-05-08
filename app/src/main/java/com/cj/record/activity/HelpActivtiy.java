@@ -1,21 +1,15 @@
 package com.cj.record.activity;
 
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.TextView;
 
 import com.cj.record.R;
-import com.cj.record.base.BaseActivity;
-import com.cj.record.utils.Urls;
-
-import java.net.URL;
+import com.cj.record.mvp.base.BaseActivity;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Administrator on 2017/5/12.

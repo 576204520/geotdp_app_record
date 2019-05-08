@@ -8,8 +8,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.cj.record.R;
-import com.cj.record.base.App;
-import com.cj.record.base.BaseActivity;
+import com.cj.record.mvp.base.App;
+import com.cj.record.mvp.base.BaseActivity;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;

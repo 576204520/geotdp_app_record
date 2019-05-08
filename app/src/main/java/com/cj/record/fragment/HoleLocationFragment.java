@@ -18,11 +18,11 @@ package com.cj.record.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alibaba.idst.nls.internal.utils.L;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -38,27 +38,12 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.cj.record.R;
 import com.cj.record.activity.MainActivity;
-import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.Hole;
-import com.cj.record.baen.LocalUser;
-import com.cj.record.baen.PageBean;
-import com.cj.record.baen.Record;
-import com.cj.record.base.BaseFragment;
-import com.cj.record.base.BaseMvpFragment;
-import com.cj.record.contract.HoleContract;
-import com.cj.record.presenter.HolePresenter;
+import com.cj.record.mvp.base.BaseFragment;
 import com.cj.record.utils.GPSutils;
-import com.cj.record.utils.L;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.GenericRawResults;
-import com.j256.ormlite.dao.RawRowMapper;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 import butterknife.BindView;
 
@@ -229,6 +214,7 @@ public class HoleLocationFragment extends BaseFragment implements LocationSource
                 holeLatitude.setText(String.valueOf(aMapLocation.getLatitude()));
                 holeTime.setText(GPSutils.utcToTimeZoneDate(aMapLocation.getTime()));
                 holeRadius.setText(hole.getRadius());
+                L.e(String.valueOf(aMapLocation.getAccuracy()));
                 // 如果不设置标志位，此时再拖动地图时，它会不断将地图移动到当前的位置
                 if (isFirstLoc) {
                     //将地图移动到定位点

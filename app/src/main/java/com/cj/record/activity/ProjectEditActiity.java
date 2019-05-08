@@ -13,14 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cj.record.R;
-import com.cj.record.base.App;
+import com.cj.record.mvp.base.App;
 import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.PageBean;
 import com.cj.record.baen.Project;
-import com.cj.record.base.BaseMvpActivity;
-import com.cj.record.contract.ProjectContract;
+import com.cj.record.mvp.base.BaseMvpActivity;
+import com.cj.record.mvp.contract.ProjectContract;
 import com.cj.record.db.ProjectDao;
-import com.cj.record.presenter.ProjectPresenter;
+import com.cj.record.mvp.presenter.ProjectPresenter;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.ToastUtil;

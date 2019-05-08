@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.cj.record.baen.PageBean;
 import com.cj.record.baen.Project;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
@@ -14,6 +15,11 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
 
 
 /**
@@ -176,5 +182,50 @@ public class ProjectDao extends BaseDAO<Project> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Flowable<PageBean<Project>> loadData(String userID, int page, int size, String search) {
+        return Flowable.create(new FlowableOnSubscribe<PageBean<Project>>() {
+            @Override
+            public void subscribe(FlowableEmitter<PageBean<Project>> e) throws Exception {
+                List<Project> list = getAll(userID, page, size, search);
+                int totleSize = getAllCount(userID);
+                PageBean<Project> pageBean = new PageBean<>();
+                pageBean.setTotleSize(totleSize);
+                pageBean.setPage(page);
+                pageBean.setSize(size);
+                pageBean.setList(list);
+                e.onNext(pageBean);
+                e.onComplete();
+            }
+        }, BackpressureStrategy.BUFFER);
+    }
+
+    public Flowable addOrUpdate(Project project, boolean updateState) {
+        return Flowable.create(new FlowableOnSubscribe<Project>() {
+            @Override
+            public void subscribe(FlowableEmitter<Project> e) throws Exception {
+                if (updateState) {
+                    HoleDao.getInstance().updateState(project.getId());
+                    RecordDao.getInstance().updateState(project.getId());
+                    MediaDao.getInstance().updateState(project.getId());
+                    project.setState("1");
+                }
+                ProjectDao.getInstance().addOrUpdate(project);
+                e.onNext(project);
+                e.onComplete();
+            }
+        }, BackpressureStrategy.BUFFER);
+    }
+
+    public Flowable deleteProject(Project project) {
+        return Flowable.create(new FlowableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(FlowableEmitter<Boolean> e) throws Exception {
+                project.delete();
+                e.onNext(true);
+                e.onComplete();
+            }
+        }, BackpressureStrategy.BUFFER);
     }
 }

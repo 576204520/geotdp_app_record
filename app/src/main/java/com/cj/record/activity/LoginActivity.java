@@ -9,12 +9,12 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import com.cj.record.R;
-import com.cj.record.base.App;
+import com.cj.record.mvp.base.App;
 import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.LocalUser;
-import com.cj.record.base.BaseMvpActivity;
-import com.cj.record.contract.UserContract;
-import com.cj.record.presenter.UserPresenter;
+import com.cj.record.mvp.base.BaseMvpActivity;
+import com.cj.record.mvp.contract.UserContract;
+import com.cj.record.mvp.presenter.UserPresenter;
 import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.MD5Utils;
 import com.cj.record.utils.SPUtils;

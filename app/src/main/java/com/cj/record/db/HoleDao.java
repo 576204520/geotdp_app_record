@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.Media;
+import com.cj.record.baen.PageBean;
 import com.cj.record.baen.Project;
 import com.cj.record.baen.Record;
 import com.cj.record.utils.Common;
@@ -18,6 +19,11 @@ import com.j256.ormlite.stmt.UpdateBuilder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
 
 
 /**
@@ -192,5 +198,49 @@ public class HoleDao extends BaseDAO<Hole> {
         return null;
     }
 
+    public Flowable<PageBean<Hole>> loadData(String projectID, int page, int size, String search, String sort) {
+        return Flowable.create(new FlowableOnSubscribe<PageBean<Hole>>() {
+            @Override
+            public void subscribe(FlowableEmitter<PageBean<Hole>> e) throws Exception {
+                List<Hole> list = getAll(projectID, page, size, search, sort);
+                //查询每一个勘探点下记录的最大深度，并赋值
+                if (list != null && list.size() > 0) {
+                    for (Hole hole : list) {
+                        //获取每一个hole 的最大深度
+                        Record record = RecordDao.getInstance().getCurrentDepthByHoleID(hole.getId());
+                        if (record != null && !TextUtils.isEmpty(record.getEndDepth())) {
+                            hole.setCurrentDepth(record.getEndDepth());
+                        } else {
+                            hole.setCurrentDepth("0");
+                        }
+                        //获取record 不包含场景等信息
+                        List<Record> recordList = RecordDao.getInstance().getNotUploadListByHoleID(hole.getId());
+                        //获取record 只有场景等信息 该信息不包含历史记录
+                        List<Record> recordListScene = RecordDao.getInstance().getNotUploadListByHoleIDScene(hole.getId());
+                        hole.setNotUploadCount(recordList.size() + recordListScene.size());
+                    }
+                }
+                int totleSize = HoleDao.getInstance().getAllCount(projectID);
+                PageBean<Hole> pageBean = new PageBean<>();
+                pageBean.setTotleSize(totleSize);
+                pageBean.setPage(page);
+                pageBean.setSize(size);
+                pageBean.setList(list);
+                e.onNext(pageBean);
+                e.onComplete();
+            }
+        }, BackpressureStrategy.BUFFER);
+    }
+
+    public Flowable deleteHole(Hole hole) {
+        return Flowable.create(new FlowableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(FlowableEmitter<Boolean> e) throws Exception {
+                hole.delete();
+                e.onNext(true);
+                e.onComplete();
+            }
+        }, BackpressureStrategy.BUFFER);
+    }
 
 }

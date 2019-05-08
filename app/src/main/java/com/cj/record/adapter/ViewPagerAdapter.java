@@ -3,10 +3,8 @@ package com.cj.record.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 
-import com.cj.record.base.BaseFragment;
-import com.cj.record.base.BaseMvpFragment;
+import com.cj.record.mvp.base.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;

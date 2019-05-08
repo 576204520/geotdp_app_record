@@ -8,9 +8,9 @@ import android.widget.TextView;
 
 import com.cj.record.R;
 import com.cj.record.baen.BaseObjectBean;
-import com.cj.record.base.BaseMvpActivity;
-import com.cj.record.contract.UserContract;
-import com.cj.record.presenter.UserPresenter;
+import com.cj.record.mvp.base.BaseMvpActivity;
+import com.cj.record.mvp.contract.UserContract;
+import com.cj.record.mvp.presenter.UserPresenter;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;

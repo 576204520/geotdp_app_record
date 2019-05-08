@@ -5,13 +5,10 @@ import android.view.View;
 
 import com.cj.record.activity.MainActivity;
 import com.cj.record.baen.Dictionary;
-import com.cj.record.baen.Hole;
 import com.cj.record.baen.Record;
-import com.cj.record.base.BaseActivity;
-import com.cj.record.base.BaseFragment;
-import com.cj.record.base.BaseMvpFragment;
-import com.cj.record.base.BasePresenter;
-import com.cj.record.base.BaseView;
+import com.cj.record.mvp.base.BaseFragment;
+import com.cj.record.mvp.base.BasePresenter;
+import com.cj.record.mvp.base.BaseView;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.Urls;
 import com.uber.autodispose.AutoDispose;

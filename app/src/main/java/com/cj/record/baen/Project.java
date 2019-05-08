@@ -186,15 +186,13 @@ public class Project implements Serializable {
 
     /**
      * 删除项目
-     *
-     * @param context
      */
-    public boolean delete(Context context) {
+    public boolean delete() {
         try {
             //先删除所有勘探点.
             List<Hole> holes = HoleDao.getInstance().getHoleListByProjectID(id);
             for (Hole hole : holes) {
-                hole.delete(context);
+                hole.delete();
             }
             ProjectDao.getInstance().delete(this);
         } catch (Exception e) {

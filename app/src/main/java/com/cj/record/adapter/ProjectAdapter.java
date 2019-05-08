@@ -15,8 +15,8 @@ import com.cj.record.R;
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.Project;
 import com.cj.record.db.HoleDao;
-import com.cj.record.slide.AbstractSlideExpandableListAdapter;
-import com.cj.record.utils.L;
+import com.cj.record.views.slide.AbstractSlideExpandableListAdapter;
+import com.cj.record.utils.click.SingleClick;
 
 import net.qiujuer.genius.ui.widget.Button;
 
@@ -80,36 +80,42 @@ public class ProjectAdapter extends AbstractSlideExpandableListAdapter<ProjectAd
         }
         //按钮添加监听
         myHolder.projectDetail.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.detailClick(position);
             }
         });
         myHolder.projectEdit.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.editClick(position);
             }
         });
         myHolder.projectHoleList.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.holeListClick(position);
             }
         });
         myHolder.projectNav.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.navClick(position);
             }
         });
         myHolder.projectUpload.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.uploadClick(position);
             }
         });
         myHolder.projectDelete.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.deleteClick(position);

@@ -16,11 +16,7 @@
 
 package com.cj.record.fragment;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.amap.api.location.AMapLocation;
@@ -31,19 +27,15 @@ import com.amap.api.maps.LocationSource;
 import com.cj.record.R;
 import com.cj.record.activity.MainActivity;
 import com.cj.record.baen.Hole;
-import com.cj.record.base.BaseFragment;
+import com.cj.record.mvp.base.BaseFragment;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.GPSutils;
-import com.cj.record.views.MaterialEditTextNoEmoji;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 public class RecordLocationFragment extends BaseFragment implements LocationSource, AMapLocationListener {
     @BindView(R.id.edtAccuracy)

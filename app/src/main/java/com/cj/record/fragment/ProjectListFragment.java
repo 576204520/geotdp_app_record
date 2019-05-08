@@ -22,15 +22,15 @@ import com.cj.record.activity.HoleListActivity;
 import com.cj.record.activity.MainActivity;
 import com.cj.record.activity.ProjectEditActiity;
 import com.cj.record.activity.ReleteLocationActivity;
-import com.cj.record.base.App;
+import com.cj.record.mvp.base.App;
 import com.cj.record.adapter.ProjectAdapter;
 import com.cj.record.adapter.SpacesItemDecoration;
 import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.PageBean;
 import com.cj.record.baen.Project;
-import com.cj.record.base.BaseMvpFragment;
-import com.cj.record.contract.ProjectContract;
-import com.cj.record.presenter.ProjectPresenter;
+import com.cj.record.mvp.base.BaseMvpFragment;
+import com.cj.record.mvp.contract.ProjectContract;
+import com.cj.record.mvp.presenter.ProjectPresenter;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.views.ProgressDialog;
@@ -221,7 +221,7 @@ public class ProjectListFragment extends BaseMvpFragment<ProjectPresenter> imple
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mPresenter.delete(mActivity, dataList.get(position));
+                                mPresenter.delete(dataList.get(position));
                             }
                         })
                 .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)

@@ -25,7 +25,7 @@ import android.widget.ImageView;
 
 import com.alibaba.idst.nls.internal.utils.L;
 import com.cj.record.R;
-import com.cj.record.base.App;
+import com.cj.record.mvp.base.App;
 import com.cj.record.adapter.HoleAdapter;
 import com.cj.record.adapter.SpacesItemDecoration;
 import com.cj.record.baen.BaseObjectBean;
@@ -36,13 +36,13 @@ import com.cj.record.baen.LocalUser;
 import com.cj.record.baen.PageBean;
 import com.cj.record.baen.Project;
 import com.cj.record.baen.Record;
-import com.cj.record.base.BaseMvpActivity;
-import com.cj.record.contract.HoleContract;
+import com.cj.record.mvp.base.BaseMvpActivity;
+import com.cj.record.mvp.contract.HoleContract;
 import com.cj.record.db.GpsDao;
 import com.cj.record.db.HoleDao;
 import com.cj.record.db.ProjectDao;
 import com.cj.record.db.RecordDao;
-import com.cj.record.presenter.HolePresenter;
+import com.cj.record.mvp.presenter.HolePresenter;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
 import com.cj.record.utils.JsonUtils;
@@ -482,7 +482,7 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //标记要删除的项
-                                mPresenter.delete(HoleListActivity.this, dataList.get(position));
+                                mPresenter.delete(dataList.get(position));
                             }
                         })
                 .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)

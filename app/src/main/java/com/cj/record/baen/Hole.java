@@ -314,14 +314,12 @@ public class Hole implements Serializable, Cloneable {
 
     /**
      * 删除勘探点
-     *
-     * @param context
      */
-    public void delete(Context context) {
+    public void delete() {
         //先删除所有记录.
         List<Record> records = RecordDao.getInstance().getRecordListByHoleID(id);
         for (Record record : records) {
-            record.delete(context);
+            record.delete();
         }
         HoleDao.getInstance().delete(this);
     }

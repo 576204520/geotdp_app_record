@@ -19,8 +19,8 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 
 import com.cj.record.R;
-import com.cj.record.base.App;
-import com.cj.record.base.BaseActivity;
+import com.cj.record.mvp.base.App;
+import com.cj.record.mvp.base.BaseActivity;
 import com.cj.record.adapter.RecordAdapter;
 import com.cj.record.adapter.SpacesItemDecoration;
 import com.cj.record.baen.DropItemVo;

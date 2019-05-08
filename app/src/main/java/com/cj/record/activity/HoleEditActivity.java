@@ -18,17 +18,16 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cj.record.base.App;
+import com.cj.record.mvp.base.App;
 import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.LocalUser;
 import com.cj.record.baen.PageBean;
 import com.cj.record.baen.Record;
-import com.cj.record.base.BaseMvpActivity;
-import com.cj.record.contract.HoleContract;
+import com.cj.record.mvp.base.BaseMvpActivity;
+import com.cj.record.mvp.contract.HoleContract;
 import com.cj.record.db.HoleDao;
-import com.cj.record.db.MediaDao;
 import com.cj.record.db.RecordDao;
-import com.cj.record.presenter.HolePresenter;
+import com.cj.record.mvp.presenter.HolePresenter;
 import com.cj.record.R;
 import com.cj.record.baen.DropItemVo;
 import com.cj.record.baen.Hole;
@@ -329,7 +328,7 @@ public class HoleEditActivity extends BaseMvpActivity<HolePresenter> implements 
             List<Record> tjRecord = RecordDao.getInstance().getRecordListForJzAndZj(hole.getId());
             if (tjRecord != null && tjRecord.size() > 0) {
                 for (Record record : tjRecord) {
-                    record.delete(HoleEditActivity.this);
+                    record.delete();
                 }
             }
         }

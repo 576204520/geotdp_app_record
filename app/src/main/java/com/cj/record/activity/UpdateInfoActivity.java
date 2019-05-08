@@ -1,6 +1,5 @@
 package com.cj.record.activity;
 
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -9,27 +8,18 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.alibaba.idst.nls.internal.utils.L;
 import com.cj.record.R;
 import com.cj.record.baen.BaseObjectBean;
-import com.cj.record.baen.JsonResult;
-import com.cj.record.base.BaseMvpActivity;
-import com.cj.record.contract.UserContract;
-import com.cj.record.presenter.UserPresenter;
+import com.cj.record.mvp.base.BaseMvpActivity;
+import com.cj.record.mvp.contract.UserContract;
+import com.cj.record.mvp.presenter.UserPresenter;
 import com.cj.record.utils.Common;
-import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;
 import com.cj.record.views.ProgressDialog;
-import com.google.gson.Gson;
-import com.uber.autodispose.AutoDisposeConverter;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**

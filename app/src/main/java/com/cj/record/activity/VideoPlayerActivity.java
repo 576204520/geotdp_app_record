@@ -1,12 +1,8 @@
 package com.cj.record.activity;
 
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -14,15 +10,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.amap.api.location.AMapLocation;
 import com.cj.record.R;
-import com.cj.record.base.BaseActivity;
+import com.cj.record.mvp.base.BaseActivity;
 import com.cj.record.baen.Media;
 import com.cj.record.db.MediaDao;
-import com.cj.record.fragment.RecordLocationFragment;
-import com.cj.record.utils.Common;
 import com.cj.record.utils.SPUtils;
-import com.cj.record.utils.ToastUtil;
 import com.mabeijianxi.smallvideorecord2.FileUtils;
 import com.mabeijianxi.smallvideorecord2.MediaRecorderActivity;
 import com.mabeijianxi.smallvideorecord2.StringUtils;
@@ -31,7 +23,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 
@@ -154,7 +145,7 @@ public class VideoPlayerActivity extends BaseActivity {
                                     SPUtils.put(VideoPlayerActivity.this, "directoryPath", "delete");
                                     FileUtils.deleteDir(getIntent().getStringExtra(MediaRecorderActivity.OUTPUT_DIRECTORY));
                                     if (!StringUtils.isEmpty(mediaId)) {
-                                        media.delete(VideoPlayerActivity.this);
+                                        media.delete();
                                     }
                                     try {
                                         MediaStore.Images.Media.insertImage(getContentResolver(), videoUri, "title", "description");

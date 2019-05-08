@@ -13,9 +13,10 @@ import android.widget.TextView;
 import com.cj.record.R;
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.Project;
-import com.cj.record.slide.AbstractSlideExpandableListAdapter;
+import com.cj.record.views.slide.AbstractSlideExpandableListAdapter;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.Urls;
+import com.cj.record.utils.click.SingleClick;
 
 import net.qiujuer.genius.ui.widget.Button;
 
@@ -125,36 +126,42 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
             myHolder.holeGetData.setVisibility(View.VISIBLE);
         }
         myHolder.holeDetail.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.detailClick(position);
             }
         });
         myHolder.holeEdit.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.editClick(position);
             }
         });
         myHolder.holeRecordList.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.recordListClick(position);
             }
         });
         myHolder.holeCheck.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.checkClick(position);
             }
         });
         myHolder.holeUpload.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.uploadClick(position);
             }
         });
         myHolder.holeDelete.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.deleteClick(position);
@@ -167,6 +174,7 @@ public class HoleAdapter extends AbstractSlideExpandableListAdapter<HoleAdapter.
     public void setOnItemListener(OnItemListener onItemListener) {
         this.mOnItemListener = onItemListener;
     }
+
 
     public interface OnItemListener {
         void detailClick(int position);

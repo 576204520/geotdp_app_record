@@ -25,14 +25,13 @@ import com.amap.api.navi.model.NaviInfo;
 import com.amap.api.navi.model.NaviLatLng;
 import com.autonavi.tbt.TrafficFacilityInfo;
 import com.cj.record.R;
-import com.cj.record.base.BaseActivity;
+import com.cj.record.mvp.base.BaseActivity;
 import com.cj.record.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Administrator on 2018/7/3.

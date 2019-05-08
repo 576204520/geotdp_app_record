@@ -17,10 +17,8 @@ import android.text.TextUtils;
 
 
 import com.cj.record.BuildConfig;
-import com.cj.record.net.RetrofitClient;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
-import com.cj.record.utils.Urls;
 
 import java.io.File;
 

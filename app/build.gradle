@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'android-aspectjx'
 android {
     compileSdkVersion 27
     buildToolsVersion '27.0.2'
@@ -8,8 +8,8 @@ android {
         applicationId "com.cj.record"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 55
-        versionName "3.3.5"
+        versionCode 56
+        versionName "3.3.6"
         multiDexEnabled true
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
         ndk {
@@ -23,6 +23,14 @@ android {
             buildConfigField "String", "UPLOAD_GW", DEBUG_UPLOAD_HOLE_GW
             buildConfigField "String", "SECRET_KEY", DEBUG_SECRET_KEY
             buildConfigField "boolean", "ISDEBUG", "true"
+            //启用代码混淆
+            minifyEnabled true
+            //混淆规则配置文件
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //去掉无用资源
+            shrinkResources true
+            //Zip代码压缩优化
+            zipAlignEnabled true
         }
         release {
             buildConfigField "String", "URL", RELEASE_BASE_URL
@@ -154,4 +162,6 @@ dependencies {
 
     //首页底部导航 https://github.com/peng8350/JPTabBar
     implementation 'com.jpeng:JPTabBar:1.4.0'
+    //
+    implementation 'org.aspectj:aspectjrt:1.8.9'
 }

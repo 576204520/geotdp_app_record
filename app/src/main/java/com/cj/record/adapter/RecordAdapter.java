@@ -2,7 +2,6 @@ package com.cj.record.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +9,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cj.record.R;
-import com.cj.record.baen.Gps;
-import com.cj.record.baen.Hole;
 import com.cj.record.baen.Record;
-import com.cj.record.db.GpsDao;
-import com.cj.record.slide.AbstractSlideExpandableListAdapter;
-import com.cj.record.utils.ToastUtil;
+import com.cj.record.views.slide.AbstractSlideExpandableListAdapter;
+import com.cj.record.utils.click.SingleClick;
 
 import net.qiujuer.genius.ui.widget.Button;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import butterknife.BindView;
@@ -85,18 +80,21 @@ public class RecordAdapter extends AbstractSlideExpandableListAdapter<RecordAdap
 //            myHolder.recordLayerCode.setVisibility(View.GONE);
 //        }
         myHolder.recordDetail.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.detailClick(position);
             }
         });
         myHolder.recordEdit.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.editClick(position);
             }
         });
         myHolder.recordDelete.setOnClickListener(new View.OnClickListener() {
+            @SingleClick
             @Override
             public void onClick(View v) {
                 mOnItemListener.deleteClick(position);

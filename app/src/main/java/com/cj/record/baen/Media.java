@@ -204,10 +204,8 @@ public class Media implements Serializable {
 
     /**
      * 删除媒体
-     *
-     * @param context
      */
-    public void delete(Context context) {
+    public void delete() {
         //如果是视频的话，视频保存的是文件夹路径，其中包括了视频和图片，都要刪除
         File aFile = new File(localPath);
         if (aFile.isDirectory()) {

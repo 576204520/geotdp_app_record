@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cj.record.R;
-import com.cj.record.base.App;
+import com.cj.record.mvp.base.App;
 import com.cj.record.baen.Message;
 
 import java.util.List;

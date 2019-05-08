@@ -2,7 +2,6 @@ package com.cj.record.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -26,7 +25,7 @@ import com.cj.record.adapter.MediaAdapter;
 import com.cj.record.baen.Gps;
 import com.cj.record.baen.Media;
 import com.cj.record.baen.Record;
-import com.cj.record.base.BaseFragment;
+import com.cj.record.mvp.base.BaseFragment;
 import com.cj.record.db.GpsDao;
 import com.cj.record.db.MediaDao;
 import com.cj.record.utils.Common;
@@ -35,7 +34,6 @@ import com.cj.record.utils.L;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;
-import com.j256.ormlite.dao.Dao;
 import com.mabeijianxi.smallvideorecord2.MediaRecorderActivity;
 import com.mabeijianxi.smallvideorecord2.model.MediaRecorderConfig;
 import com.tbruyelle.rxpermissions2.Permission;
@@ -222,7 +220,7 @@ public class RecordMediaFragment extends BaseFragment implements MediaAdapter.On
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                media.delete(mActivity);
+                                media.delete();
                                 ToastUtil.showToastL(getActivity(), "删除图片成功");
                                 refresh();
                             }

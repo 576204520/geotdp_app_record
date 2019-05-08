@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
 import com.cj.record.R;
-import com.cj.record.base.BaseActivity;
+import com.cj.record.mvp.base.BaseActivity;
 import com.cj.record.baen.Gps;
 import com.cj.record.baen.Hole;
 import com.cj.record.baen.Media;
@@ -47,7 +47,6 @@ import com.cj.record.fragment.record.inhole.RecordVideoFragment;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
 import com.cj.record.utils.GPSutils;
-import com.cj.record.utils.ObsUtils;
 import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.Urls;
@@ -459,7 +458,7 @@ public class RecordEditActivity extends BaseActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (!isEdit) {
-                                    record.delete(RecordEditActivity.this);
+                                    record.delete();
                                 }
                                 onBackPressed();
                             }

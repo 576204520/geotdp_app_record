@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.cj.record.R;
-import com.cj.record.base.BaseActivity;
+import com.cj.record.mvp.base.BaseActivity;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
 

@@ -453,14 +453,12 @@ public class Record implements Serializable, Cloneable {
 
     /**
      * 删除记录
-     *
-     * @param context
      */
-    public void delete(Context context) {
+    public void delete() {
         //先删除所有的照片.
         List<Media> medias = MediaDao.getInstance().getMediaListByRecordID(id);
         for (Media media : medias) {
-            media.delete(context);
+            media.delete();
         }
         //删除对应的GPS.
         Gps gps = GpsDao.getInstance().getGpsByRecord(getId());
