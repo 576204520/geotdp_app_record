@@ -37,8 +37,10 @@ import com.cj.record.mvp.contract.HoleContract;
 import com.cj.record.mvp.presenter.HolePresenter;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.JsonUtils;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
+import com.cj.record.utils.Urls;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
@@ -126,7 +128,7 @@ public class ReleteLocationActivity extends BaseMvpActivity<HolePresenter> imple
         //默认缩放比例
         aMap.moveCamera(CameraUpdateFactory.zoomTo(19));
         //获取关联列表
-        mPresenter.getRelateList(App.userID, serialNumber, UpdateUtil.getVerCode(this) + "");
+        mPresenter.getRelateList((String) SPUtils.get(this, Urls.SPKey.USER_ID, ""), serialNumber, UpdateUtil.getVerCode(this) + "");
         doLocation();
     }
 

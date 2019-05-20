@@ -32,7 +32,9 @@ import com.cj.record.mvp.base.BaseMvpFragment;
 import com.cj.record.mvp.contract.ProjectContract;
 import com.cj.record.mvp.presenter.ProjectPresenter;
 import com.cj.record.utils.Common;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.Urls;
 import com.cj.record.views.ProgressDialog;
 
 import java.util.ArrayList;
@@ -160,12 +162,12 @@ public class ProjectListFragment extends BaseMvpFragment<ProjectPresenter> imple
     @Override
     public void onRefresh() {
         page = 0;
-        mPresenter.loadData(App.userID, page, size, projectSearchEt.getText().toString().trim());
+        mPresenter.loadData((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""), page, size, projectSearchEt.getText().toString().trim());
     }
 
     public void onLoadMore() {
         page++;
-        mPresenter.loadData(App.userID, page, size, projectSearchEt.getText().toString().trim());
+        mPresenter.loadData((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""), page, size, projectSearchEt.getText().toString().trim());
     }
 
 

@@ -38,8 +38,10 @@ import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
 import com.cj.record.utils.GPSutils;
 import com.cj.record.utils.JsonUtils;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
+import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialBetterSpinner;
 import com.cj.record.views.MaterialEditTextElevation;
 import com.cj.record.views.MaterialEditTextNoEmoji;
@@ -168,7 +170,7 @@ public class HoleEditActivity extends BaseMvpActivity<HolePresenter> implements 
             hole = (Hole) getIntent().getSerializableExtra(MainActivity.HOLE);
         } else {
             //false添加
-            hole = new Hole(this, project.getId());
+            hole = new Hole(project.getId());
             HoleDao.getInstance().add(hole);
         }
 
@@ -460,7 +462,7 @@ public class HoleEditActivity extends BaseMvpActivity<HolePresenter> implements 
                     Common.showMessage(this, relateHole.getCode() + getString(R.string.hole_list_relate_ishave));
                     return;
                 }
-                mPresenter.relate(App.userID, relateHole.getId(), hole.getId(), UpdateUtil.getVerCode(this) + "");
+                mPresenter.relate((String) SPUtils.get(this, Urls.SPKey.USER_ID, ""), relateHole.getId(), hole.getId(), UpdateUtil.getVerCode(this) + "");
             }
         }
         if (requestCode == MainActivity.RECORD_GO_EDIT && resultCode == RESULT_OK) {

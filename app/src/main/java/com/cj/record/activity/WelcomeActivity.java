@@ -2,6 +2,7 @@ package com.cj.record.activity;
 
 import android.Manifest;
 import android.os.CountDownTimer;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -70,10 +71,9 @@ public class WelcomeActivity extends BaseActivity {
                                 if (permission.granted) {
                                     //检查是否是自动登陆
                                     boolean isAuto = (boolean) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_AUTO, false);
-                                    if (isAuto) {
-                                        // 检查userid是否存在
-                                        String userID = (String) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_ID, "");
-                                        App.userID = userID;
+                                    // 检查userid是否存在
+                                    String userID = (String) SPUtils.get(WelcomeActivity.this, Urls.SPKey.USER_ID, "");
+                                    if (isAuto && TextUtils.isEmpty(userID)) {
                                         startActivity(MainActivity.class);
                                     } else {
                                         startActivity(LoginActivity.class);

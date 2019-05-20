@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.multidex.MultiDex;
 
 
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.Urls;
 import com.mabeijianxi.smallvideorecord2.DeviceUtils;
 import com.mabeijianxi.smallvideorecord2.JianXiCamera;
@@ -21,12 +22,13 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import retrofit2.http.Url;
+
 
 /**
  * Created by Administrator on 2017/8/25.
  */
 public class App extends Application implements Thread.UncaughtExceptionHandler {
-    public static String userID;
 
     @Override
     public void onCreate() {

@@ -28,7 +28,9 @@ import com.cj.record.baen.Hole;
 import com.cj.record.baen.Record;
 import com.cj.record.db.RecordDao;
 import com.cj.record.utils.ObsUtils;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialBetterSpinner;
 import com.cj.record.views.dialog.RecordInfoDialog;
 
@@ -259,7 +261,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
                 finish();
                 return true;
             case R.id.act_add:
-                if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals(App.userID)) {
+                if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals((String) SPUtils.get(this, Urls.SPKey.USER_ID, ""))) {
                     showChooseDialog();
                 } else {
                     ToastUtil.showToastS(this, "不可以编辑他人数据");
@@ -287,7 +289,7 @@ public class RecordListActivity extends BaseActivity implements SwipeRefreshLayo
 
     @Override
     public void editClick(int position) {
-        if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals(App.userID)) {
+        if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals((String) SPUtils.get(this, Urls.SPKey.USER_ID, ""))) {
             Bundle bundle = new Bundle();
             bundle.putBoolean(MainActivity.FROMTYPE, true);
             bundle.putSerializable(MainActivity.HOLE, hole);

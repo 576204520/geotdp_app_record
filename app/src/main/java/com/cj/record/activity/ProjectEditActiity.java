@@ -23,8 +23,10 @@ import com.cj.record.db.ProjectDao;
 import com.cj.record.mvp.presenter.ProjectPresenter;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.JsonUtils;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
+import com.cj.record.utils.Urls;
 import com.cj.record.views.ProgressDialog;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
@@ -132,17 +134,17 @@ public class ProjectEditActiity extends BaseMvpActivity<ProjectPresenter> implem
             Common.showMessage(this, getString(R.string.project_edit_hint_num));
             return;
         }
-        if (TextUtils.isEmpty(App.userID)) {
+        if (TextUtils.isEmpty((String) SPUtils.get(this, Urls.SPKey.USER_ID, ""))) {
             Common.showMessage(this, getString(R.string.project_edit_hint_user));
             return;
         }
-        boolean isHave = ProjectDao.getInstance().checkNumber(App.userID, number, project.getId());
+        boolean isHave = ProjectDao.getInstance().checkNumber((String) SPUtils.get(this, Urls.SPKey.USER_ID, ""), number, project.getId());
         if (isHave) {
             Common.showMessage(this, getString(R.string.project_edit_hint_num_have));
             return;
         }
 
-        mPresenter.relate(number, App.userID, UpdateUtil.getVerCode(this) + "");
+        mPresenter.relate(number, (String) SPUtils.get(this, Urls.SPKey.USER_ID, ""), UpdateUtil.getVerCode(this) + "");
     }
 
 

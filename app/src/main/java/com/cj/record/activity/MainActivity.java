@@ -17,8 +17,10 @@ import com.cj.record.fragment.UserFragment;
 import com.cj.record.mvp.presenter.UserPresenter;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.JsonUtils;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
+import com.cj.record.utils.Urls;
 import com.cj.record.views.MViewPager;
 import com.cj.record.views.ProgressDialog;
 import com.jpeng.jptabbar.JPTabBar;
@@ -76,7 +78,7 @@ public class MainActivity extends BaseMvpActivity<UserPresenter> implements User
         mPresenter = new UserPresenter();
         mPresenter.attachView(this);
         //检查版本
-        mPresenter.versionCheck(App.userID, UpdateUtil.getVerCode(MainActivity.this) + "");
+        mPresenter.versionCheck((String) SPUtils.get(this, Urls.SPKey.USER_ID, ""), UpdateUtil.getVerCode(MainActivity.this) + "");
         //初始化数据库
         mPresenter.initDB(this);
     }

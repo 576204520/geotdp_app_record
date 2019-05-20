@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.cj.record.R;
 import com.cj.record.mvp.base.App;
 import com.cj.record.baen.Message;
+import com.cj.record.utils.SPUtils;
+import com.cj.record.utils.Urls;
 
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class ChatTalkAdapter extends RecyclerView.Adapter<ChatTalkAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Message message = list.get(position);
-        if (message.getSenderIds().equals(App.userID)) {
+        if (message.getSenderIds().equals(SPUtils.get(context, Urls.SPKey.USER_ID, ""))) {
             holder.itemTalkLeft.setVisibility(View.GONE);
             holder.itemTalkRight.setVisibility(View.VISIBLE);
             holder.itemTalkMsgRight.setText(message.getMessage());

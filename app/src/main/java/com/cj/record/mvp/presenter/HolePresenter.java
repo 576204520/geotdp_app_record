@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.cj.record.BuildConfig;
+import com.cj.record.activity.HoleListActivity;
 import com.cj.record.mvp.base.App;
 import com.cj.record.baen.BaseObjectBean;
 import com.cj.record.baen.Gps;
@@ -23,12 +24,16 @@ import com.cj.record.mvp.model.HoleModel;
 import com.cj.record.mvp.net.RetrofitClient;
 import com.cj.record.mvp.net.RxScheduler;
 import com.cj.record.utils.Common;
+import com.cj.record.utils.DateUtil;
 import com.cj.record.utils.JsonUtils;
 import com.cj.record.utils.RxPartMapUtils;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.UpdateUtil;
+import com.cj.record.utils.Urls;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -137,7 +142,7 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
     }
 
     @Override
-    public void relateMore(List<Hole> checkList, Context context, HoleDao holeDao, Project project, String verCode) {
+    public void relateMore(List<Hole> checkList, Project project, String userID, String verCode) {
         //View是否绑定 如果没有绑定，就不执行网络请求
         if (!isViewAttached()) {
             return;
@@ -145,11 +150,11 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
         //本地已经存在的关联点
         List<Hole> noRelateList = new ArrayList<>();
         for (Hole relateHole : checkList) {
-            if (holeDao.checkRelated(relateHole.getId(), project.getId())) {
+            if (HoleDao.getInstance().checkRelated(relateHole.getId(), project.getId())) {
                 noRelateList.add(relateHole);
             } else {
                 //每次都新建一个新的勘察点
-                Hole newHole = new Hole(context, project.getId());
+                Hole newHole = new Hole(project.getId());
                 newHole.setRelateCode(relateHole.getCode());
                 newHole.setRelateID(relateHole.getId());
                 newHole.setUploadID(relateHole.getUploadID());
@@ -159,7 +164,8 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
                 newHole.setElevation(relateHole.getElevation());
                 newHole.setState("1");
                 newHole.setStateGW("1");
-                model.relate(App.userID, relateHole.getId(), newHole.getId(), verCode)
+                newHole.setUpdateTime(DateUtil.date2Str(new Date()));
+                model.relate(userID, relateHole.getId(), newHole.getId(), verCode)
                         .compose(RxScheduler.<BaseObjectBean<String>>Flo_io_main())
                         .as(mView.<BaseObjectBean<String>>bindAutoDispose())
                         .subscribe(new Consumer<BaseObjectBean<String>>() {
@@ -183,14 +189,14 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
 
 
     @Override
-    public void downLoadHole(List<LocalUser> localUserList, String verCode) {
+    public void downLoadHole(List<LocalUser> localUserList, String userID, String verCode) {
         //View是否绑定 如果没有绑定，就不执行网络请求
         if (!isViewAttached()) {
             return;
         }
         mView.showLoading();
         for (LocalUser localUser : localUserList) {
-            model.downLoadHole(App.userID, localUser.getId(), verCode)
+            model.downLoadHole(userID, localUser.getId(), verCode)
                     .compose(RxScheduler.<BaseObjectBean<String>>Flo_io_main())
                     .as(mView.<BaseObjectBean<String>>bindAutoDispose())
                     .subscribe(new Consumer<BaseObjectBean<String>>() {
@@ -326,7 +332,7 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
 
 
     @Override
-    public void uploadHole(Context context, Project project, Hole uploadHole) {
+    public void uploadHole(Project project, Hole uploadHole, String userID, String verCode) {
         //View是否绑定 如果没有绑定，就不执行网络请求
         if (!isViewAttached()) {
             return;
@@ -434,7 +440,7 @@ public class HolePresenter extends BasePresenter<HoleContract.View> implements H
                 requestBody = RxPartMapUtils.getRequestBody(params);
             }
             //最终url
-            strParams += "?verCode=" + UpdateUtil.getVerCode(context) + "&userID=" + App.userID + "&relateID=" + uploadHole.getRelateID();
+            strParams += "?verCode=" + verCode + "&userID=" + userID + "&relateID=" + uploadHole.getRelateID();
             upload_company = RetrofitClient.getInstance().getApi().uploadHole(BuildConfig.URL + "geotdp/hole/uploadNew" + strParams, requestBody);
         }
         /**

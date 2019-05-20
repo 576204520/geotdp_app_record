@@ -20,8 +20,10 @@ import com.cj.record.db.DictionaryDao;
 import com.cj.record.mvp.presenter.DictionaryPresenter;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.JsonUtils;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
+import com.cj.record.utils.Urls;
 import com.cj.record.views.ProgressDialog;
 import com.google.gson.reflect.TypeToken;
 
@@ -201,11 +203,11 @@ public class DictionaryActvity extends BaseMvpActivity<DictionaryPresenter> impl
         new MaterialDialog.Builder(this).content(R.string.dictionary_download_please).positiveText(R.string.agree).negativeText(R.string.disagree).callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog dialog) {
-                if (TextUtils.isEmpty(App.userID)) {
+                if (TextUtils.isEmpty((String) SPUtils.get(DictionaryActvity.this, Urls.SPKey.USER_ID, ""))) {
                     ToastUtil.showToastS(DictionaryActvity.this, getString(R.string.project_edit_hint_user));
                     return;
                 }
-                mPresenter.downloadDictionary(App.userID, UpdateUtil.getVerCode(DictionaryActvity.this) + "");
+                mPresenter.downloadDictionary((String) SPUtils.get(DictionaryActvity.this, Urls.SPKey.USER_ID, ""), UpdateUtil.getVerCode(DictionaryActvity.this) + "");
             }
         }).show();
     }
@@ -217,7 +219,7 @@ public class DictionaryActvity extends BaseMvpActivity<DictionaryPresenter> impl
         new MaterialDialog.Builder(this).content(R.string.dictionary_upload_please).positiveText(R.string.agree).negativeText(R.string.disagree).callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog dialog) {
-                if (TextUtils.isEmpty(App.userID)) {
+                if (TextUtils.isEmpty((String) SPUtils.get(DictionaryActvity.this, Urls.SPKey.USER_ID, ""))) {
                     ToastUtil.showToastS(DictionaryActvity.this, getString(R.string.project_edit_hint_user));
                     return;
                 }

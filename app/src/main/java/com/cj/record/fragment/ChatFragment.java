@@ -29,7 +29,9 @@ import com.cj.record.mvp.base.BaseMvpFragment;
 import com.cj.record.mvp.contract.ChatContract;
 import com.cj.record.mvp.presenter.ChatPresenter;
 import com.cj.record.utils.JsonUtils;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
+import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialEditTextNoEmoji;
 import com.cj.record.views.ProgressDialog;
 import com.google.gson.reflect.TypeToken;
@@ -69,7 +71,7 @@ public class ChatFragment extends BaseMvpFragment<ChatPresenter> implements Chat
         mPresenter.attachView(this);
         list = new ArrayList<>();
         initRecycleView();
-        mPresenter.myFriendList(App.userID);
+        mPresenter.myFriendList((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""));
     }
 
     @Override
@@ -104,9 +106,9 @@ public class ChatFragment extends BaseMvpFragment<ChatPresenter> implements Chat
             switch (item.getItemId()) {
                 case R.id.change:
                     if (isMyFriends) {
-                        mPresenter.myUserForCompanyOrProject(App.userID);
+                        mPresenter.myUserForCompanyOrProject((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""));
                     } else {
-                        mPresenter.myFriendList(App.userID);
+                        mPresenter.myFriendList((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""));
                     }
                     return true;
             }
@@ -183,7 +185,7 @@ public class ChatFragment extends BaseMvpFragment<ChatPresenter> implements Chat
     public void onSuccessSendMessage(BaseObjectBean<String> bean) {
         if (bean.isStatus()) {
             messageList.clear();
-            mPresenter.myChatRecord(App.userID, sendFriend.getFriendUserIds());
+            mPresenter.myChatRecord((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""), sendFriend.getFriendUserIds());
             msgText.setText("");
         } else {
             ToastUtil.showToastS(mActivity, bean.getMessage());
@@ -206,13 +208,13 @@ public class ChatFragment extends BaseMvpFragment<ChatPresenter> implements Chat
                 recyclerView.scrollToPosition(chatTalkAdapter.getItemCount() - 1);
                 Message lastMesssage = null;//拿到最后一条 好友发的消息
                 for (int i = loadList.size() - 1; i >= 0; i--) {
-                    if (!loadList.get(i).getSenderIds().equals(App.userID)) {
+                    if (!loadList.get(i).getSenderIds().equals((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""))) {
                         lastMesssage = loadList.get(i);
                         break;
                     }
                 }
                 if (lastMesssage != null && TextUtils.isEmpty(lastMesssage.getReceiverTime())) {
-                    mPresenter.readMessageCallBack(App.userID, lastMesssage.getIds());
+                    mPresenter.readMessageCallBack((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""), lastMesssage.getIds());
                 }
             }
         } else {
@@ -223,9 +225,9 @@ public class ChatFragment extends BaseMvpFragment<ChatPresenter> implements Chat
     @Override
     public void onRefresh() {
         if (isMyFriends) {
-            mPresenter.myFriendList(App.userID);
+            mPresenter.myFriendList((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""));
         } else {
-            mPresenter.myUserForCompanyOrProject(App.userID);
+            mPresenter.myUserForCompanyOrProject((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""));
         }
     }
 
@@ -242,7 +244,7 @@ public class ChatFragment extends BaseMvpFragment<ChatPresenter> implements Chat
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    mPresenter.addUserFriend(App.userID, list.get(position).getFriendUserIds());
+                                    mPresenter.addUserFriend((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""), list.get(position).getFriendUserIds());
                                 }
                             })
                     .setPositiveButton(R.string.record_camera_cancel_dialog_no, null)
@@ -298,7 +300,7 @@ public class ChatFragment extends BaseMvpFragment<ChatPresenter> implements Chat
         msgText.setText("");
         friendName.setText(sendFriend.getFriendNickname());
         messageList.clear();
-        mPresenter.myChatRecord(App.userID, sendFriend.getFriendUserIds());
+        mPresenter.myChatRecord((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""), sendFriend.getFriendUserIds());
         talkDialog.show();
     }
 
@@ -316,7 +318,7 @@ public class ChatFragment extends BaseMvpFragment<ChatPresenter> implements Chat
                     ToastUtil.showToastS(mActivity, "不可以发送空的内容");
                     return;
                 }
-                mPresenter.sendMessage(App.userID, sendFriend.getFriendUserIds(), msg);
+                mPresenter.sendMessage((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""), sendFriend.getFriendUserIds(), msg);
                 break;
             case R.id.chat_back:
                 dialogDismiss();
@@ -330,7 +332,7 @@ public class ChatFragment extends BaseMvpFragment<ChatPresenter> implements Chat
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        mPresenter.deleteUserFriend(App.userID, sendFriend.getFriendUserIds());
+                                        mPresenter.deleteUserFriend((String) SPUtils.get(mActivity, Urls.SPKey.USER_ID, ""), sendFriend.getFriendUserIds());
                                         dialogDismiss();
                                     }
                                 })

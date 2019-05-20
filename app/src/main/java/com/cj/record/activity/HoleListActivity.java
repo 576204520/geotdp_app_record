@@ -46,8 +46,10 @@ import com.cj.record.mvp.presenter.HolePresenter;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.DateUtil;
 import com.cj.record.utils.JsonUtils;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
+import com.cj.record.utils.Urls;
 import com.cj.record.views.MaterialBetterSpinner;
 import com.cj.record.views.ProgressDialog;
 import com.cj.record.views.dialog.HoleInfoDialog;
@@ -251,14 +253,14 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
                     Common.showMessage(this, relateHole.getCode() + getString(R.string.hole_list_relate_ishave));
                     return;
                 }
-                mPresenter.relate(App.userID, relateHole.getId(), uploadHole.getId(), UpdateUtil.getVerCode(this) + "");
+                mPresenter.relate((String) SPUtils.get(HoleListActivity.this, Urls.SPKey.USER_ID, ""), relateHole.getId(), uploadHole.getId(), UpdateUtil.getVerCode(this) + "");
             }
         }
         //关联列表回调
         if (requestCode == MainActivity.GO_RELATE_CREATE && resultCode == RESULT_OK) {
             checkList = (List<Hole>) data.getSerializableExtra(MainActivity.CHECKLIST);
             if (checkList != null && checkList.size() > 0) {
-                mPresenter.relateMore(checkList, this, HoleDao.getInstance(), project, UpdateUtil.getVerCode(this) + "");
+                mPresenter.relateMore(checkList, project, (String) SPUtils.get(HoleListActivity.this, Urls.SPKey.USER_ID, ""), UpdateUtil.getVerCode(this) + "");
             }
             return;
         }
@@ -266,7 +268,7 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
         if (requestCode == MainActivity.GO_DOWNLOAD_CREATE && resultCode == RESULT_OK) {
             localUserList = (List<LocalUser>) data.getSerializableExtra(MainActivity.LOCALUSERLIST);
             if (localUserList != null && localUserList.size() > 0) {
-                mPresenter.downLoadHole(localUserList, UpdateUtil.getVerCode(this) + "");
+                mPresenter.downLoadHole(localUserList, (String) SPUtils.get(HoleListActivity.this, Urls.SPKey.USER_ID, ""), UpdateUtil.getVerCode(this) + "");
             }
             return;
         }
@@ -285,7 +287,7 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
     @Override
     public void editClick(int position) {
         Hole hole = dataList.get(position);
-        if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals(App.userID)) {
+        if (TextUtils.isEmpty(hole.getUserID()) || hole.getUserID().equals((String) SPUtils.get(HoleListActivity.this, Urls.SPKey.USER_ID, ""))) {
             goEdit(hole);
         } else {
             Common.showMessage(this, getString(R.string.hole_list_orther_people));
@@ -360,7 +362,7 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
             return;
         }
         //判断是否是自己的项目
-        if (uploadHole.getUserID() != null && !uploadHole.getUserID().equals(App.userID)) {
+        if (uploadHole.getUserID() != null && !uploadHole.getUserID().equals((String) SPUtils.get(HoleListActivity.this, Urls.SPKey.USER_ID, ""))) {
             Common.showMessage(this, getString(R.string.hole_list_is_orther));
             return;
         }
@@ -456,7 +458,7 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
         //uploadHole.getNotUploadCount()没有包含hole本身,所有判断hole本身是否上传
         if (!uploaded) {
             //上传操作,先校验用户信息
-            mPresenter.checkUser(project.getProjectID(), App.userID, jzTestType, uploadHole.getType(), UpdateUtil.getVerCode(this) + "");
+            mPresenter.checkUser(project.getProjectID(), (String) SPUtils.get(HoleListActivity.this, Urls.SPKey.USER_ID, ""), jzTestType, uploadHole.getType(), UpdateUtil.getVerCode(this) + "");
         } else {
             Common.showMessage(this, getString(R.string.hole_list_no_upload_record));
         }
@@ -689,7 +691,7 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
         if (recordList != null && recordList.size() > 0) {
             for (Record record : recordList) {
                 //同勘探点，要判断是否存在
-                if (!localUser.getDeptID().equals(App.userID)) {
+                if (!localUser.getDeptID().equals((String) SPUtils.get(HoleListActivity.this, Urls.SPKey.USER_ID, ""))) {
                     record.setId(Common.getUUID());
                 }
                 record.setProjectID(project.getId());
@@ -701,7 +703,7 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
                 List<Gps> gpsList = record.getGpsList();
                 if (gpsList != null && gpsList.size() > 0) {
                     for (Gps gps : gpsList) {
-                        if (!localUser.getDeptID().equals(App.userID)) {
+                        if (!localUser.getDeptID().equals((String) SPUtils.get(HoleListActivity.this, Urls.SPKey.USER_ID, ""))) {
                             gps.setId(Common.getUUID());
                         }
                         gps.setProjectID(project.getId());
@@ -728,7 +730,7 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
     @Override
     public void onSuccessCheckUser(BaseObjectBean<String> bean) {
         if (bean.isStatus()) {
-            mPresenter.uploadHole(this, project, uploadHole);
+            mPresenter.uploadHole(project, uploadHole ,(String) SPUtils.get(HoleListActivity.this, Urls.SPKey.USER_ID, ""), UpdateUtil.getVerCode(this) + "");
         } else {
             Common.showMessage(HoleListActivity.this, bean.getMessage());
         }

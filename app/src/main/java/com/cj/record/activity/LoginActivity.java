@@ -171,7 +171,6 @@ public class LoginActivity extends BaseMvpActivity<UserPresenter> implements Use
 
 
     private void saveUserToSP(LocalUser localUser) {
-        App.userID = localUser.getId();
         SPUtils.put(this, Urls.SPKey.USER_ID, localUser.getId());
         SPUtils.put(this, Urls.SPKey.USER_EMAIL, localUser.getEmail());
         SPUtils.put(this, Urls.SPKey.USER_REALNAME, localUser.getRealName());

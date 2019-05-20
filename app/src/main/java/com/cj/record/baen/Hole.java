@@ -272,10 +272,10 @@ public class Hole implements Serializable, Cloneable {
     }
 
 
-    public Hole(Context context, String projectID) {
+    public Hole(String projectID) {
         try {
             this.id = Common.getUUID();
-            HashMap codeMap = getCodeMap(context, projectID);
+            HashMap codeMap = getCodeMap(projectID);
             DecimalFormat df = new DecimalFormat("000");
             int codeInt = 1;
             String codeStr0 = "ZK-";
@@ -324,7 +324,7 @@ public class Hole implements Serializable, Cloneable {
         HoleDao.getInstance().delete(this);
     }
 
-    public HashMap getCodeMap(Context context, String projectID) {
+    public HashMap getCodeMap( String projectID) {
         HashMap hashmap = new HashMap();
         try {
             GenericRawResults<String> results = HoleDao.getInstance().getDAO().queryRaw("select code from hole where code like '__-___'and projectID='" + projectID + "'", new RawRowMapper<String>() {

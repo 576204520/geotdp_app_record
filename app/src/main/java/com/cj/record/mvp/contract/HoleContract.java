@@ -113,12 +113,10 @@ public interface HoleContract {
          * 关联多个
          *
          * @param checkList
-         * @param context
-         * @param holeDao
          * @param project
          * @param verCode
          */
-        void relateMore(List<Hole> checkList, Context context, HoleDao holeDao, Project project, String verCode);
+        void relateMore(List<Hole> checkList, Project project, String userID, String verCode);
 
         /**
          * 下载获取数据
@@ -126,12 +124,12 @@ public interface HoleContract {
          * @param localUserList
          * @param verCode
          */
-        void downLoadHole(List<LocalUser> localUserList, String verCode);
+        void downLoadHole(List<LocalUser> localUserList, String userID, String verCode);
 
         /**
          * 上传数据
          */
-        void uploadHole(Context context, Project project, Hole uploadHole);
+        void uploadHole(Project project, Hole uploadHole, String userID, String verCode);
 
         /**
          * 获取关联勘探点的列表

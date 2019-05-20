@@ -30,8 +30,10 @@ import com.cj.record.mvp.contract.HoleContract;
 import com.cj.record.mvp.presenter.HolePresenter;
 import com.cj.record.utils.Common;
 import com.cj.record.utils.JsonUtils;
+import com.cj.record.utils.SPUtils;
 import com.cj.record.utils.ToastUtil;
 import com.cj.record.utils.UpdateUtil;
+import com.cj.record.utils.Urls;
 import com.cj.record.views.ProgressDialog;
 import com.google.gson.reflect.TypeToken;
 
@@ -85,15 +87,15 @@ public class RelateHoleActivity extends BaseMvpActivity<HolePresenter> implement
         switch (relateType) {
             case 1:
                 toolbar.setTitle(R.string.hole_relate_title1);
-                mPresenter.getRelateList(App.userID, serialNumber, UpdateUtil.getVerCode(this) + "");
+                mPresenter.getRelateList((String) SPUtils.get(this, Urls.SPKey.USER_ID, ""), serialNumber, UpdateUtil.getVerCode(this) + "");
                 break;
             case 2:
                 toolbar.setTitle(R.string.hole_relate_title2);
-                mPresenter.getRelateList(App.userID, serialNumber, UpdateUtil.getVerCode(this) + "");
+                mPresenter.getRelateList((String) SPUtils.get(this, Urls.SPKey.USER_ID, ""), serialNumber, UpdateUtil.getVerCode(this) + "");
                 break;
             case 3:
                 toolbar.setTitle(R.string.hole_relate_title3);
-                mPresenter.getDownLoadList(App.userID, serialNumber, UpdateUtil.getVerCode(this) + "");
+                mPresenter.getDownLoadList((String) SPUtils.get(this, Urls.SPKey.USER_ID, ""), serialNumber, UpdateUtil.getVerCode(this) + "");
                 break;
         }
         relateHoleSearch.addTextChangedListener(textWatcher);
