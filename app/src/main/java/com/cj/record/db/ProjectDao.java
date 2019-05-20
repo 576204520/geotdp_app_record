@@ -2,8 +2,10 @@ package com.cj.record.db;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.text.TextUtils;
 
+import com.cj.record.BuildConfig;
 import com.cj.record.baen.PageBean;
 import com.cj.record.baen.Project;
 import com.j256.ormlite.dao.Dao;
@@ -12,6 +14,7 @@ import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -72,6 +75,7 @@ public class ProjectDao extends BaseDAO<Project> {
     /**
      * 获取项目列表
      * debug
+     *
      * @return
      */
     public List<Project> getAll(int page, int size, String search) {
@@ -100,6 +104,22 @@ public class ProjectDao extends BaseDAO<Project> {
             QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
             queryBuilder.setCountOf(true);
             queryBuilder.where().eq("recordPerson", "").or().eq("recordPerson", userID);
+            return (int) instance.getDAO().countOf(queryBuilder.prepare());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    /**
+     * 获取该用户下项目数量
+     *
+     * @return
+     */
+    public int getAllCount() {
+        try {
+            QueryBuilder queryBuilder = instance.getDAO().queryBuilder();
+            queryBuilder.setCountOf(true);
             return (int) instance.getDAO().countOf(queryBuilder.prepare());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -188,8 +208,15 @@ public class ProjectDao extends BaseDAO<Project> {
         return Flowable.create(new FlowableOnSubscribe<PageBean<Project>>() {
             @Override
             public void subscribe(FlowableEmitter<PageBean<Project>> e) throws Exception {
-                List<Project> list = getAll(userID, page, size, search);
-                int totleSize = getAllCount(userID);
+                List<Project> list;
+                int totleSize;
+                if (BuildConfig.ISDEBUG) {
+                    list = getAll(page, size, search);
+                    totleSize = getAllCount();
+                } else {
+                    list = getAll(userID, page, size, search);
+                    totleSize = getAllCount(userID);
+                }
                 PageBean<Project> pageBean = new PageBean<>();
                 pageBean.setTotleSize(totleSize);
                 pageBean.setPage(page);

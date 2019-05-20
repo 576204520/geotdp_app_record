@@ -730,7 +730,7 @@ public class HoleListActivity extends BaseMvpActivity<HolePresenter> implements 
     @Override
     public void onSuccessCheckUser(BaseObjectBean<String> bean) {
         if (bean.isStatus()) {
-            mPresenter.uploadHole(project, uploadHole ,(String) SPUtils.get(HoleListActivity.this, Urls.SPKey.USER_ID, ""), UpdateUtil.getVerCode(this) + "");
+            mPresenter.uploadHole(project, uploadHole, (String) SPUtils.get(HoleListActivity.this, Urls.SPKey.USER_ID, ""), UpdateUtil.getVerCode(this) + "");
         } else {
             Common.showMessage(HoleListActivity.this, bean.getMessage());
         }

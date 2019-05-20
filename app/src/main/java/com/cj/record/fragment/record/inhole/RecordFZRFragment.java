@@ -26,7 +26,7 @@ import butterknife.Unbinder;
 /**
  * 负责人
  */
-public class RecordFZRFragment extends RecordBaseFragment{
+public class RecordFZRFragment extends RecordBaseFragment {
     @BindView(R.id.principal_name)
     MaterialBetterSpinner principalName;
 
@@ -42,23 +42,7 @@ public class RecordFZRFragment extends RecordBaseFragment{
         super.initView(view);
         principalName.setText(record.getOperatePerson());
         recordList = RecordDao.getInstance().getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_PRINCIPAL);
-        if (recordList != null) {
-            Iterator<Record> ir = recordList.iterator();
-            while (ir.hasNext()) {
-                Record record = ir.next();
-                if ("".equals(record.getOperatePerson())) {
-                    ir.remove();
-                }
-            }
-            for (int i = 0; i < recordList.size(); i++) {
-                for (int j = i + 1; j < recordList.size(); j++) {
-                    if (recordList.get(i).getOperatePerson().equals(recordList.get(j).getOperatePerson())) {
-                        recordList.remove(j);
-                        j--;
-                    }
-                }
-            }
-
+        if (recordList != null && recordList.size() > 0) {
             List<DropItemVo> list = new ArrayList<>();
             for (int i = 1; i <= recordList.size(); i++) {
                 DropItemVo dropItemVo = new DropItemVo();

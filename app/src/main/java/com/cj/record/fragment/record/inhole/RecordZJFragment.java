@@ -43,23 +43,8 @@ public class RecordZJFragment extends RecordBaseFragment {
         super.initView(view);
         operatecodeCode.setText(record.getTestType());
         recordList = RecordDao.getInstance().getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_OPERATECODE);
-        if (recordList != null) {
+        if (recordList != null && recordList.size() > 0) {
             //新建的记录机长信息是空的，删除掉
-            Iterator<Record> ir = recordList.iterator();
-            while (ir.hasNext()) {
-                Record record = ir.next();
-                if ("".equals(record.getTestType())) {
-                    ir.remove();
-                }
-            }
-            for (int i = 0; i < recordList.size(); i++) {
-                for (int j = i + 1; j < recordList.size(); j++) {
-                    if (recordList.get(i).getTestType().equals(recordList.get(j).getTestType())) {
-                        recordList.remove(j);
-                        j--;
-                    }
-                }
-            }
             List<DropItemVo> list = new ArrayList<>();
             for (int i = 1; i <= recordList.size(); i++) {
                 DropItemVo dropItemVo = new DropItemVo();

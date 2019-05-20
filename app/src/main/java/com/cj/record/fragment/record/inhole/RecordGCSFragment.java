@@ -44,25 +44,7 @@ public class RecordGCSFragment extends RecordBaseFragment {
         super.initView(view);
         technicianName.setText(record.getOperatePerson());
         recordList = RecordDao.getInstance().getRecordListByProject(record.getProjectID(), Record.TYPE_SCENE_TECHNICIAN);
-        if (recordList != null) {
-            //新建的记录机长信息是空的，删除掉
-            Iterator<Record> ir = recordList.iterator();
-            while (ir.hasNext()) {
-                Record record = ir.next();
-                if ("".equals(record.getOperatePerson())) {
-                    ir.remove();
-                }
-            }
-            //去掉机长和机长编号相同的数据
-            for (int i = 0; i < recordList.size(); i++) {
-                for (int j = i + 1; j < recordList.size(); j++) {
-                    if (recordList.get(i).getOperatePerson().equals(recordList.get(j).getOperatePerson())) {
-                        recordList.remove(j);
-                        j--;
-                    }
-                }
-            }
-
+        if (recordList != null && recordList.size() > 0) {
             List<DropItemVo> list = new ArrayList<>();
             for (int i = 1; i <= recordList.size(); i++) {
                 DropItemVo dropItemVo = new DropItemVo();

@@ -8,6 +8,7 @@ import com.cj.record.BuildConfig;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.security.SecureRandom;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -91,6 +92,9 @@ public class RetrofitClient {
                 .addInterceptor(getHeaderInterceptor())
                 //设置拦截器
                 .addInterceptor(getInterceptor())
+                .connectTimeout(50, TimeUnit.SECONDS)
+                .readTimeout(50, TimeUnit.SECONDS)
+                .writeTimeout(50, TimeUnit.SECONDS)
                 .build();
         SSLContext sc = null;
         try {
